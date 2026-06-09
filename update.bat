@@ -37,7 +37,7 @@ echo ==============================
 
 git add . || goto :end
 git commit -m "docs:更新文章" || goto :end
-git push origin main || goto :end
+git push origin master || goto :end
 
 echo.
 echo 🎉 全流程完成！
