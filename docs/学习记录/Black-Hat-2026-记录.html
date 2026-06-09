@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh" dir="ltr"><head><title>Black Hat 2026 记录</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted Grotesk:wght@400;700&amp;family=Source Sans Pro:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="V9d0g"/><meta property="og:title" content="Black Hat 2026 记录"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Black Hat 2026 记录"/><meta name="twitter:description" content="简述 简单分析和分享一下BH Asia 2026上一些关注的议题的有意思内容 Cast Attack: A New Threat Posed by Ghost Bits in Java 简介 幽灵比特简单来说就是某些语言在对字符串编码的时候进行的一些处理并不合理 存在一定的缺陷导致的编码问题 这里以java的工具 burpsuite为例: 阮对应的unicode是 \u962e 但通过bp自带的中文解码之后 阮变成了."/><meta property="og:description" content="简述 简单分析和分享一下BH Asia 2026上一些关注的议题的有意思内容 Cast Attack: A New Threat Posed by Ghost Bits in Java 简介 幽灵比特简单来说就是某些语言在对字符串编码的时候进行的一些处理并不合理 存在一定的缺陷导致的编码问题 这里以java的工具 burpsuite为例: 阮对应的unicode是 \u962e 但通过bp自带的中文解码之后 阮变成了."/><meta property="og:image:alt" content="简述 简单分析和分享一下BH Asia 2026上一些关注的议题的有意思内容 Cast Attack: A New Threat Posed by Ghost Bits in Java 简介 幽灵比特简单来说就是某些语言在对字符串编码的时候进行的一些处理并不合理 存在一定的缺陷导致的编码问题 这里以java的工具 burpsuite为例: 阮对应的unicode是 \u962e 但通过bp自带的中文解码之后 阮变成了."/><meta property="twitter:domain" content="v9d0g.github.io"/><meta property="og:url" content="https://v9d0g.github.io/学习记录/Black-Hat-2026-记录"/><meta property="twitter:url" content="https://v9d0g.github.io/学习记录/Black-Hat-2026-记录"/><link rel="icon" href="../static/icon.png"/><meta name="description" content="简述 简单分析和分享一下BH Asia 2026上一些关注的议题的有意思内容 Cast Attack: A New Threat Posed by Ghost Bits in Java 简介 幽灵比特简单来说就是某些语言在对字符串编码的时候进行的一些处理并不合理 存在一定的缺陷导致的编码问题 这里以java的工具 burpsuite为例: 阮对应的unicode是 \u962e 但通过bp自带的中文解码之后 阮变成了."/><meta name="generator" content="Quartz"/><link href="../index.css" rel="stylesheet" type="text/css" spa-preserve/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  padding: 2rem;
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiVzpcXGJsb2dcXHY5ZDBnLmdpdGh1Yi5pb1xccXVhcnR6XFxjb21wb25lbnRzXFxzdHlsZXMiLCJzb3VyY2VzIjpbIm1lcm1haWQuaW5saW5lLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUdGO0VBQ0U7OztBQUtGO0VBQ0U7RUFDQTs7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTs7QUFHRjtFQUNFO0VBQ0E7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7O0FBSUY7RUFDRTtFQUNBO0VBQ0EiLCJzb3VyY2VzQ29udGVudCI6WyIuZXhwYW5kLWJ1dHRvbiB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBwYWRkaW5nOiAwLjRyZW07XG4gIG1hcmdpbjogMC4zcmVtO1xuICByaWdodDogMDsgLy8gTk9URTogcmlnaHQgd2lsbCBiZSBzZXQgaW4gbWVybWFpZC5pbmxpbmUudHNcbiAgY29sb3I6IHZhcigtLWdyYXkpO1xuICBib3JkZXItY29sb3I6IHZhcigtLWRhcmspO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gIGJvcmRlcjogMXB4IHNvbGlkO1xuICBib3JkZXItcmFkaXVzOiA1cHg7XG4gIG9wYWNpdHk6IDA7XG4gIHRyYW5zaXRpb246IDAuMnM7XG5cbiAgJiA+IHN2ZyB7XG4gICAgZmlsbDogdmFyKC0tbGlnaHQpO1xuICAgIGZpbHRlcjogY29udHJhc3QoMC4zKTtcbiAgfVxuXG4gICY6aG92ZXIge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBib3JkZXItY29sb3I6IHZhcigtLXNlY29uZGFyeSk7XG4gIH1cblxuICAmOmZvY3VzIHtcbiAgICBvdXRsaW5lOiAwO1xuICB9XG59XG5cbnByZSB7XG4gICY6aG92ZXIgPiAuZXhwYW5kLWJ1dHRvbiB7XG4gICAgb3BhY2l0eTogMTtcbiAgICB0cmFuc2l0aW9uOiAwLjJzO1xuICB9XG59XG5cbiNtZXJtYWlkLWNvbnRhaW5lciB7XG4gIHBvc2l0aW9uOiBmaXhlZDtcbiAgY29udGFpbjogbGF5b3V0O1xuICB6LWluZGV4OiA5OTk7XG4gIGxlZnQ6IDA7XG4gIHRvcDogMDtcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IDEwMHZoO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICBkaXNwbGF5OiBub25lO1xuICBiYWNrZHJvcC1maWx0ZXI6IGJsdXIoNHB4KTtcbiAgYmFja2dyb3VuZDogcmdiYSgwLCAwLCAwLCAwLjUpO1xuXG4gICYuYWN0aXZlIHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIH1cblxuICAmID4gI21lcm1haWQtc3BhY2Uge1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICAgIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgdG9wOiA1MCU7XG4gICAgbGVmdDogNTAlO1xuICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKC01MCUsIC01MCUpO1xuICAgIGhlaWdodDogODB2aDtcbiAgICB3aWR0aDogODB2dztcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuXG4gICAgJiA+IC5tZXJtYWlkLWNvbnRlbnQge1xuICAgICAgcGFkZGluZzogMnJlbTtcbiAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgIHRyYW5zZm9ybS1vcmlnaW46IDAgMDtcbiAgICAgIHRyYW5zaXRpb246IHRyYW5zZm9ybSAwLjFzIGVhc2U7XG4gICAgICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgICAgIG1pbi1oZWlnaHQ6IDIwMHB4O1xuICAgICAgbWluLXdpZHRoOiAyMDBweDtcblxuICAgICAgcHJlIHtcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBib3JkZXI6IG5vbmU7XG4gICAgICB9XG5cbiAgICAgIHN2ZyB7XG4gICAgICAgIG1heC13aWR0aDogbm9uZTtcbiAgICAgICAgaGVpZ2h0OiBhdXRvO1xuICAgICAgfVxuICAgIH1cblxuICAgICYgPiAubWVybWFpZC1jb250cm9scyB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICBib3R0b206IDIwcHg7XG4gICAgICByaWdodDogMjBweDtcbiAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICBnYXA6IDhweDtcbiAgICAgIHBhZGRpbmc6IDhweDtcbiAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICBib3JkZXItcmFkaXVzOiA2cHg7XG4gICAgICBib3gtc2hhZG93OiAwIDJweCA0cHggcmdiYSgwLCAwLCAwLCAwLjEpO1xuICAgICAgei1pbmRleDogMjtcblxuICAgICAgLm1lcm1haWQtY29udHJvbC1idXR0b24ge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgd2lkdGg6IDMycHg7XG4gICAgICAgIGhlaWdodDogMzJweDtcbiAgICAgICAgcGFkZGluZzogMDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHQpO1xuICAgICAgICBjb2xvcjogdmFyKC0tZGFyayk7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBmb250LXNpemU6IDE2cHg7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1ib2R5Rm9udCk7XG4gICAgICAgIHRyYW5zaXRpb246IGFsbCAwLjJzIGVhc2U7XG5cbiAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgfVxuXG4gICAgICAgICY6YWN0aXZlIHtcbiAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoMXB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgIC8vIFN0eWxlIHRoZSByZXNldCBidXR0b24gZGlmZmVyZW50bHlcbiAgICAgICAgJjpudGgtY2hpbGQoMikge1xuICAgICAgICAgIHdpZHRoOiBhdXRvO1xuICAgICAgICAgIHBhZGRpbmc6IDAgMTJweDtcbiAgICAgICAgICBmb250LXNpemU6IDE0cHg7XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdfQ== */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" spa-preserve/><style>
+/* Lightbox Image Styles */
+.lightbox-wrapper {
+  display: block;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  margin: 1em 0;
+}
+
+.lightbox-wrapper:hover {
+  transform: scale(1.02);
+}
+
+.lightbox-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.lightbox-image:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal/Lightbox Overlay */
+.lightbox-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.lightbox-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox-modal img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transform: scale(0.8);
+  transition: transform 0.1s ease-out;
+  cursor: grab;
+  user-select: none;
+}
+
+.lightbox-modal.active img {
+  transform: scale(1);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  z-index: 1001;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.lightbox-close:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+body.lightbox-open {
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .lightbox-modal img {
+    max-width: 95%;
+    max-height: 95%;
+  }
+
+  .lightbox-close {
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    width: 35px;
+    height: 35px;
+  }
+}
+            </style><script src="../prescript.js" type="application/javascript" spa-preserve></script><script type="application/javascript" spa-preserve>const fetchData = fetch("../static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://v9d0g.github.io/index.xml"/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta property="og:image" content="https://v9d0g.github.io/学习记录/Black-Hat-2026-记录-og-image.webp"/><meta property="og:image:url" content="https://v9d0g.github.io/学习记录/Black-Hat-2026-记录-og-image.webp"/><meta name="twitter:image" content="https://v9d0g.github.io/学习记录/Black-Hat-2026-记录-og-image.webp"/><meta property="og:image:type" content="image/.webp"/></head><body data-slug="学习记录/Black-Hat-2026-记录"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href="..">V9d0g</a></h2><div class="spacer mobile-only"></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>搜索</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="搜索些什么" placeholder="搜索些什么"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="暗色模式"><title>暗色模式</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="亮色模式"><title>亮色模式</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="阅读模式"><title>阅读模式</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><div class="explorer" data-behavior="link" data-collapsed="collapsed" data-savestate="true" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a,b)=>!a.isFolder&amp;&amp;!b.isFolder||a.isFolder&amp;&amp;b.isFolder?a.displayName.localeCompare(b.displayName,void 0,{numeric:!0,sensitivity:\&quot;base\&quot;}):!a.isFolder&amp;&amp;b.isFolder?1:-1&quot;,&quot;filterFn&quot;:&quot;node=>node.slugSegment!==\&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;node=>node&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-32"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>探索</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div id="explorer-32" class="explorer-content" aria-expanded="false" role="group"><ul class="explorer-ul overflow" id="list-0"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#"></a></li></template><template id="template-folder"><li><div class="folder-container"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../学习记录/">学习记录</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>Black Hat 2026 记录</a></div></nav><h1 class="article-title">Black Hat 2026 记录</h1><p show-comma="true" class="content-meta"><time datetime="2026-05-06T16:00:00.000Z">2026年5月07日</time><span>10分钟阅读</span></p><ul class="tags"><li><a href="../tags/代码审计" class="internal tag-link">代码审计</a></li><li><a href="../tags/分享" class="internal tag-link">分享</a></li></ul></div></div><article class="popover-hint"><h1 id="简述">简述<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#简述" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p>简单分析和分享一下BH Asia 2026上一些关注的议题的有意思内容</p>
+<h2 id="cast-attack-a-new-threat-posed-by-ghost-bits-in-java">Cast Attack: A New Threat Posed by Ghost Bits in Java<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#cast-attack-a-new-threat-posed-by-ghost-bits-in-java" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="简介">简介<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#简介" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>幽灵比特简单来说就是<strong>某些语言</strong>在对<strong>字符串编码</strong>的时候进行的一些处理并不合理 存在一定的缺陷导致的编码问题
+这里以java的工具 burpsuite为例:
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260508104906.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260508104906.png" data-alt loading="lazy"/></div>
+<code>阮</code>对应的unicode是 <code>\u962e</code>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260508104940.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260508104940.png" data-alt loading="lazy"/></div>
+但通过bp自带的中文解码之后
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260508105023.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260508105023.png" data-alt loading="lazy"/></div>
+<code>阮</code>变成了<code>.</code> 其对应的unicode 为<code>\u002e</code>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260508105056.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260508105056.png" data-alt loading="lazy"/></div>
+也就是说 bp在处理中文unicode的时候 会丢弃高八位数据 即</p>
+<p><code>bin:1001 0110 0010 1110 --> unicode:\u962e</code></p>
+<p><code>bin:0000 0000 0010 1110 --> unicode:\u002e</code></p>
+<p>通过类比这个情况 可以挖掘出一些新的攻击面来绕过waf或者触发某些漏洞</p>
+<h3 id="真实情况下的幽灵bit">真实情况下的幽灵bit<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#真实情况下的幽灵bit" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<h4 id="cve-2025-41242">CVE-2025-41242<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#cve-2025-41242" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>相关代码如下</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">public</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> static</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> String </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">uriDecode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(String source, Charset charset) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> length </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> source.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">length</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">();</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (length </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> source;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    Assert.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">notNull</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(charset, </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;Charset must not be null&quot;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    ByteArrayOutputStream baos </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> new</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> ByteArrayOutputStream</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(length);</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    boolean</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> changed </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> false</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    for</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">; i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> length; i</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">++</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">        int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> ch </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> source.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(i);</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">        if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (ch </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> '%'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">            if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> &lt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> length) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">                char</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> hex1 </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> source.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">                char</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> hex2 </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> source.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">                int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> u </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Character.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">digit</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(hex1, </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">16</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">                int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> l </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Character.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">digit</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(hex2, </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">16</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">                if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (u </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> -</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> ||</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> l </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> -</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">                    throw</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> new</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> IllegalArgumentException</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;Invalid encoded sequence </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\&quot;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> source.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">substring</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(i) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\&quot;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">                }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">                baos.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">write</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">((</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">char</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) ((u </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 4</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> l));</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">                i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">                changed </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">            }</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">            else</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">                throw</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> new</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> IllegalArgumentException</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;Invalid encoded sequence </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\&quot;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> source.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">substring</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(i) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\&quot;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">            }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">        }</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">        else</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">            baos.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">write</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(ch);   </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// ← BUG</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">        }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (changed </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">?</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> StreamUtils.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">copyToString</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(baos, charset) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> source);</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<p>这段代码就是将高位数据截断的罪魁祸首</p>
+<p>具体详情可以参考<a href="https://github.com/vulhub/vulhub/pull/773" class="external">vuln_hub<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<h5 id="原理简析">原理简析<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#原理简析" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h5>
+<p>在spring处理<strong>静态资源</strong>(一般映射为下面的内容)时，会对路径进行一系列校准</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">classpath</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">:/static/</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">classpath</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">:/public/</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">classpath</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">:/</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">resources</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">/</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">classpath</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">:/</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">META</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">INF</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">/</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">resources</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">/</span></span></code></pre></figure>
+<p>而这个漏洞关注的是这些调用栈
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260518162354.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260518162354.png" data-alt loading="lazy"/></div>
+为了更进一步来感受这个漏洞的原理之一(<code>uriDecode</code>),我们随机采用一个spring项目</p>
+<p>目前有很多的spring应用都还使用的这个版本
+随机抽选一个<a href="https://github.com/elunez/eladmin" class="external">项目<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260512152205.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260512152205.png" data-alt loading="lazy"/></div></p>
+<p>其默认使用的<code>spring-core</code>版本如下</p>
+<ul>
+<li><code>org\springframework\spring-core\5.3.31\spring-core-5.3.31.jar!\org\springframework\util\StringUtils.class</code></li>
+</ul>
+<p>使用这个模块中任意一个上传文件的功能 上传一个任意文件（该项目会将上传的文件添加一个时间戳）
+这里的js文件是通过前台上传的 而<code>logu%65.陪sp</code>和<code>logue.jsp</code>都是手动放在这里的文件</p>
+<p><strong>这里的文件内容都是其文件名</strong>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260512152428.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260512152428.png" data-alt loading="lazy"/></div>
+我们通过yakit直接访问文件预览接口 可以直接获取这个文件内容
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260512152627.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260512152627.png" data-alt loading="lazy"/></div>
+在<code>uriDecode</code>打下断点
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260512153033.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260512153033.png" data-alt loading="lazy"/></div>
+发现会在这个地方断住<strong>17</strong>次 在第<strong>17</strong>次放行后 yakit便会有响应 并且最后一次的入参就是<code>url</code>的<code>path</code>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260512153300.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260512153300.png" data-alt loading="lazy"/></div></p>
+<p>如果这里将最后一次的入参从
+<code>/file/%E5%85%B6%E4%BB%96/log-20260512030641284.js</code> 修改为
+<code>/file/%E5%85%B6%E4%BB%96/logu%65.陪sp</code>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260512154255.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260512154255.png" data-alt loading="lazy"/></div>
+一般我们会认为这指向的是<code>logu%65.陪sp</code>的文件
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260512154645.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260512154645.png" data-alt loading="lazy"/></div>
+但实际返回的 是指向的<code>logue.jsp</code>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260512154337.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260512154337.png" data-alt loading="lazy"/></div>
+这里的原因就是因为<code>uriDecode(String source, Charset charset)</code>对包含 <strong>%</strong> 的编码处理存在缺陷
+<code>logu%65.陪sp</code>中 <code>'%65' = urlEncode('e')</code>
+而<code>陪</code>的unicode编码为 <code>\u966a</code>  其去除高位后为 <code>\u006a</code>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260512155348.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260512155348.png" data-alt loading="lazy"/></div>
+在这个方法的处理中 就被识别成了<code>j</code> 导致了 <code>logu%65.陪sp</code> 被识别为 <code>logue.jsp</code></p>
+<p>在该项目中web容器使用的是</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="xml" data-theme="github-light github-dark"><code data-language="xml" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">&lt;</span><span style="--shiki-light:#22863A;--shiki-dark:#85E89D;">artifactId</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">>spring-boot-starter-web&lt;/</span><span style="--shiki-light:#22863A;--shiki-dark:#85E89D;">artifactId</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">></span></span></code></pre></figure>
+<p>默认是<code>tomcat</code></p>
+<p><strong>但如果直接/file/%E5%85%B6%E4%BB%96/logu%65.陪sp是无法访问到logue.jsp</strong></p>
+<p>针对这一点Claude老师是这样说的
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260518165142.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260518165142.png" data-alt loading="lazy"/></div></p>
+<h5 id="具体复现">具体复现<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#具体复现" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h5>
+<p>通过搭建一个实际的jetty环境发现，确实如此
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260526101207.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260526101207.png" data-alt loading="lazy"/></div></p>
+<p>如果使用tomcat的web容器 会发现中文字符串根本不会到 <code>uriDecode</code> 方法
+可以发现 <code>阮严灵丰丰甲来</code> 经过 <code>uriDecode</code> 后会变成 <code>.%u002e</code></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>输入</th><th>unicode</th></tr></thead><tbody><tr><td>阮严灵丰丰甲来</td><td>\u962e\u4e25\u7075\u4e30\u4e30\u7532\u6765</td></tr><tr><td>.%u002e</td><td>\u002e\u0025\u0075\u0030\u0030\u0032\u0065</td></tr><tr><td>高位被截断</td><td></td></tr></tbody></table></div>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260526101721.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260526101721.png" data-alt loading="lazy"/></div></p>
+<p>具体需要关注的调用栈是:
+<code>spring-core-6.1.5.jar!\org\springframework\util\StringUtils#uriDecode</code>
+<strong>这个方法会对uri中每个/分割的内容进行解码 之后会对整个url path进行解码</strong></p>
+<p><code>spring-webmvc-6.1.5.jar!\org\springframework\web\servlet\resource\ResourceHttpRequestHandler#isInvalidEncodedPath</code>
+<strong>判断路径中是否有% 来进入url解码的分支 绕过第一个检查</strong>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260526104843.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260526104843.png" data-alt loading="lazy"/></div>
+使用<code>URLDecoder.decode</code>对<code>path</code>进行解码
+而其中 <code>isInvalidPath</code> 是否有跨路径检查 这里就直接通过了检查
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260526110237.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260526110237.png" data-alt loading="lazy"/></div>
+随后进入
+<code>spring-webmvc-6.1.5.jar!\org\springframework\web\servlet\resource\PathResourceResolver#getResource</code>来获取静态资源
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260526112239.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260526112239.png" data-alt loading="lazy"/></div>
+其中<code>encodeOrDecodeIfNecessary</code>内部的解码调用的是前面提到的<code>uriDecode</code></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">private</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> String </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">encodeOrDecodeIfNecessary</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(String path, @</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">Nullable</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> HttpServletRequest request, Resource location) {  </span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (request </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">!=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> null</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {  </span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">        boolean</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> usesPathPattern </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> ServletRequestPathUtils.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">hasCachedPath</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(request) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&amp;&amp;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> ServletRequestPathUtils.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">getCachedPath</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(request) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">instanceof</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> PathContainer;  </span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">        if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">this</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">shouldDecodeRelativePath</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(location, usesPathPattern)) {  </span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">            return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> UriUtils.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">decode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(path, StandardCharsets.UTF_8);   </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// &lt;- 这里</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">        }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">...</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 调用的是uri</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">public</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> static</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> String </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">decode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(String source, Charset charset) {  </span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> StringUtils.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">uriDecode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(source, charset);  </span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<p><strong>对路径进行编码</strong>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260526103906.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260526103906.png" data-alt loading="lazy"/></div></p>
+<p>最后会在 ServletContext resource 的 path 为 <strong>/</strong> 的时候 返回 <code>resource</code></p>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260526112946.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260526112946.png" data-alt loading="lazy"/></div></p>
+<p>随后 <strong>Spring</strong> 里的 <code>ServletContextResource.getURL(...)</code> 会把一个 <code>ServletContextResource</code> 转成 <code>URL</code> 通过调用 <code>ServletContext.getResource(...)</code> 进入 jetty 的上下文
+Jetty 再把这个 web 资源路径，映射到它内部的底层资源系统</p>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260526113801.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260526113801.png" data-alt loading="lazy"/></div></p>
+<p>而在其中的 <code>URIUtil.addPath(uri, subUriPath);</code>会再次解码
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260526115118.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260526115118.png" data-alt loading="lazy"/></div>
+其中 针对 <code>%u002e</code> 会重新解码成 <code>%2e</code> 也就是 <strong>.</strong>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260526115329.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260526115329.png" data-alt loading="lazy"/></div>
+最后造成了路径穿越</p>
+<p>整体的流程:</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="txt" data-theme="github-light github-dark"><code data-language="txt" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>/阮严灵丰丰甲来/阮严灵丰丰甲来/阮严灵丰丰甲来/阮严灵丰丰甲来/阮严灵丰丰甲来/阮严灵丰丰甲来/windows/win.in%69</span></span>
+<span data-line><span>---></span></span>
+<span data-line><span>/.%u002e/.%u002e/.%u002e/.%u002e/.%u002e/.%u002e/windows/win.ini</span></span>
+<span data-line><span>--></span></span>
+<span data-line><span>file:///C:/Users/W1197/AppData/Local/Temp/jetty-docbase.8080.6599390763312893177/.%2E/.%2E/.%2E/.%2E/.%2E/.%2E/windows/win.ini</span></span>
+<span data-line><span>-></span></span>
+<span data-line><span>C:\Users\W1197\AppData\Local\Temp\jetty-docbase.8080.6599390763312893177\..\..\..\..\..\..\windows\win.ini</span></span></code></pre></figure>
+<p>附上一份GPT生成的解释图：
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/ChatGPT-Image-2026年5月12日-16_40_12.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/ChatGPT-Image-2026年5月12日-16_40_12.png" data-alt loading="lazy"/></div></p>
+<p>其他Ghost bit的产生也类似,需要结合程序具体运行流程和内部实际编码来判断是否存在</p>
+<h3 id="reference">Reference<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#reference" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><a href="https://github.com/vulhub/vulhub/pull/773" class="external">vulhub/pull/773<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<p><a href="https://mp.weixin.qq.com/s/fIvmKkT6e8d8PY5OruG4mw" class="external">Ghost Bits详解<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<h2 id="bad-vibes---pwning-coding-agents-70-times-with-the-same-bugs">Bad Vibes - Pwning Coding Agents 70 Times With The Same Bugs<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bad-vibes---pwning-coding-agents-70-times-with-the-same-bugs" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>议题分享的是对于一些code agent的命令注入绕过手法</p>
+<h3 id="简介-1">简介<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#简介-1" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>对于一些code agent是存在命令执行白名单的 例如claude code
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260528095241.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260528095241.png" data-alt loading="lazy"/></div></p>
+<p>配置之后 让cc直接执行这个命令 不会弹出需要用户确认之类的东西
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260528095339.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260528095339.png" data-alt loading="lazy"/></div></p>
+<h3 id="关于powershell的一点小tips">关于powershell的一点小tips<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#关于powershell的一点小tips" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>议题中分享了例如<code>Gemini CLI</code>是以powershell对命令进行ast解析并于命令白名单(allow list)进行比对</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">$ast = </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">[System.Management.Automation.Language.Parser]::ParseInput</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">()</span></span></code></pre></figure>
+<p>可以通过下面的来获取这个方法的重载</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">[System.Management.Automation.Language.Parser]</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">.GetMethods</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">|</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">Where-Object</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> Name</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> -eq</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> ParseInput</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> |</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">Select-Object</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> Name,</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> @{N='Parameters'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;E</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    (</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">$_.GetParameters</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">|</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> ForEach-Object</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> {</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">        &quot;$(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">$_</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">.ParameterType.Name) $(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">$_</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">.Name)&quot;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }) </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">-join</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> ', '</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}}</span></span></code></pre></figure>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260528100645.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260528100645.png" data-alt loading="lazy"/></div>
+通过下面这段代码把一段 PowerShell 代码解析成 AST，然后提取其中所有命令，并输出命令名和原始文本</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">$ast = [System.Management.Automation.Language.Parser]::ParseInput(</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">    &quot;dir&quot;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">,</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    [ref]$null</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">,</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    [ref]$null</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">$commandAsts </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> $ast</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">.FindAll</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">({</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">    param($node</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    $node </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">-is</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> [System.Management.Automation.Language.CommandAst]</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}, $true)</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">$commandObjects </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">=</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> foreach</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> ($commandAst </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">in</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> $commandAsts) {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    [PSCustomObject]</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">@</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">{</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">        name</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> =</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> $commandAst</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">.GetCommandName</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">        text</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> =</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> $commandAst</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">.Extent.Text.Trim</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">$commandObjects</span></span></code></pre></figure>
+<p>而powershell本身是支持.NET的语法的 这意味着powershell可以使用一些.NET的特性
+比如</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">[scriptblock]::Create(</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">'calc'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">.Invoke</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">()</span></span></code></pre></figure>
+<p>这段指令是可以被powershell执行调出计算器 但AST解析里面 并不会将其解析成命令
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260528103736.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260528103736.png" data-alt loading="lazy"/></div>
+这是一个不错的攻击面 如果能知道code agent对命令的识别逻辑(例如这种使用powershell进行ast解析) 那么可以利用powershell原生对.NET的支持来进行一些特性使用的绕过</p>
+<h3 id="其他绕过">其他绕过<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#其他绕过" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>这些基本都修复了</p>
+<ul>
+<li>大小写</li>
+</ul>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="json" data-theme="github-light github-dark"><code data-language="json" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">Mcp.JsOn == mcp.json</span></span></code></pre></figure>
+<ul>
+<li>敏感路径的后缀匹配</li>
+</ul>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">/.vscode/settings.json</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">/.cursor/mcp.json</span></span></code></pre></figure>
+<ul>
+<li>NTFS</li>
+</ul>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;"># fsutil 8dot3name set</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;"># 8.3（Eight-dot-Three）是 DOS / 早期 Windows 的一种文件名格式 </span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;"># 现在默认关闭</span></span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">echo</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> Hello</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> ></span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> .</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\A</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">gent~1</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\c</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">onfig.json</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">echo</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> Hello</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> ></span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> test.txt::</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">$DATA</span></span></code></pre></figure>
+<ul>
+<li>
+<p>白名单命令利用 例如mv或者cp</p>
+</li>
+<li>
+<p>Symlink 符号链接</p>
+</li>
+</ul>
+<h2 id="discovering-react2shell-javascripts-long-awaited-deserialization-flight-mare">Discovering React2Shell: JavaScript’s Long-Awaited Deserialization Flight-mare<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#discovering-react2shell-javascripts-long-awaited-deserialization-flight-mare" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>议题主要是分享了 React2Shell 的挖掘过程以及一些原理</p>
+<ul>
+<li>Thenable</li>
+<li>RSC</li>
+</ul>
+<p>这个漏洞当时在网上引起不少热度
+网上的分析都十分详细 不过多赘述</p></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="graph"><h3>关系图谱</h3><div class="graph-outer"><div class="graph-container" data-cfg="{&quot;drag&quot;:true,&quot;zoom&quot;:true,&quot;depth&quot;:1,&quot;scale&quot;:1.1,&quot;repelForce&quot;:0.5,&quot;centerForce&quot;:0.3,&quot;linkDistance&quot;:30,&quot;fontSize&quot;:0.6,&quot;opacityScale&quot;:1,&quot;showTags&quot;:true,&quot;removeTags&quot;:[],&quot;focusOnHover&quot;:false,&quot;enableRadial&quot;:false}"></div><button class="global-graph-icon" aria-label="Global Graph"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 55 55" fill="currentColor" xml:space="preserve"><path d="M49,0c-3.309,0-6,2.691-6,6c0,1.035,0.263,2.009,0.726,2.86l-9.829,9.829C32.542,17.634,30.846,17,29,17
+                s-3.542,0.634-4.898,1.688l-7.669-7.669C16.785,10.424,17,9.74,17,9c0-2.206-1.794-4-4-4S9,6.794,9,9s1.794,4,4,4
+                c0.74,0,1.424-0.215,2.019-0.567l7.669,7.669C21.634,21.458,21,23.154,21,25s0.634,3.542,1.688,4.897L10.024,42.562
+                C8.958,41.595,7.549,41,6,41c-3.309,0-6,2.691-6,6s2.691,6,6,6s6-2.691,6-6c0-1.035-0.263-2.009-0.726-2.86l12.829-12.829
+                c1.106,0.86,2.44,1.436,3.898,1.619v10.16c-2.833,0.478-5,2.942-5,5.91c0,3.309,2.691,6,6,6s6-2.691,6-6c0-2.967-2.167-5.431-5-5.91
+                v-10.16c1.458-0.183,2.792-0.759,3.898-1.619l7.669,7.669C41.215,39.576,41,40.26,41,41c0,2.206,1.794,4,4,4s4-1.794,4-4
+                s-1.794-4-4-4c-0.74,0-1.424,0.215-2.019,0.567l-7.669-7.669C36.366,28.542,37,26.846,37,25s-0.634-3.542-1.688-4.897l9.665-9.665
+                C46.042,11.405,47.451,12,49,12c3.309,0,6-2.691,6-6S52.309,0,49,0z M11,9c0-1.103,0.897-2,2-2s2,0.897,2,2s-0.897,2-2,2
+                S11,10.103,11,9z M6,51c-2.206,0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S8.206,51,6,51z M33,49c0,2.206-1.794,4-4,4s-4-1.794-4-4
+                s1.794-4,4-4S33,46.794,33,49z M29,31c-3.309,0-6-2.691-6-6s2.691-6,6-6s6,2.691,6,6S32.309,31,29,31z M47,41c0,1.103-0.897,2-2,2
+                s-2-0.897-2-2s0.897-2,2-2S47,39.897,47,41z M49,10c-2.206,0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S51.206,10,49,10z"></path></svg></button></div><div class="global-graph-outer"><div class="global-graph-container" data-cfg="{&quot;drag&quot;:true,&quot;zoom&quot;:true,&quot;depth&quot;:-1,&quot;scale&quot;:0.9,&quot;repelForce&quot;:0.5,&quot;centerForce&quot;:0.2,&quot;linkDistance&quot;:30,&quot;fontSize&quot;:0.6,&quot;opacityScale&quot;:1,&quot;showTags&quot;:true,&quot;removeTags&quot;:[],&quot;focusOnHover&quot;:true,&quot;enableRadial&quot;:true}"></div></div></div><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-15" aria-expanded="true"><h3>目录</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-1" class="toc-content overflow"><li class="depth-0"><a href="#简述" data-for="简述">简述</a></li><li class="depth-1"><a href="#cast-attack-a-new-threat-posed-by-ghost-bits-in-java" data-for="cast-attack-a-new-threat-posed-by-ghost-bits-in-java">Cast Attack: A New Threat Posed by Ghost Bits in Java</a></li><li class="depth-2"><a href="#简介" data-for="简介">简介</a></li><li class="depth-2"><a href="#真实情况下的幽灵bit" data-for="真实情况下的幽灵bit">真实情况下的幽灵bit</a></li><li class="depth-2"><a href="#reference" data-for="reference">Reference</a></li><li class="depth-1"><a href="#bad-vibes---pwning-coding-agents-70-times-with-the-same-bugs" data-for="bad-vibes---pwning-coding-agents-70-times-with-the-same-bugs">Bad Vibes - Pwning Coding Agents 70 Times With The Same Bugs</a></li><li class="depth-2"><a href="#简介-1" data-for="简介-1">简介</a></li><li class="depth-2"><a href="#关于powershell的一点小tips" data-for="关于powershell的一点小tips">关于powershell的一点小tips</a></li><li class="depth-2"><a href="#其他绕过" data-for="其他绕过">其他绕过</a></li><li class="depth-1"><a href="#discovering-react2shell-javascripts-long-awaited-deserialization-flight-mare" data-for="discovering-react2shell-javascripts-long-awaited-deserialization-flight-mare">Discovering React2Shell: JavaScript’s Long-Awaited Deserialization Flight-mare</a></li><li class="overflow-end"></li></ul></div></div><footer class><script src="https://utteranc.es/client.js" repo="v9d0g/v9d0g.github.io" issue-term="og:title" theme="github-light" crossorigin="anonymous" async></script><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.2</a> © 2026</p><ul><li><a href="https://github.com/v9d0g">GitHub</a></li></ul></footer></div></div></body><script type="application/javascript">
+(function() {
+  const STYLE_ID = 'code-styler-dynamic-css'
+  const css = `
+figure[data-rehype-pretty-code-figure]:has([data-rehype-pretty-code-title]) {
+  border: 1px solid var(--lightgray);
+  border-radius: 5px;
+  overflow: hidden;
+}
+figure[data-rehype-pretty-code-figure]:has([data-rehype-pretty-code-title]) > [data-rehype-pretty-code-title] {
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  background: color-mix(in srgb, var(--lightgray) 50%, transparent);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  font-family: var(--codeFont);
+  color: var(--darkgray);
+  box-sizing: border-box;
+}
+figure[data-rehype-pretty-code-figure]:has([data-rehype-pretty-code-title]) > pre {
+  border: none;
+  border-radius: 0;
+  margin: 0;
+}
+figure[data-rehype-pretty-code-figure][data-fold] > [data-rehype-pretty-code-title] {
+  cursor: pointer;
+  position: relative;
+  padding-right: 1.8rem;
+  user-select: none;
+}
+figure[data-rehype-pretty-code-figure][data-fold] > [data-rehype-pretty-code-title]::after {
+  content: "▼";
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.65rem;
+  opacity: 0.6;
+  transition: transform 0.2s ease;
+}
+figure[data-rehype-pretty-code-figure][data-fold="collapsed"] > [data-rehype-pretty-code-title]::after {
+  content: "▶";
+}
+figure[data-rehype-pretty-code-figure][data-fold="collapsed"] > pre {
+  display: none;
+}
+[data-highlighted-line-id="info"] {
+  background-color: rgba(59, 130, 246, 0.12) !important;
+  border-left-color: #3b82f6 !important;
+}
+[data-highlighted-line-id="warn"] {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  border-left-color: #f59e0b !important;
+}
+[data-highlighted-line-id="error"] {
+  background-color: rgba(239, 68, 68, 0.12) !important;
+  border-left-color: #ef4444 !important;
+}
+[data-rehype-pretty-code-title] > a.code-styler-ref {
+  background: none;
+  padding: 0;
+}
+pre.no-line-numbers > code {
+  counter-reset: none;
+}
+pre.no-line-numbers > code > [data-line]::before {
+  display: none;
+}
+`
+
+  function injectStyle() {
+    if (document.getElementById(STYLE_ID)) return
+    const style = document.createElement('style')
+    style.id = STYLE_ID
+    style.textContent = css
+    document.head.appendChild(style)
+  }
+
+  function bindFoldEvents() {
+    const figures = document.querySelectorAll('figure[data-rehype-pretty-code-figure][data-fold]')
+    figures.forEach(fig => {
+      const title = fig.querySelector('[data-rehype-pretty-code-title]')
+      if (!title || title.dataset.codeStylerBound) return
+      title.dataset.codeStylerBound = 'true'
+      title.title = '点击折叠/展开'
+      const onClick = () => {
+        const isCollapsed = fig.getAttribute('data-fold') === 'collapsed'
+        fig.setAttribute('data-fold', isCollapsed ? 'true' : 'collapsed')
+      }
+      title.addEventListener('click', onClick)
+      window.addCleanup(() => title.removeEventListener('click', onClick))
+    })
+  }
+
+  document.addEventListener('nav', () => {
+    injectStyle()
+    bindFoldEvents()
+  })
+  injectStyle()
+  bindFoldEvents()
+})()
+</script><script type="application/javascript">function n(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.getElementsByClassName("callout-content")[0];if(!e)return;let l=t.classList.contains("is-collapsed");e.style.gridTemplateRows=l?"0fr":"1fr"}function c(){let t=document.getElementsByClassName("callout is-collapsible");for(let e of t){let l=e.getElementsByClassName("callout-title")[0],s=e.getElementsByClassName("callout-content")[0];if(!l||!s)continue;l.addEventListener("click",n),window.addCleanup(()=>l.removeEventListener("click",n));let o=e.classList.contains("is-collapsed");s.style.gridTemplateRows=o?"0fr":"1fr"}}document.addEventListener("nav",c);
+</script><script type="module">function f(i,e){if(!i)return;function r(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function t(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}i?.addEventListener("click",r),window.addCleanup(()=>i?.removeEventListener("click",r)),document.addEventListener("keydown",t),window.addCleanup(()=>document.removeEventListener("keydown",t))}function y(i){for(;i.firstChild;)i.removeChild(i.firstChild)}var h=class{constructor(e,r){this.container=e;this.content=r;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),r=this.onMouseMove.bind(this),t=this.onMouseUp.bind(this),o=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",r),document.addEventListener("mouseup",t),window.addEventListener("resize",o),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",r),()=>document.removeEventListener("mouseup",t),()=>window.removeEventListener("resize",o))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let r=this.createButton("+",()=>this.zoom(.1)),t=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(t),e.appendChild(o),e.appendChild(r),this.container.appendChild(e)}createButton(e,r){let t=document.createElement("button");return t.textContent=e,t.className="mermaid-control-button",t.addEventListener("click",r),window.addCleanup(()=>t.removeEventListener("click",r)),t}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}zoom(e){let r=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),t=this.content.getBoundingClientRect(),o=t.width/2,n=t.height/2,c=r-this.scale;this.currentPan.x-=o*c,this.currentPan.y-=n*c,this.scale=r,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){this.scale=1;let e=this.content.querySelector("svg");this.currentPan={x:e.getBoundingClientRect().width/2,y:e.getBoundingClientRect().height/2},this.updateTransform()}},C=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],E;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;E||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let r=E.default,t=new WeakMap;for(let n of e)t.set(n,n.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let a=t.get(s);a&&(s.innerHTML=a)}let n=C.reduce((s,a)=>(s[a]=window.getComputedStyle(document.documentElement).getPropertyValue(a),s),{}),c=document.documentElement.getAttribute("saved-theme")==="dark";r.initialize({startOnLoad:!1,securityLevel:"loose",theme:c?"dark":"base",themeVariables:{fontFamily:n["--codeFont"],primaryColor:n["--light"],primaryTextColor:n["--darkgray"],primaryBorderColor:n["--tertiary"],lineColor:n["--darkgray"],secondaryColor:n["--secondary"],tertiaryColor:n["--tertiary"],clusterBkg:n["--light"],edgeLabelBackground:n["--highlight"]}}),await r.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let n=0;n<e.length;n++){let v=function(){let g=l.querySelector("#mermaid-space"),m=l.querySelector(".mermaid-content");if(!m)return;y(m);let w=c.querySelector("svg").cloneNode(!0);m.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new h(g,m)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},c=e[n],s=c.parentElement,a=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(a),L=a.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),f(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript"></script><script type="application/javascript">
+              function initLightbox() {
+                const existingModal = document.querySelector('.lightbox-modal');
+                if (existingModal) existingModal.remove();
+
+                const modal = document.createElement('div');
+                modal.className = 'lightbox-modal';
+                
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'lightbox-close';
+                closeBtn.innerHTML = '×';
+                closeBtn.setAttribute('aria-label', 'Close lightbox');
+                
+                const img = document.createElement('img');
+                img.style.display = 'none';
+                
+                modal.appendChild(closeBtn);
+                modal.appendChild(img);
+                document.body.appendChild(modal);
+
+                let scale = 1;
+                let isDragging = false;
+                let startX = 0, startY = 0, currentX = 0, currentY = 0;
+
+                function resetTransform() {
+                  scale = 1;
+                  currentX = currentY = 0;
+                  img.style.transform = 'scale(1) translate(0px, 0px)';
+                }
+
+                // Zoom with wheel
+                img.addEventListener('wheel', (e) => {
+                  e.preventDefault();
+                  const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                  scale = Math.min(Math.max(scale + delta, 1), 5);
+                  img.style.transform = `scale(${scale}) translate(${currentX}px, ${currentY}px)`;
+                });
+
+                // Drag to move (with robust release handling)
+                img.addEventListener('mousedown', (e) => {
+                  if (scale <= 1) return;
+                  isDragging = true;
+                  startX = e.clientX - currentX;
+                  startY = e.clientY - currentY;
+                  img.style.cursor = 'grabbing';
+                  e.preventDefault();
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                  if (!isDragging) return;
+                  currentX = e.clientX - startX;
+                  currentY = e.clientY - startY;
+                  img.style.transform = `scale(${scale}) translate(${currentX}px, ${currentY}px)`;
+                });
+
+                document.addEventListener('mouseup', () => {
+                  if (isDragging) {
+                    isDragging = false;
+                    img.style.cursor = 'grab';
+                  }
+                });
+
+                img.addEventListener('mouseleave', () => {
+                  if (isDragging) {
+                    isDragging = false;
+                    img.style.cursor = 'grab';
+                  }
+                });
+
+                // Double click to reset
+                img.addEventListener('dblclick', resetTransform);
+
+                function openLightbox(imageSrc, imageAlt, originalImg) {
+                  img.src = imageSrc;
+                  img.alt = imageAlt || '';
+                  img.style.display = 'block';
+                  modal.classList.add('active');
+                  document.body.classList.add('lightbox-open');
+                  resetTransform();
+                }
+
+                function closeLightbox() {
+                  modal.classList.remove('active');
+                  document.body.classList.remove('lightbox-open');
+                  setTimeout(() => {
+                    img.style.display = 'none';
+                    img.src = '';
+                  }, 300);
+                }
+
+                closeBtn.addEventListener('click', closeLightbox);
+                modal.addEventListener('click', (e) => {
+                  if (e.target === modal) closeLightbox();
+                });
+                document.addEventListener('keydown', (e) => {
+                  if (e.key === 'Escape' && modal.classList.contains('active')) closeLightbox();
+                });
+
+                const wrappers = document.querySelectorAll('.lightbox-wrapper');
+                wrappers.forEach(wrapper => {
+                  wrapper.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const imgEl = wrapper.querySelector('.lightbox-image');
+                    if (imgEl) {
+                      const src = imgEl.getAttribute('data-src') || imgEl.src;
+                      const alt = imgEl.getAttribute('data-alt') || imgEl.alt;
+                      openLightbox(src, alt, imgEl);
+                    }
+                  });
+                });
+
+                if (window.addCleanup) {
+                  window.addCleanup(() => {
+                    if (modal.parentNode) modal.parentNode.removeChild(modal);
+                    document.body.classList.remove('lightbox-open');
+                  });
+                }
+              }
+
+              document.addEventListener('nav', initLightbox);
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initLightbox);
+              } else {
+                initLightbox();
+              }
+            </script><script src="../postscript.js" type="module"></script></html>
