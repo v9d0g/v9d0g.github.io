@@ -1,0 +1,32 @@
+{
+	"nodes":[
+		{"id":"a0b1c2d3e4f50001","type":"text","x":280,"y":-600,"width":420,"height":120,"color":"1","text":"# TOEIC 托业备考学习规划\n\n目标：系统备考，高效提分，冲刺 800+ / 900+"},
+		{"id":"g1h2i3j4k5l60001","type":"group","x":-760,"y":-400,"width":680,"height":680,"label":"第一阶段：基础夯实（第1-4周）","color":"4"},
+		{"id":"a0b1c2d3e4f50002","type":"text","x":-730,"y":-350,"width":300,"height":280,"color":"4","text":"## 词汇积累\n\n- 掌握托业核心词汇 3000+\n- 按场景分类记忆：\n  - 商务办公\n  - 人事招聘\n  - 财务金融\n  - 市场营销\n  - 交通出行\n  - 餐饮住宿\n- 每天 50 个新词 + 复习旧词\n- 工具：Anki / 墨墨背单词"},
+		{"id":"a0b1c2d3e4f50003","type":"text","x":-400,"y":-350,"width":300,"height":200,"color":"4","text":"## 语法复习\n\n- 时态（现在/过去/将来/完成）\n- 被动语态\n- 虚拟语气\n- 定语从句/名词性从句\n- 非谓语动词\n- 主谓一致\n- 介词搭配"},
+		{"id":"a0b1c2d3e4f50004","type":"text","x":-730,"y":-40,"width":300,"height":200,"color":"4","text":"## 听力基础\n\n- 精听商务场景对话\n- 熟悉英美澳加四种口音\n- 每天 30 分钟泛听（BBC/VOA）\n- 跟读训练纠正发音\n- 速度适应：1.0x → 1.2x → 1.5x"},
+		{"id":"a0b1c2d3e4f50005","type":"text","x":-400,"y":-40,"width":300,"height":200,"color":"4","text":"## 阅读基础\n\n- 长难句分析训练\n- 提升阅读速度\n- 积累商务文体：\n  - 邮件/备忘录\n  - 广告/通知\n  - 报告/图表\n- 每天精读 2 篇商务文章"},
+		{"id":"g1h2i3j4k5l60002","type":"group","x":0,"y":-400,"width":960,"height":680,"label":"第二阶段：专项突破（第5-8周）","color":"2"},
+		{"id":"a0b1c2d3e4f50006","type":"text","x":30,"y":-350,"width":440,"height":290,"color":"2","text":"## Part 1-4 听力专项\n\n**Part 1 照片描述（6题）**\n- 快速浏览选项，排除干扰项\n- 注意时态和主被动\n\n**Part 2 应答问题（25题）**\n- 抓住疑问词（Who/What/When/Where）\n- 警惕间接回答陷阱\n\n**Part 3 简短对话（39题）**\n- 先读题目，带着问题听\n- 注意说话人意图和态度\n\n**Part 4 简短独白（30题）**\n- 抓住主题句和关键信息\n- 留言/广播/演讲套路总结"},
+		{"id":"a0b1c2d3e4f50007","type":"text","x":500,"y":-350,"width":430,"height":290,"color":"2","text":"## Part 5-7 阅读专项\n\n**Part 5 不完整句子（30题）**\n- 词汇题 vs 语法题分类练习\n- 目标：每题 20 秒内完成\n\n**Part 6 完成段落（16题）**\n- 理解上下文逻辑关系\n- 插入句练习\n\n**Part 7 阅读理解（54题）**\n- 单篇 / 双篇 / 三篇阅读\n- 定位关键词技巧\n- 推断题和同义替换训练\n- 时间分配：每篇 1-2 分钟"},
+		{"id":"a0b1c2d3e4f50008","type":"text","x":30,"y":-30,"width":440,"height":200,"color":"2","text":"## 高频考点总结\n\n- 商务邮件常用表达\n- 会议/电话用语\n- 图表描述词汇\n- 易混淆词辨析\n- 固定搭配 & 短语动词\n- 建立个人错题本"},
+		{"id":"a0b1c2d3e4f50009","type":"text","x":500,"y":-30,"width":430,"height":200,"color":"2","text":"## 做题策略\n\n- 听力：预读选项 → 听关键词 → 快速选择\n- 阅读：先看题目 → 定位原文 → 对比选项\n- 时间管理：\n  - 听力 45 分钟（固定）\n  - 阅读 75 分钟（自主分配）\n  - Part 5: 10 min / Part 6: 10 min / Part 7: 55 min"},
+		{"id":"g1h2i3j4k5l60003","type":"group","x":-760,"y":360,"width":680,"height":460,"label":"第三阶段：模考冲刺（第9-12周）","color":"5"},
+		{"id":"a0b1c2d3e4f50010","type":"text","x":-730,"y":410,"width":300,"height":380,"color":"5","text":"## 全真模考\n\n- 每周 2 套完整模拟题\n- 严格计时（2 小时）\n- 模拟真实考场环境\n- 推荐材料：\n  - ETS 官方真题集\n  - 新托业全真模拟 1000 题\n  - 小站托业 / 新东方托业\n\n## 分数对照\n| 正确数 | 预估分 |\n|--------|--------|\n| 90/100 | 450-495 |\n| 80/100 | 380-440 |\n| 70/100 | 320-380 |"},
+		{"id":"a0b1c2d3e4f50011","type":"text","x":-400,"y":410,"width":300,"height":380,"color":"5","text":"## 查漏补缺\n\n- 分析每套模考错题\n- 按题型统计正确率\n- 针对弱项加强训练\n- 总结常见陷阱\n\n## 考前一周\n\n- 回顾所有错题笔记\n- 不再刷新题，以复习为主\n- 保持每天听力输入\n- 调整作息，保证睡眠\n- 准备考试证件和文具"},
+		{"id":"g1h2i3j4k5l60004","type":"group","x":0,"y":360,"width":960,"height":460,"label":"学习资源 & 每日计划","color":"6"},
+		{"id":"a0b1c2d3e4f50012","type":"text","x":30,"y":410,"width":440,"height":380,"color":"6","text":"## 推荐学习资源\n\n**教材**\n- ETS 官方指南 (Official Guide)\n- 新托业全真模拟 1000 题\n- 托业词汇红宝书\n\n**APP & 网站**\n- Anki（词汇记忆）\n- 每日英语听力（听力训练）\n- Quizlet（闪卡复习）\n- 小站托业（真题练习）\n\n**播客 & 视频**\n- BBC 6 Minute English\n- Business English Pod\n- TED Talks（商务相关）"},
+		{"id":"a0b1c2d3e4f50013","type":"text","x":500,"y":410,"width":430,"height":380,"color":"6","text":"## 每日学习计划（2-3小时）\n\n**早晨（30 min）**\n- 背诵 50 个新词\n- 复习昨日词汇\n\n**中午（30 min）**\n- 泛听英语播客/新闻\n- 不求全懂，培养语感\n\n**晚上（60-90 min）**\n- 专项练习（听力或阅读）\n- 精听/精读 + 笔记\n- 错题分析 & 整理\n\n**睡前（15 min）**\n- Anki 每日复习\n- 回顾当日学习要点"},
+		{"id":"a0b1c2d3e4f50014","type":"text","x":280,"y":900,"width":420,"height":120,"color":"3","text":"## 考试信息\n\n- 题量：200 题（听力 100 + 阅读 100）\n- 时长：2 小时（听力 45 min + 阅读 75 min）\n- 满分：990 分（听力 495 + 阅读 495）"}
+	],
+	"edges":[
+		{"id":"e0f1a2b3c4d50001","fromNode":"a0b1c2d3e4f50001","fromSide":"bottom","toNode":"g1h2i3j4k5l60001","toSide":"top","toEnd":"arrow","label":"开始"},
+		{"id":"e0f1a2b3c4d50002","fromNode":"a0b1c2d3e4f50001","fromSide":"bottom","toNode":"g1h2i3j4k5l60002","toSide":"top","toEnd":"arrow","label":"进阶"},
+		{"id":"e0f1a2b3c4d50003","fromNode":"g1h2i3j4k5l60001","fromSide":"right","toNode":"g1h2i3j4k5l60002","toSide":"left","toEnd":"arrow","color":"2","label":"第5周进入"},
+		{"id":"e0f1a2b3c4d50004","fromNode":"g1h2i3j4k5l60001","fromSide":"bottom","toNode":"g1h2i3j4k5l60003","toSide":"top","toEnd":"arrow","color":"5","label":"第9周进入"},
+		{"id":"e0f1a2b3c4d50005","fromNode":"g1h2i3j4k5l60002","fromSide":"bottom","toNode":"g1h2i3j4k5l60003","toSide":"top","toEnd":"arrow","color":"5","label":"第9周进入"},
+		{"id":"e0f1a2b3c4d50006","fromNode":"g1h2i3j4k5l60002","fromSide":"bottom","toNode":"g1h2i3j4k5l60004","toSide":"top","toEnd":"arrow","label":"全程使用"},
+		{"id":"e0f1a2b3c4d50007","fromNode":"g1h2i3j4k5l60003","fromSide":"bottom","toNode":"a0b1c2d3e4f50014","toSide":"left","toEnd":"arrow","color":"3","label":"上考场!"},
+		{"id":"e0f1a2b3c4d50008","fromNode":"g1h2i3j4k5l60004","fromSide":"bottom","toNode":"a0b1c2d3e4f50014","toSide":"right","toEnd":"arrow"}
+	]
+}

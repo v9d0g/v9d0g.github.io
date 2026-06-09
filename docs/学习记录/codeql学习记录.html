@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="zh" dir="ltr"><head><title>codeql学习记录</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted Grotesk:wght@400;700&amp;family=Source Sans Pro:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="V9d0g"/><meta property="og:title" content="codeql学习记录"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="codeql学习记录"/><meta name="twitter:description" content="前言 工作内容更倾向于代码审计，并且攻防相关的内容也和传统的hw红蓝对抗有较大差距，为了能够在代码审计方向做出较好成果以及在开源项目中挖掘高质量漏洞，CodeQL毋庸置疑是一个十分值得学习的工具。 本文旨在分享在学习过程中遇到的难点【没有写的部分可能表示理解难度不大 就是忘了】，并根据官方文档调整了下学习顺序，由于CodeQL持续更新，且市面上通用大模型对其QL的编写并没有像编程语言那样能根据自然语言编写出合理且可行的QL语句，于是便系统性的学习理解QL语法，欢迎讨论指正。 环境配置 codeql二进制下载 安装W:\environments\codeql\codeql-cli 配置环境变量 ..."/><meta property="og:description" content="前言 工作内容更倾向于代码审计，并且攻防相关的内容也和传统的hw红蓝对抗有较大差距，为了能够在代码审计方向做出较好成果以及在开源项目中挖掘高质量漏洞，CodeQL毋庸置疑是一个十分值得学习的工具。 本文旨在分享在学习过程中遇到的难点【没有写的部分可能表示理解难度不大 就是忘了】，并根据官方文档调整了下学习顺序，由于CodeQL持续更新，且市面上通用大模型对其QL的编写并没有像编程语言那样能根据自然语言编写出合理且可行的QL语句，于是便系统性的学习理解QL语法，欢迎讨论指正。 环境配置 codeql二进制下载 安装W:\environments\codeql\codeql-cli 配置环境变量 ..."/><meta property="og:image:alt" content="前言 工作内容更倾向于代码审计，并且攻防相关的内容也和传统的hw红蓝对抗有较大差距，为了能够在代码审计方向做出较好成果以及在开源项目中挖掘高质量漏洞，CodeQL毋庸置疑是一个十分值得学习的工具。 本文旨在分享在学习过程中遇到的难点【没有写的部分可能表示理解难度不大 就是忘了】，并根据官方文档调整了下学习顺序，由于CodeQL持续更新，且市面上通用大模型对其QL的编写并没有像编程语言那样能根据自然语言编写出合理且可行的QL语句，于是便系统性的学习理解QL语法，欢迎讨论指正。 环境配置 codeql二进制下载 安装W:\environments\codeql\codeql-cli 配置环境变量 ..."/><meta property="twitter:domain" content="v9d0g.github.io"/><meta property="og:url" content="https://v9d0g.github.io/学习记录/codeql学习记录"/><meta property="twitter:url" content="https://v9d0g.github.io/学习记录/codeql学习记录"/><link rel="icon" href="../static/icon.png"/><meta name="description" content="前言 工作内容更倾向于代码审计，并且攻防相关的内容也和传统的hw红蓝对抗有较大差距，为了能够在代码审计方向做出较好成果以及在开源项目中挖掘高质量漏洞，CodeQL毋庸置疑是一个十分值得学习的工具。 本文旨在分享在学习过程中遇到的难点【没有写的部分可能表示理解难度不大 就是忘了】，并根据官方文档调整了下学习顺序，由于CodeQL持续更新，且市面上通用大模型对其QL的编写并没有像编程语言那样能根据自然语言编写出合理且可行的QL语句，于是便系统性的学习理解QL语法，欢迎讨论指正。 环境配置 codeql二进制下载 安装W:\environments\codeql\codeql-cli 配置环境变量 ..."/><meta name="generator" content="Quartz"/><link href="../index.css" rel="stylesheet" type="text/css" spa-preserve/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  padding: 2rem;
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiVzpcXGJsb2dcXHY5ZDBnLmdpdGh1Yi5pb1xccXVhcnR6XFxjb21wb25lbnRzXFxzdHlsZXMiLCJzb3VyY2VzIjpbIm1lcm1haWQuaW5saW5lLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUdGO0VBQ0U7OztBQUtGO0VBQ0U7RUFDQTs7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTs7QUFHRjtFQUNFO0VBQ0E7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7O0FBSUY7RUFDRTtFQUNBO0VBQ0EiLCJzb3VyY2VzQ29udGVudCI6WyIuZXhwYW5kLWJ1dHRvbiB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBwYWRkaW5nOiAwLjRyZW07XG4gIG1hcmdpbjogMC4zcmVtO1xuICByaWdodDogMDsgLy8gTk9URTogcmlnaHQgd2lsbCBiZSBzZXQgaW4gbWVybWFpZC5pbmxpbmUudHNcbiAgY29sb3I6IHZhcigtLWdyYXkpO1xuICBib3JkZXItY29sb3I6IHZhcigtLWRhcmspO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gIGJvcmRlcjogMXB4IHNvbGlkO1xuICBib3JkZXItcmFkaXVzOiA1cHg7XG4gIG9wYWNpdHk6IDA7XG4gIHRyYW5zaXRpb246IDAuMnM7XG5cbiAgJiA+IHN2ZyB7XG4gICAgZmlsbDogdmFyKC0tbGlnaHQpO1xuICAgIGZpbHRlcjogY29udHJhc3QoMC4zKTtcbiAgfVxuXG4gICY6aG92ZXIge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBib3JkZXItY29sb3I6IHZhcigtLXNlY29uZGFyeSk7XG4gIH1cblxuICAmOmZvY3VzIHtcbiAgICBvdXRsaW5lOiAwO1xuICB9XG59XG5cbnByZSB7XG4gICY6aG92ZXIgPiAuZXhwYW5kLWJ1dHRvbiB7XG4gICAgb3BhY2l0eTogMTtcbiAgICB0cmFuc2l0aW9uOiAwLjJzO1xuICB9XG59XG5cbiNtZXJtYWlkLWNvbnRhaW5lciB7XG4gIHBvc2l0aW9uOiBmaXhlZDtcbiAgY29udGFpbjogbGF5b3V0O1xuICB6LWluZGV4OiA5OTk7XG4gIGxlZnQ6IDA7XG4gIHRvcDogMDtcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IDEwMHZoO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICBkaXNwbGF5OiBub25lO1xuICBiYWNrZHJvcC1maWx0ZXI6IGJsdXIoNHB4KTtcbiAgYmFja2dyb3VuZDogcmdiYSgwLCAwLCAwLCAwLjUpO1xuXG4gICYuYWN0aXZlIHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIH1cblxuICAmID4gI21lcm1haWQtc3BhY2Uge1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICAgIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgdG9wOiA1MCU7XG4gICAgbGVmdDogNTAlO1xuICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKC01MCUsIC01MCUpO1xuICAgIGhlaWdodDogODB2aDtcbiAgICB3aWR0aDogODB2dztcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuXG4gICAgJiA+IC5tZXJtYWlkLWNvbnRlbnQge1xuICAgICAgcGFkZGluZzogMnJlbTtcbiAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgIHRyYW5zZm9ybS1vcmlnaW46IDAgMDtcbiAgICAgIHRyYW5zaXRpb246IHRyYW5zZm9ybSAwLjFzIGVhc2U7XG4gICAgICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgICAgIG1pbi1oZWlnaHQ6IDIwMHB4O1xuICAgICAgbWluLXdpZHRoOiAyMDBweDtcblxuICAgICAgcHJlIHtcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBib3JkZXI6IG5vbmU7XG4gICAgICB9XG5cbiAgICAgIHN2ZyB7XG4gICAgICAgIG1heC13aWR0aDogbm9uZTtcbiAgICAgICAgaGVpZ2h0OiBhdXRvO1xuICAgICAgfVxuICAgIH1cblxuICAgICYgPiAubWVybWFpZC1jb250cm9scyB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICBib3R0b206IDIwcHg7XG4gICAgICByaWdodDogMjBweDtcbiAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICBnYXA6IDhweDtcbiAgICAgIHBhZGRpbmc6IDhweDtcbiAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICBib3JkZXItcmFkaXVzOiA2cHg7XG4gICAgICBib3gtc2hhZG93OiAwIDJweCA0cHggcmdiYSgwLCAwLCAwLCAwLjEpO1xuICAgICAgei1pbmRleDogMjtcblxuICAgICAgLm1lcm1haWQtY29udHJvbC1idXR0b24ge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgd2lkdGg6IDMycHg7XG4gICAgICAgIGhlaWdodDogMzJweDtcbiAgICAgICAgcGFkZGluZzogMDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHQpO1xuICAgICAgICBjb2xvcjogdmFyKC0tZGFyayk7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBmb250LXNpemU6IDE2cHg7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1ib2R5Rm9udCk7XG4gICAgICAgIHRyYW5zaXRpb246IGFsbCAwLjJzIGVhc2U7XG5cbiAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgfVxuXG4gICAgICAgICY6YWN0aXZlIHtcbiAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoMXB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgIC8vIFN0eWxlIHRoZSByZXNldCBidXR0b24gZGlmZmVyZW50bHlcbiAgICAgICAgJjpudGgtY2hpbGQoMikge1xuICAgICAgICAgIHdpZHRoOiBhdXRvO1xuICAgICAgICAgIHBhZGRpbmc6IDAgMTJweDtcbiAgICAgICAgICBmb250LXNpemU6IDE0cHg7XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdfQ== */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" spa-preserve/><style>
+/* Lightbox Image Styles */
+.lightbox-wrapper {
+  display: block;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  margin: 1em 0;
+}
+
+.lightbox-wrapper:hover {
+  transform: scale(1.02);
+}
+
+.lightbox-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.lightbox-image:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal/Lightbox Overlay */
+.lightbox-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.lightbox-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox-modal img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transform: scale(0.8);
+  transition: transform 0.1s ease-out;
+  cursor: grab;
+  user-select: none;
+}
+
+.lightbox-modal.active img {
+  transform: scale(1);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  z-index: 1001;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.lightbox-close:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+body.lightbox-open {
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .lightbox-modal img {
+    max-width: 95%;
+    max-height: 95%;
+  }
+
+  .lightbox-close {
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    width: 35px;
+    height: 35px;
+  }
+}
+            </style><script src="../prescript.js" type="application/javascript" spa-preserve></script><script type="application/javascript" spa-preserve>const fetchData = fetch("../static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://v9d0g.github.io/index.xml"/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta property="og:image" content="https://v9d0g.github.io/学习记录/codeql学习记录-og-image.webp"/><meta property="og:image:url" content="https://v9d0g.github.io/学习记录/codeql学习记录-og-image.webp"/><meta name="twitter:image" content="https://v9d0g.github.io/学习记录/codeql学习记录-og-image.webp"/><meta property="og:image:type" content="image/.webp"/></head><body data-slug="学习记录/codeql学习记录"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href="..">V9d0g</a></h2><div class="spacer mobile-only"></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>搜索</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="搜索些什么" placeholder="搜索些什么"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="暗色模式"><title>暗色模式</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="亮色模式"><title>亮色模式</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="阅读模式"><title>阅读模式</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><div class="explorer" data-behavior="link" data-collapsed="collapsed" data-savestate="true" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a,b)=>!a.isFolder&amp;&amp;!b.isFolder||a.isFolder&amp;&amp;b.isFolder?a.displayName.localeCompare(b.displayName,void 0,{numeric:!0,sensitivity:\&quot;base\&quot;}):!a.isFolder&amp;&amp;b.isFolder?1:-1&quot;,&quot;filterFn&quot;:&quot;node=>node.slugSegment!==\&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;node=>node&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-34"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>探索</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div id="explorer-34" class="explorer-content" aria-expanded="false" role="group"><ul class="explorer-ul overflow" id="list-0"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#"></a></li></template><template id="template-folder"><li><div class="folder-container"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../学习记录/">学习记录</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>codeql学习记录</a></div></nav><h1 class="article-title">codeql学习记录</h1><p show-comma="true" class="content-meta"><time datetime="2025-11-02T16:00:00.000Z">2025年11月03日</time><span>19分钟阅读</span></p><ul class="tags"><li><a href="../tags/代码审计" class="internal tag-link">代码审计</a></li><li><a href="../tags/CodeQL" class="internal tag-link">CodeQL</a></li><li><a href="../tags/持续更新中" class="internal tag-link">持续更新中</a></li><li><a href="../tags/分享" class="internal tag-link">分享</a></li></ul></div></div><article class="popover-hint"><h1 id="前言">前言<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#前言" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p>工作内容更倾向于代码审计，并且攻防相关的内容也和传统的hw红蓝对抗有较大差距，为了能够在代码审计方向做出较好成果以及在开源项目中挖掘高质量漏洞，CodeQL毋庸置疑是一个十分值得学习的工具。</p>
+<p>本文旨在分享在学习过程中遇到的难点【没有写的部分可能表示理解难度不大 <del><em>就是忘了</em></del>】，并根据官方文档调整了下学习顺序，由于CodeQL持续更新，且市面上通用大模型对其QL的编写并没有像编程语言那样能根据自然语言编写出合理且可行的QL语句，于是便系统性的学习理解QL语法，欢迎讨论指正。</p>
+<h1 id="环境配置">环境配置<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#环境配置" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p><a href="https://github.com/github/codeql-cli-binaries/releases" class="external">codeql二进制下载<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<p>安装<code>W:\environments\codeql\codeql-cli</code>
+配置环境变量
+vscode配置可执行文件路径
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../Pasted-image-20251105111717.png" width="auto" height="auto" alt class="lightbox-image" data-src="../Pasted-image-20251105111717.png" data-alt loading="lazy"/></div></p>
+<p>下载sdk，并放置在cli的同级目录下</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">git</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> clone</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> https://github.com/github/codeql.git</span></span></code></pre></figure>
+<p>目录结构</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">Directory</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> of</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> W:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\e</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">nvironments</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\c</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">odeql</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">codeql-cli#</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> 二进制执行文件</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">codeql-src#</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> SDK</span></span></code></pre></figure>
+<p>测试使用
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../Pasted-image-20251105112102.png" width="auto" height="auto" alt class="lightbox-image" data-src="../Pasted-image-20251105112102.png" data-alt loading="lazy"/></div></p>
+<h2 id="创建数据库">创建数据库<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#创建数据库" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;"># --language 指定代码语言</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;"># --command 构建命令</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;"># --source-root 源代码路径</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">codeql</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> database</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> create</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> &lt;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">targetPat</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">h</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">></span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> --language=</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;java&quot;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> --command=</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;mvn clean install --file pom.xml&quot;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> --source-root=</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">codePath</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">></span></span></code></pre></figure>
+<p>对特定数据库执行特定查询</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">codeql</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> query</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> run</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> example.ql</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> -d</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> ..</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\d</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">atabases</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\p</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">ython</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\d</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">b</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\</span></span></code></pre></figure>
+<p>打开指定代码文件在当前vscode编辑窗口，点击AST VIEWER即可查看ast语法树</p>
+<h1 id="使用">使用<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#使用" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<h2 id="语法">语法<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#语法" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<blockquote class="callout note" data-callout="note">
+<div class="callout-title">
+                  <div class="callout-icon"></div>
+                  <div class="callout-title-inner"><p>参考文档 </p></div>
+                  
+                </div>
+<div class="callout-content">
+<p><a href="https://codeql.github.com/docs/" class="external">CodeQL 文档<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<p><a href="https://codeql.github.com/docs/ql-language-reference" class="external">QL语法参考<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<p><a href="https://codeql.github.com/codeql-standard-libraries" class="external">QL标准库<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<p><a href="https://www.ctfiot.com/215157.html" class="external">CodeQL入门<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<p><a href="https://blog.z3ratu1.top/CodeQL%E5%9D%90%E7%89%A2%E8%AE%B0%E5%BD%95.html" class="external">很形象的CodeQL学习记录<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<p><a href="https://codeql.github.com/codeql-query-help/" class="external">教程文档<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+</div>
+</blockquote>
+<p>QL的语法是基于<a href="https://zh.wikipedia.org/wiki/Datalog" class="external">Datalog<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>且具有面向对象(Object orientation)的特性，下面将根据官方文档中的语法参考来分享个人理解的QL语法</p>
+<h3 id="查询queries">查询(Queries)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#查询queries" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><a href="https://codeql.github.com/docs/ql-language-reference/queries/" class="external">Refer<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>
+QL中基础的查询语句</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sql" data-theme="github-light github-dark"><code data-language="sql" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">import </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">/* ... CodeQL libraries or modules ... */</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">/* ... Optional, define CodeQL classes and predicates ... */</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">from</span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;"> /* ... variable declarations ... */</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">where</span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;"> /* ... logical formula ... */</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">select</span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;"> /* ... expressions ... */</span></span></code></pre></figure>
+<p>其中<code>select</code>、<code>from</code>、<code>where</code>跟sql中的相似，最终会以你查询的字段为列呈现
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251127144520.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251127144520.png" data-alt loading="lazy"/></div></p>
+<p>而<code>import</code>是表示导入哪种语言的基础依赖库或者模块</p>
+<p>简单来说，会写sql就学得会ql</p>
+<h3 id="变量variables">变量(Variables)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#变量variables" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><a href="https://codeql.github.com/docs/ql-language-reference/variables/" class="external">Refer<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>
+QL语言区别于编程语言</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="python" data-theme="github-light github-dark"><code data-language="python" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">n </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 2</span></span></code></pre></figure>
+<p>形如上述内容，在编程语言中属于<strong>赋值</strong>操作，但在QL中属于判断语句</p>
+<p>变量的名称定义和编程语言类似（以字母开头</p>
+<h3 id="谓词predicates">谓词(Predicates)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#谓词predicates" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><a href="https://codeql.github.com/docs/ql-language-reference/predicates/" class="external">Refer<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>
+QL提供了一种别样的函数实现或者说是逻辑关系
+在不同的语言中，对函数的定义和模板都大相径庭
+python</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="python" data-theme="github-light github-dark"><code data-language="python" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">funcName(params):</span></span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">	...</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">	return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> result</span></span></code></pre></figure>
+<p>java</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">public</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> static</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> void</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> funcName</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(type params){</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">	...</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">	return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> result</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<p>这些逻辑关系都存在 <strong>名称</strong>、<strong>参数</strong>、<strong>返回值</strong></p>
+<p>这种逻辑关系在ql中也可以实现</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">predicate </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">funcName</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(type params){</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">type </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">funcName</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(type params){</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">	result</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">results</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<p><code>predicate</code>是没有结果返回的谓词关键字，类比java中<em>public static <code>void</code></em>
+如果又返回值，那么关键字替换为对应的类型</p>
+<p>比如，实现一个逻辑关系——传入一个整型参数<code>i</code>，如果这个整数小于10，那么返回<code>True</code></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">bindingset[i]</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">boolean</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> isUnderTen</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i){</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i in [1..</span><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">9</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">]</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    then result</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">true</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    else</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> result</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">false</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">select </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">isUnderTen</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">5</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">),</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">isUnderTen</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">15</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">)</span></span></code></pre></figure>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251127150223.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251127150223.png" data-alt loading="lazy"/></div>
+这段谓词可以类比java代码：</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">public</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> static</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> boolean</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> isUnderTen</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">>=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> &amp;&amp;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 9</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<p>其中<code>bindingset</code>关键字，个人理解是约束输入参数
+官方文档中，将<code>bindingset</code>描述为用于一组受限的参数
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251127151621.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251127151621.png" data-alt loading="lazy"/></div>
+有待进一步分析其应用（<del>我没能理解文档中的具体意思</del>），经过实践后发现，如果不携带该关键词，会有以下报错，无法在<code>select</code>语句中使用</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">/*</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">  Compilation errors:</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">  ERROR: &quot;i&quot; is not bound to a value.</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">*/</span></span></code></pre></figure>
+<h3 id="表达式expressions">表达式(Expressions)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#表达式expressions" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><a href="https://codeql.github.com/docs/ql-language-reference/expressions/" class="external">Refer<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>
+可以使用</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">[1..</span><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">3</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">]</span></span></code></pre></figure>
+<p>来表示一个整数的范围，表示集合列表也同理</p>
+<h3 id="公式formulas">公式(Formulas)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#公式formulas" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><a href="https://codeql.github.com/docs/ql-language-reference/formulas/" class="external">Refer<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<h3 id="注解annotations">注解(Annotations)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#注解annotations" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><a href="https://codeql.github.com/docs/ql-language-reference/annotations/#annotations" class="external">Refer<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>
+涵盖</p>
+<pre><code>abstract
+private
+override
+</code></pre>
+<p>等关键字</p>
+<h3 id="类型types">类型(Types)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#类型types" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><a href="https://codeql.github.com/docs/ql-language-reference/types/" class="external">Refer<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>
+QL提供了类似其他高级语言支持的数据类型</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">float</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">string</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">boolean</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 此类型包含日期（以及可选的时间）</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">date</span></span></code></pre></figure>
+<p>并且提供了很多类型的内置操作，有点类似于<code>java</code>，这点不仅仅体现在其类型的内置方法
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251127152746.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251127152746.png" data-alt loading="lazy"/></div></p>
+<p>QL提供了类的使用，其特性也一致包括（继承、多态、封装），但是<strong>在QL中，类并不“创建”新对象，它只是表示一个逻辑属性。如果一个值满足某个逻辑属性，那么它就属于该类。</strong>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251127162527.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251127162527.png" data-alt loading="lazy"/></div></p>
+<p>跟<code>java</code>不同：</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">class</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> 'xxxx'</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> must</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> extend</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> or instanceof</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> at</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> least</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> one</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> type</span></span></code></pre></figure>
+<p><strong>定义一个类必须让其继承或者实例一个基类</strong></p>
+<p>以经典的有关类的例子举例</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> Animal</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> extends</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> string {</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">    Animal</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">() {</span></span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">        this</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> =</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot;Animal&quot;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    string </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">bark</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">() {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">        result </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> this</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">toString</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot; barks.&quot;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line> </span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> Dog</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> extends</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> Animal</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> {</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">    Dog</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">() {</span></span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">        this</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> =</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot;Dog&quot;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    override string </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">bark</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">() {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">        result </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> this</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">toString</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot; barks woof.&quot;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">from Animal a</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">select a,a.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">bark</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">()</span></span></code></pre></figure>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251127160058.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251127160058.png" data-alt loading="lazy"/></div></p>
+<p>BUT！
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251127161557.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251127161557.png" data-alt loading="lazy"/></div>
+这是为什么呢，按照我们的直觉，应该会输出<code>Dog barks woof.</code></p>
+<p>回到刚刚说的</p>
+<p><em>在QL中，类并不“创建”新对象，它只是表示一个逻辑属性。如果一个值满足某个逻辑属性，那么它就属于该类</em></p>
+<p>上述代码中：
+如果数据库中存在一个字符串值 <code>&quot;Animal&quot;</code>，  那么它属于 <code>Animal</code> 这个逻辑类，同理
+如果数据库中存在一个字符串值 <code>&quot;Dog&quot;</code>，  那么它属于 <code>Dog</code> 这个逻辑类也属于<code>Animal</code> 这个逻辑类</p>
+<p>相当于，在<code>string</code>的大盒子【包含了所有字符串】中，放入了一个小盒子<code>Animal</code>【只有字符串=<code>&quot;Animal&quot;</code>的内容才能放进去】，然后我们从<code>string</code>大盒子中，复制了一份<code>Animal</code>放进了<code>Animal</code>盒子</p>
+<p>现在<code>Animal</code>盒子里面，只有一个<code>Animal</code>值</p>
+<p>然后我们在<code>Animal</code>盒子中，再放入了一个名为<code>Dog</code>的盒子【只有字符串=<code>&quot;Dog&quot;</code>的内容才能放进去】，由于<code>Animal</code>盒子里面只有一个值，且不满足<code>Dog</code>盒子的要求，所以<code>Dog</code>盒子就是空的</p>
+<p>用图片形象的解释：
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251127165513.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251127165513.png" data-alt loading="lazy"/></div>
+那要如何才能输出我们想要的结果呢</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sql" data-theme="github-light github-dark"><code data-language="sql" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">Dog barks woof.</span></span></code></pre></figure>
+<p>在定义Animal时候，把Dog也包含在内
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251127165708.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251127165708.png" data-alt loading="lazy"/></div></p>
+<p>也就是说，其实查询的是<a href="https://zh.wikipedia.org/wiki/%E7%AC%9B%E5%8D%A1%E5%84%BF%E7%A7%AF" class="external">笛卡尔积<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<p><strong>谨记：不要先入为主的带入JAVA等语言的类功能，QL只是集合定义，不包含实例化</strong></p>
+<p>ql中也支持类型的强制转换</p>
+<h4 id="method">Method<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#method" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<h3 id="模块modules">模块(Modules)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#模块modules" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><a href="https://codeql.github.com/docs/ql-language-reference/modules/" class="external">Refer<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>
+模块是以关键字<code>module</code>定义</p>
+<p>可以通过在ql文件中显式定义，同时每个ql、qll(QL库文件)都隐式的定义了于文件名相同模块
+<em>文件名中从空格会被替换成<code>_</code></em></p>
+<p>一般我们使用的ql文件可以被认为是一个查询模块</p>
+<p>而导入的qll文件则是包含了显式模块的参数化模块</p>
+<p>参数化模块需要使用<code>&lt;></code>包裹参数，例如文档中例子</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">module</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> M</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">&lt;transformer/1 first, transformer/1 second> {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  bindingset[x]</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  int applyBoth(int x) {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    result = second(first(x))</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<p>传入了两个参数<code>first</code>、<code>second</code></p>
+<p>模块的导入和其他高级语言类似</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="python" data-theme="github-light github-dark"><code data-language="python" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> moduleXXX</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> moduleYYY </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">as</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> y</span></span></code></pre></figure>
+<h4 id="node">Node<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#node" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h4>
+<p>节点，在QL数据流中十分重要的一个类，其Direct supertypes为newtype类型的<code>TNode</code>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251129141829.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251129141829.png" data-alt loading="lazy"/></div>
+节点可以是表达式、参数，或者隐式创建的可变参数数组</p>
+<h3 id="签名signature">签名(signature)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#签名signature" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><a href="https://codeql.github.com/docs/ql-language-reference/signatures/" class="external">Refer<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<p>大致理解成关键字</p>
+<p>其中需要注意的是<code>Module Signature</code>—模块签名，类似于java中的接口定义
+举个例子：
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251128160534.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251128160534.png" data-alt loading="lazy"/></div>
+这是一个签名模块，把他类比成一个java的<code>interface</code></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">public</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> interface</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> ConfigSig</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    void</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> isSource</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(Node </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">source</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    void</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> isSink</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(Node </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">sink</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    ...</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<p>我们实现这个模块签名的方式和实现java中接口的方式类似，使用关键字<code>implements</code></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">module</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> MyFlowConfiguration</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> implements DataFlow::ConfigSig {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  predicate isSource(DataFlow::Node source) {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    ...</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  }</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  predicate </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">isSink</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(DataFlow</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">::</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">Node sink) {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    ...</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<h3 id="别名alias">别名(Alias)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#别名alias" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><a href="https://codeql.github.com/docs/ql-language-reference/aliases/" class="external">Refer<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<h2 id="环境搭建">环境搭建<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#环境搭建" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>使用<a href="https://github.com/WebGoat/WebGoat" class="external">webgoat靶场<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>测试</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">git</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> clone</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> https://github.com/WebGoat/WebGoat.git</span></span></code></pre></figure>
+<p>jdk版本</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">java</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> -version</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">openjdk</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> version</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot;25.0.1&quot;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> 2025-10-21</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">OpenJDK</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> Runtime</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> Environment</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (build </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">25.0.1+8-27</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">OpenJDK</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> 64-Bit</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> Server</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> VM</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (build </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">25.0.1+8-27,</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> mixed</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> mode,</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> sharing</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">)</span></span></code></pre></figure>
+<p>创建数据库</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">codeql</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> database</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> create</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> W:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\\</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">environments</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\\</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">codeql</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\\</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">codeql-databases</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\\</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">WebGoat</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> --language=</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;java&quot;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">  --command=</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;mvn clean install --file pom.xml&quot;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> --source-root=W:\\coding-review\\WebGoat</span></span></code></pre></figure>
+<p>可能会耗时比较久
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251127113055.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251127113055.png" data-alt loading="lazy"/></div>
+显示<code>Successfully created database at...</code>即可</p>
+<p>进入vscode 打开源码 <code>W:\\coding-review\\WebGoat</code>
+选择ql数据库 <code>W:\\environments\\codeql\\codeql-databases\\WebGoat</code></p>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251127113252.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251127113252.png" data-alt loading="lazy"/></div></p>
+<p>创建query</p>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251127114409.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251127114409.png" data-alt loading="lazy"/></div></p>
+<p><strong>报错信息解决</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="sh" data-theme="github-light github-dark"><code data-language="sh" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">Failed</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> to</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> run</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> query:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> Could</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> not</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> resolve</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> library</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> path</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> for</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> W:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\c</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">oding-review</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\W</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">ebGoat</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\c</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">odeql-custom-queries-java</span></span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">Error:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> Failed</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> to</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> run</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> query:</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> Could</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> not</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> resolve</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> library</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> path</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> for</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> W:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\c</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">oding-review</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\W</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">ebGoat</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\c</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">odeql-custom-queries-java</span></span></code></pre></figure>
+<p>删除自定义查询文件夹，再次创建查询</p>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251127114605.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251127114605.png" data-alt loading="lazy"/></div></p>
+<p>成功运行</p>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251127114656.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251127114656.png" data-alt loading="lazy"/></div></p>
+<h2 id="具体漏洞类型-ssrf">具体漏洞类型-SSRF<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#具体漏洞类型-ssrf" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>以SSRF漏洞为例子</p>
+<p>我们主观的认为在代码中，SSRF一般是由于</p>
+<ul>
+<li>使用了可以发起网络请求的的方法</li>
+<li>这个方法的参数用户可控</li>
+<li>参数没有过滤</li>
+</ul>
+<p>可以根据接口文档编写以下ql:</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> java</span></span>
+<span data-line><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> semmle.code.java.dataflow.TaintTracking</span></span>
+<span data-line><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> semmle.code.java.dataflow.FlowSources</span></span>
+<span data-line><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> semmle.code.java.frameworks.spring.SpringController</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">from SpringController controller,DataFlow::Node src,MethodCall call</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">where </span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// // // 远程可控参数</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">src </span><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">instanceof</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> RemoteFlowSource and</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// // // 可控参数作为controller中方法的入参</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">controller.getAMethod().getAParameter() = src.asParameter() and</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// // // 这些方法的注解是Mapping注解 即路由</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">controller.getAMethod().getAnAnnotation().toString().regexpMatch(&quot;.</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">*</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">Mapping.</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">*</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">&quot;) and</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 调用了openStream方法</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">call.getMethod().hasName(&quot;openStream&quot;) and</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// // 调用了此方法的对象</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">call.getCaller()=controller.getAMethod()</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">select call.getCaller(),&quot;使用了敏感方法:&quot;,call.getMethod(),&quot;位于:&quot;,call.getLocation()</span></span></code></pre></figure>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251129153904.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251129153904.png" data-alt loading="lazy"/></div>
+这是针对于spring框架中，Mapping注解的可控参数</p>
+<p><em>上面的ql是通过查阅文档写出来的，可能有部分功能已经提供官方接口了</em></p>
+<p>但是这样很明显是不完全的：</p>
+<ul>
+<li>sink点不止一个方法，可能这次是methodA，下一次就是methodB</li>
+<li>sink点认为是methodA，但是具体类的methodA才有效【<em>比如这里的openStream是java.net.URL中的，如果是其他类的openStream方法，就会误报</em>】</li>
+</ul>
+<p>这种写法属于从答案找过程，并不可取</p>
+<blockquote class="callout note" data-callout="note">
+<div class="callout-title">
+                  <div class="callout-icon"></div>
+                  <div class="callout-title-inner"><p>java依赖库中的接口 </p></div>
+                  
+                </div>
+<div class="callout-content">
+<p><a href="https://codeql.github.com/codeql-standard-libraries/java/index.html#H" class="external">https://codeql.github.com/codeql-standard-libraries/java/index.html#H<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+</div>
+</blockquote>
+<h2 id="ql中数据流使用">QL中数据流使用<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ql中数据流使用" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="引言">引言<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#引言" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>在代码自动化安全审计的理论当中，有一个最核心的三元组概念，就是(source，sink和sanitizer)。</p>
+<ul>
+<li>source是指漏洞污染链条的输入点。比如获取http请求的参数部分，就是非常明显的Source。</li>
+<li>sink是指漏洞污染链条的执行点，比如SQL注入漏洞，最终执行SQL语句的函数就是sink(这个函数可能叫query或者exeSql，或者其它)。</li>
+<li>sanitizer又叫净化函数，是指在整个的漏洞链条当中，如果存在一个方法阻断了整个传递链，那么这个方法就叫sanitizer。</li>
+</ul>
+<p>如果一个漏洞成立，可以认为是存在<a href="https://zh.wikipedia.org/wiki/%E5%9B%BE_(%E6%95%B0%E5%AD%A6)#%E6%9C%89%E5%90%91%E5%9B%BE" class="external">有向图<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>：
+source<span>→</span>sink</p>
+<p>但真实代码中基本不会存在这么简单粗暴的有向图，一般参数到sink点都会经过很多处理</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="python" data-theme="github-light github-dark"><code data-language="python" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">def</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> sink</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(value):</span></span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">	...</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">def</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> sanitizer</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(value):</span></span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">	...</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">@app.route</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">'/vuln'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">, </span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">methods</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">[</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">'POST'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">])</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">def</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> vuln</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">():</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    param </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> request.form.get(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">'param'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    try</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">		...</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    safe_value </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> sanitizer(param_converted)</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    sink(safe_value)</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> ...</span></span></code></pre></figure>
+<p>而我们通过<code>source</code>到<code>sink</code>的过程称为污点追踪(TaintTracking)</p>
+<p>QL提供了对应的模块</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> semmle.code.java.dataflow.TaintTracking</span></span></code></pre></figure>
+<p>我们挖掘漏洞的链路可以抽象成</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">TaintTracking</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">::</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(source, sink)</span></span></code></pre></figure>
+<p>官方针对污点追踪提供了一些<a href="https://codeql.github.com/codeql-standard-libraries/java/semmle/code/java/dataflow/TaintTracking.qll/module.TaintTracking$TaintTracking.html" class="external">谓词<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251129161001.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251129161001.png" data-alt loading="lazy"/></div></p>
+<h3 id="局部数据流">局部数据流<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#局部数据流" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>上面中提到的<code>DataFlow</code>称为局部数据流</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> semmle.code.java.dataflow.DataFlow</span></span></code></pre></figure>
+<p>以官方文档中<a href="https://codeql.github.com/docs/codeql-language-guides/analyzing-data-flow-in-java/" class="external">例子<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>的前两个进行理解：
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251128144050.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251128144050.png" data-alt loading="lazy"/></div>
+其中</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;"> // 所有对象实例</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> Constructor</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 所有对可调用对象的调用</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> Call</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 获得成员声明的类型</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">RefType getDeclaringType() </span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 此成员的名称为name 且在指定的package和指定type类型中声明</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">predicate hasQualifiedName(string package, string type, string name)</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 获取此次调用的可调用目标</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">Callable getCallee()</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 获取此次调用中的第n个参数</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">Expr getArgument(int n)</span></span></code></pre></figure>
+<p>这样看很抽象，个人理解第一部分的ql语句的作用是
+<strong>从所有的对象、对象的调用中</strong>
+<strong>找到在<code>java.io</code>包中，对象的类型为<code>FileReader</code>这个类</strong>
+<strong>获取对象调用的第一个参数</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">java.io.FileReader</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">new</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> FileReader</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(xxx)</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">--></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">xxx</span></span></code></pre></figure>
+<p>加入对局部数据流的使用：</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 所有的表达式 比如赋值 计算 方法调用</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">Expr src</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">/*</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">DataFlow 数据流模块</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">predicate localFlow(Node node1, Node node2) 局部数据流 由node1 流向 node2</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">DataFlow::exprNode(expr) 获得表达式expr的节点</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">*/</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">DataFlow</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">::</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">localFlow</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">DataFlow</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">::</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">exprNode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(src),</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">DataFlow</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">::</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">exprNode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(call.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">getArgument</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">0</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">))</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">)</span></span></code></pre></figure>
+<p>这段增加的限制：
+从所有的对象，对象的调用，表达式中
+找到所有符合表达式（也可以理解成参数）最终会流入<code>java.io.FileReader</code>这个类的表达式
+以前面的SSRF来理解：
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251128152208.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251128152208.png" data-alt loading="lazy"/></div>
+找到所有最终会到<code>new URL()</code>的入参的参数</p>
+<h3 id="全局数据流">全局数据流<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#全局数据流" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>全局数据流是一个有参模块</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">DataFlow</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">::</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">Global</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">ConfigSig</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">></span></span></code></pre></figure>
+<p>这里的<code>ConfigSig</code>是要我们实现<code>DataFlow::ConfigSig</code>签名（类比<code>java</code>的<code>interface</code>），可以翻阅前面对签名的内容</p>
+<p>到这里，可以正式开始进行污点分析了，以一个污点分析<a href="https://cmisl.github.io/2025/02/14/CodeQL%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" class="external">模板<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>举例</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> java</span></span>
+<span data-line><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> semmle.code.java.dataflow.TaintTracking</span></span>
+<span data-line><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> semmle.code.java.dataflow.FlowSources</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">module GenericTaintConfig </span><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">implements</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> DataFlow::ConfigSig {</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">  // ========== 核心三要素配置 ==========</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  predicate isSource(DataFlow::Node src) {</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // 输入源定义（二选一）</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    src </span><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">instanceof</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> RemoteFlowSource              </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 通用外部输入</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // src instanceof ThreatModelFlowSource      // 自定义威胁模型输入</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  }</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  predicate isSink(DataFlow::Node sink) {</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // 漏洞触发点定义（多选模式）</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    exists(Method method, MethodCall call |</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">      method.hasName(&quot;query|execute|update&quot;) and </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 常见SQL方法</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">      call.getMethod() = method and</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">      sink.asExpr() = call.getArgument(</span><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">0</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">)        </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 参数级定位</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    )</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // 或使用框架特定类（如MyBatis）****</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // sink instanceof MyBatisMapperMethodCallAnArgument</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  }</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">  // ========== 消毒处理配置 ========== !&quot;isBarrier&quot; 替代 &quot;isSanitizer&quot;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  predicate isBarrier(DataFlow::Node node) {</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // 类型过滤（基础类型视为安全）</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    node.getType() </span><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">instanceof</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> PrimitiveType</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // 或特定消毒方法检测</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // exists(Method sanitizer | sanitizer.hasName(&quot;encode|filter&quot;) and ...)</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  }</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">  // ========== 扩展流控制 ==========</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  predicate isAdditionalFlowStep(DataFlow::Node n1, DataFlow::Node n2) {</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // 处理对象转换场景（如toString调用）</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    exists(MethodCall ma |</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">      ma.getMethod().getName() = &quot;toString&quot; and</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">      ma.getQualifier() = n1.asExpr() and</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">      ma = n2.asExpr()</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    )</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// ========== 实例化分析引擎 ==========</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">module GenericTaintFlow = TaintTracking::Global&lt;GenericTaintConfig>;</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// ========== 路径查询与结果输出 ==========</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">from GenericTaintFlow</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">::</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">PathNode source, GenericTaintFlow</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">::</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">PathNode sink</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">where GenericTaintFlow</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">::</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">flowPath</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(source, sink)</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">select sink.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">getNode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(),</span></span>
+<span data-line><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">  &quot;发现[漏洞类型]风险：来自 &quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> source.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">getNode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot; 的未经验证数据流向 &quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> sink.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">getNode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(),</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  source.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">getNode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(),</span></span>
+<span data-line><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">  &quot;用户输入点&quot;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  sink.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">getNode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(),</span></span>
+<span data-line><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">  &quot;敏感操作点&quot;</span></span></code></pre></figure>
+<h3 id="污点分析">污点分析<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#污点分析" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>在官方给出的规则中，针对SSRF编写了<a href="https://github.com/github/codeql/blob/main/java/ql/src/Security/CWE/CWE-918/RequestForgery.ql" class="external">规则<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251129101340.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251129101340.png" data-alt loading="lazy"/></div>
+对官方规则的分析，可参考<a href="https://forum.butian.net/share/2117" class="external">链接<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>，但由于codeql已经更新，该分析基于<code>2023-02-02</code>，仅能参考</p>
+<p>仍然以WebGoat靶场作为数据库，使用官方文档中提供的接口</p>
+<p><strong>source</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> java</span></span>
+<span data-line><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> semmle.code.java.dataflow.TaintTracking</span></span>
+<span data-line><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> semmle.code.java.dataflow.FlowSources</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">from DataFlow::Node src</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">where</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 远程数据源</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">src </span><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">instanceof</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> RemoteFlowSource</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">select src</span></span></code></pre></figure>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251129112302.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251129112302.png" data-alt loading="lazy"/></div></p>
+<p><strong>sink</strong>
+调用创建网络连接的地方</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> java</span></span>
+<span data-line><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> semmle.code.java.dataflow.DataFlow</span></span>
+<span data-line><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> semmle.code.java.security.RequestForgery</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">from </span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">RequestForgerySink requestForgerySink</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">select requestForgerySink,requestForgerySink.getEnclosingCallable(),requestForgerySink.getType()</span></span></code></pre></figure>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251201094218.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251201094218.png" data-alt loading="lazy"/></div>
+那么现在就是要构造从<code>source</code>到<code>sink</code>的<code>Data::Flow</code></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> java</span></span>
+<span data-line><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> semmle.code.java.dataflow.TaintTracking</span></span>
+<span data-line><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> semmle.code.java.dataflow.FlowSources</span></span>
+<span data-line><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">import</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> semmle.code.java.security.RequestForgery</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">module GenericTaintConfig </span><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">implements</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> DataFlow::ConfigSig {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  predicate isSource(DataFlow::Node src) {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    src </span><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">instanceof</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> RemoteFlowSource              </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 通用外部输入</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  }</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  predicate isSink(DataFlow::Node sink) {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    sink </span><span style="--shiki-light:#B31D28;--shiki-light-font-style:italic;--shiki-dark:#FDAEB7;--shiki-dark-font-style:italic;">instanceof</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> RequestForgerySink</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// ========== 实例化分析引擎 ==========</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">module GenericTaintFlow = TaintTracking::Global&lt;GenericTaintConfig>;</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// ========== 路径查询与结果输出 ==========</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">from GenericTaintFlow</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">::</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">PathNode source, GenericTaintFlow</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">::</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">PathNode sink</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">where GenericTaintFlow</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">::</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">flowPath</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(source, sink)</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">select</span></span>
+<span data-line><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">  &quot;可控输入点: &quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> source.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">getNode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(),</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">  source.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">getNode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(),</span></span>
+<span data-line><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">    &quot;敏感操作点: &quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> sink.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">getNode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(),</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    sink.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">getNode</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">()</span></span></code></pre></figure>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251201094804.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251201094804.png" data-alt loading="lazy"/></div></p>
+<p>编写一个demo测试</p>
+<p><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251201095827.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251201095827.png" data-alt loading="lazy"/></div></p>
+<p>只有可控的输入点才会查询出来</p>
+<h1 id="总结">总结<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#总结" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p>QL是一个十分强大的静态分析的工具，并且官方提供了很多已经封装好的接口，但是现目前通用大模型基本对最新文档没有支持，会胡言乱语的写QL，需要自行查阅文档。
+由于最开始我直接从<code>Constructor</code>、<code>MethodCall</code>来编写sink点，导致走了很多弯路并且没有实现覆盖率很高的ql，查询文档才发现其实官方早就写好了。
+<div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20251201100113.png" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/Pasted-image-20251201100113.png" data-alt loading="lazy"/></div><div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/FF3C398E86A65B340EAC1DFBFC896D2C.jpg" width="auto" height="auto" alt class="lightbox-image" data-src="../学习记录/images/FF3C398E86A65B340EAC1DFBFC896D2C.jpg" data-alt loading="lazy"/></div></p></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="graph"><h3>关系图谱</h3><div class="graph-outer"><div class="graph-container" data-cfg="{&quot;drag&quot;:true,&quot;zoom&quot;:true,&quot;depth&quot;:1,&quot;scale&quot;:1.1,&quot;repelForce&quot;:0.5,&quot;centerForce&quot;:0.3,&quot;linkDistance&quot;:30,&quot;fontSize&quot;:0.6,&quot;opacityScale&quot;:1,&quot;showTags&quot;:true,&quot;removeTags&quot;:[],&quot;focusOnHover&quot;:false,&quot;enableRadial&quot;:false}"></div><button class="global-graph-icon" aria-label="Global Graph"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 55 55" fill="currentColor" xml:space="preserve"><path d="M49,0c-3.309,0-6,2.691-6,6c0,1.035,0.263,2.009,0.726,2.86l-9.829,9.829C32.542,17.634,30.846,17,29,17
+                s-3.542,0.634-4.898,1.688l-7.669-7.669C16.785,10.424,17,9.74,17,9c0-2.206-1.794-4-4-4S9,6.794,9,9s1.794,4,4,4
+                c0.74,0,1.424-0.215,2.019-0.567l7.669,7.669C21.634,21.458,21,23.154,21,25s0.634,3.542,1.688,4.897L10.024,42.562
+                C8.958,41.595,7.549,41,6,41c-3.309,0-6,2.691-6,6s2.691,6,6,6s6-2.691,6-6c0-1.035-0.263-2.009-0.726-2.86l12.829-12.829
+                c1.106,0.86,2.44,1.436,3.898,1.619v10.16c-2.833,0.478-5,2.942-5,5.91c0,3.309,2.691,6,6,6s6-2.691,6-6c0-2.967-2.167-5.431-5-5.91
+                v-10.16c1.458-0.183,2.792-0.759,3.898-1.619l7.669,7.669C41.215,39.576,41,40.26,41,41c0,2.206,1.794,4,4,4s4-1.794,4-4
+                s-1.794-4-4-4c-0.74,0-1.424,0.215-2.019,0.567l-7.669-7.669C36.366,28.542,37,26.846,37,25s-0.634-3.542-1.688-4.897l9.665-9.665
+                C46.042,11.405,47.451,12,49,12c3.309,0,6-2.691,6-6S52.309,0,49,0z M11,9c0-1.103,0.897-2,2-2s2,0.897,2,2s-0.897,2-2,2
+                S11,10.103,11,9z M6,51c-2.206,0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S8.206,51,6,51z M33,49c0,2.206-1.794,4-4,4s-4-1.794-4-4
+                s1.794-4,4-4S33,46.794,33,49z M29,31c-3.309,0-6-2.691-6-6s2.691-6,6-6s6,2.691,6,6S32.309,31,29,31z M47,41c0,1.103-0.897,2-2,2
+                s-2-0.897-2-2s0.897-2,2-2S47,39.897,47,41z M49,10c-2.206,0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S51.206,10,49,10z"></path></svg></button></div><div class="global-graph-outer"><div class="global-graph-container" data-cfg="{&quot;drag&quot;:true,&quot;zoom&quot;:true,&quot;depth&quot;:-1,&quot;scale&quot;:0.9,&quot;repelForce&quot;:0.5,&quot;centerForce&quot;:0.2,&quot;linkDistance&quot;:30,&quot;fontSize&quot;:0.6,&quot;opacityScale&quot;:1,&quot;showTags&quot;:true,&quot;removeTags&quot;:[],&quot;focusOnHover&quot;:true,&quot;enableRadial&quot;:true}"></div></div></div><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-17" aria-expanded="true"><h3>目录</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-1" class="toc-content overflow"><li class="depth-0"><a href="#前言" data-for="前言">前言</a></li><li class="depth-0"><a href="#环境配置" data-for="环境配置">环境配置</a></li><li class="depth-1"><a href="#创建数据库" data-for="创建数据库">创建数据库</a></li><li class="depth-0"><a href="#使用" data-for="使用">使用</a></li><li class="depth-1"><a href="#语法" data-for="语法">语法</a></li><li class="depth-2"><a href="#查询queries" data-for="查询queries">查询(Queries)</a></li><li class="depth-2"><a href="#变量variables" data-for="变量variables">变量(Variables)</a></li><li class="depth-2"><a href="#谓词predicates" data-for="谓词predicates">谓词(Predicates)</a></li><li class="depth-2"><a href="#表达式expressions" data-for="表达式expressions">表达式(Expressions)</a></li><li class="depth-2"><a href="#公式formulas" data-for="公式formulas">公式(Formulas)</a></li><li class="depth-2"><a href="#注解annotations" data-for="注解annotations">注解(Annotations)</a></li><li class="depth-2"><a href="#类型types" data-for="类型types">类型(Types)</a></li><li class="depth-2"><a href="#模块modules" data-for="模块modules">模块(Modules)</a></li><li class="depth-2"><a href="#签名signature" data-for="签名signature">签名(signature)</a></li><li class="depth-2"><a href="#别名alias" data-for="别名alias">别名(Alias)</a></li><li class="depth-1"><a href="#环境搭建" data-for="环境搭建">环境搭建</a></li><li class="depth-1"><a href="#具体漏洞类型-ssrf" data-for="具体漏洞类型-ssrf">具体漏洞类型-SSRF</a></li><li class="depth-1"><a href="#ql中数据流使用" data-for="ql中数据流使用">QL中数据流使用</a></li><li class="depth-2"><a href="#引言" data-for="引言">引言</a></li><li class="depth-2"><a href="#局部数据流" data-for="局部数据流">局部数据流</a></li><li class="depth-2"><a href="#全局数据流" data-for="全局数据流">全局数据流</a></li><li class="depth-2"><a href="#污点分析" data-for="污点分析">污点分析</a></li><li class="depth-0"><a href="#总结" data-for="总结">总结</a></li><li class="overflow-end"></li></ul></div></div><footer class><script src="https://utteranc.es/client.js" repo="v9d0g/v9d0g.github.io" issue-term="og:title" theme="github-light" crossorigin="anonymous" async></script><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.2</a> © 2026</p><ul><li><a href="https://github.com/v9d0g">GitHub</a></li></ul></footer></div></div></body><script type="application/javascript">
+(function() {
+  const STYLE_ID = 'code-styler-dynamic-css'
+  const css = `
+figure[data-rehype-pretty-code-figure]:has([data-rehype-pretty-code-title]) {
+  border: 1px solid var(--lightgray);
+  border-radius: 5px;
+  overflow: hidden;
+}
+figure[data-rehype-pretty-code-figure]:has([data-rehype-pretty-code-title]) > [data-rehype-pretty-code-title] {
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  background: color-mix(in srgb, var(--lightgray) 50%, transparent);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  font-family: var(--codeFont);
+  color: var(--darkgray);
+  box-sizing: border-box;
+}
+figure[data-rehype-pretty-code-figure]:has([data-rehype-pretty-code-title]) > pre {
+  border: none;
+  border-radius: 0;
+  margin: 0;
+}
+figure[data-rehype-pretty-code-figure][data-fold] > [data-rehype-pretty-code-title] {
+  cursor: pointer;
+  position: relative;
+  padding-right: 1.8rem;
+  user-select: none;
+}
+figure[data-rehype-pretty-code-figure][data-fold] > [data-rehype-pretty-code-title]::after {
+  content: "▼";
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.65rem;
+  opacity: 0.6;
+  transition: transform 0.2s ease;
+}
+figure[data-rehype-pretty-code-figure][data-fold="collapsed"] > [data-rehype-pretty-code-title]::after {
+  content: "▶";
+}
+figure[data-rehype-pretty-code-figure][data-fold="collapsed"] > pre {
+  display: none;
+}
+[data-highlighted-line-id="info"] {
+  background-color: rgba(59, 130, 246, 0.12) !important;
+  border-left-color: #3b82f6 !important;
+}
+[data-highlighted-line-id="warn"] {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  border-left-color: #f59e0b !important;
+}
+[data-highlighted-line-id="error"] {
+  background-color: rgba(239, 68, 68, 0.12) !important;
+  border-left-color: #ef4444 !important;
+}
+[data-rehype-pretty-code-title] > a.code-styler-ref {
+  background: none;
+  padding: 0;
+}
+pre.no-line-numbers > code {
+  counter-reset: none;
+}
+pre.no-line-numbers > code > [data-line]::before {
+  display: none;
+}
+`
+
+  function injectStyle() {
+    if (document.getElementById(STYLE_ID)) return
+    const style = document.createElement('style')
+    style.id = STYLE_ID
+    style.textContent = css
+    document.head.appendChild(style)
+  }
+
+  function bindFoldEvents() {
+    const figures = document.querySelectorAll('figure[data-rehype-pretty-code-figure][data-fold]')
+    figures.forEach(fig => {
+      const title = fig.querySelector('[data-rehype-pretty-code-title]')
+      if (!title || title.dataset.codeStylerBound) return
+      title.dataset.codeStylerBound = 'true'
+      title.title = '点击折叠/展开'
+      const onClick = () => {
+        const isCollapsed = fig.getAttribute('data-fold') === 'collapsed'
+        fig.setAttribute('data-fold', isCollapsed ? 'true' : 'collapsed')
+      }
+      title.addEventListener('click', onClick)
+      window.addCleanup(() => title.removeEventListener('click', onClick))
+    })
+  }
+
+  document.addEventListener('nav', () => {
+    injectStyle()
+    bindFoldEvents()
+  })
+  injectStyle()
+  bindFoldEvents()
+})()
+</script><script type="application/javascript">function n(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.getElementsByClassName("callout-content")[0];if(!e)return;let l=t.classList.contains("is-collapsed");e.style.gridTemplateRows=l?"0fr":"1fr"}function c(){let t=document.getElementsByClassName("callout is-collapsible");for(let e of t){let l=e.getElementsByClassName("callout-title")[0],s=e.getElementsByClassName("callout-content")[0];if(!l||!s)continue;l.addEventListener("click",n),window.addCleanup(()=>l.removeEventListener("click",n));let o=e.classList.contains("is-collapsed");s.style.gridTemplateRows=o?"0fr":"1fr"}}document.addEventListener("nav",c);
+</script><script type="module">function f(i,e){if(!i)return;function r(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function t(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}i?.addEventListener("click",r),window.addCleanup(()=>i?.removeEventListener("click",r)),document.addEventListener("keydown",t),window.addCleanup(()=>document.removeEventListener("keydown",t))}function y(i){for(;i.firstChild;)i.removeChild(i.firstChild)}var h=class{constructor(e,r){this.container=e;this.content=r;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),r=this.onMouseMove.bind(this),t=this.onMouseUp.bind(this),o=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",r),document.addEventListener("mouseup",t),window.addEventListener("resize",o),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",r),()=>document.removeEventListener("mouseup",t),()=>window.removeEventListener("resize",o))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let r=this.createButton("+",()=>this.zoom(.1)),t=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(t),e.appendChild(o),e.appendChild(r),this.container.appendChild(e)}createButton(e,r){let t=document.createElement("button");return t.textContent=e,t.className="mermaid-control-button",t.addEventListener("click",r),window.addCleanup(()=>t.removeEventListener("click",r)),t}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}zoom(e){let r=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),t=this.content.getBoundingClientRect(),o=t.width/2,n=t.height/2,c=r-this.scale;this.currentPan.x-=o*c,this.currentPan.y-=n*c,this.scale=r,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){this.scale=1;let e=this.content.querySelector("svg");this.currentPan={x:e.getBoundingClientRect().width/2,y:e.getBoundingClientRect().height/2},this.updateTransform()}},C=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],E;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;E||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let r=E.default,t=new WeakMap;for(let n of e)t.set(n,n.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let a=t.get(s);a&&(s.innerHTML=a)}let n=C.reduce((s,a)=>(s[a]=window.getComputedStyle(document.documentElement).getPropertyValue(a),s),{}),c=document.documentElement.getAttribute("saved-theme")==="dark";r.initialize({startOnLoad:!1,securityLevel:"loose",theme:c?"dark":"base",themeVariables:{fontFamily:n["--codeFont"],primaryColor:n["--light"],primaryTextColor:n["--darkgray"],primaryBorderColor:n["--tertiary"],lineColor:n["--darkgray"],secondaryColor:n["--secondary"],tertiaryColor:n["--tertiary"],clusterBkg:n["--light"],edgeLabelBackground:n["--highlight"]}}),await r.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let n=0;n<e.length;n++){let v=function(){let g=l.querySelector("#mermaid-space"),m=l.querySelector(".mermaid-content");if(!m)return;y(m);let w=c.querySelector("svg").cloneNode(!0);m.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new h(g,m)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},c=e[n],s=c.parentElement,a=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(a),L=a.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),f(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript"></script><script type="application/javascript">
+              function initLightbox() {
+                const existingModal = document.querySelector('.lightbox-modal');
+                if (existingModal) existingModal.remove();
+
+                const modal = document.createElement('div');
+                modal.className = 'lightbox-modal';
+                
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'lightbox-close';
+                closeBtn.innerHTML = '×';
+                closeBtn.setAttribute('aria-label', 'Close lightbox');
+                
+                const img = document.createElement('img');
+                img.style.display = 'none';
+                
+                modal.appendChild(closeBtn);
+                modal.appendChild(img);
+                document.body.appendChild(modal);
+
+                let scale = 1;
+                let isDragging = false;
+                let startX = 0, startY = 0, currentX = 0, currentY = 0;
+
+                function resetTransform() {
+                  scale = 1;
+                  currentX = currentY = 0;
+                  img.style.transform = 'scale(1) translate(0px, 0px)';
+                }
+
+                // Zoom with wheel
+                img.addEventListener('wheel', (e) => {
+                  e.preventDefault();
+                  const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                  scale = Math.min(Math.max(scale + delta, 1), 5);
+                  img.style.transform = `scale(${scale}) translate(${currentX}px, ${currentY}px)`;
+                });
+
+                // Drag to move (with robust release handling)
+                img.addEventListener('mousedown', (e) => {
+                  if (scale <= 1) return;
+                  isDragging = true;
+                  startX = e.clientX - currentX;
+                  startY = e.clientY - currentY;
+                  img.style.cursor = 'grabbing';
+                  e.preventDefault();
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                  if (!isDragging) return;
+                  currentX = e.clientX - startX;
+                  currentY = e.clientY - startY;
+                  img.style.transform = `scale(${scale}) translate(${currentX}px, ${currentY}px)`;
+                });
+
+                document.addEventListener('mouseup', () => {
+                  if (isDragging) {
+                    isDragging = false;
+                    img.style.cursor = 'grab';
+                  }
+                });
+
+                img.addEventListener('mouseleave', () => {
+                  if (isDragging) {
+                    isDragging = false;
+                    img.style.cursor = 'grab';
+                  }
+                });
+
+                // Double click to reset
+                img.addEventListener('dblclick', resetTransform);
+
+                function openLightbox(imageSrc, imageAlt, originalImg) {
+                  img.src = imageSrc;
+                  img.alt = imageAlt || '';
+                  img.style.display = 'block';
+                  modal.classList.add('active');
+                  document.body.classList.add('lightbox-open');
+                  resetTransform();
+                }
+
+                function closeLightbox() {
+                  modal.classList.remove('active');
+                  document.body.classList.remove('lightbox-open');
+                  setTimeout(() => {
+                    img.style.display = 'none';
+                    img.src = '';
+                  }, 300);
+                }
+
+                closeBtn.addEventListener('click', closeLightbox);
+                modal.addEventListener('click', (e) => {
+                  if (e.target === modal) closeLightbox();
+                });
+                document.addEventListener('keydown', (e) => {
+                  if (e.key === 'Escape' && modal.classList.contains('active')) closeLightbox();
+                });
+
+                const wrappers = document.querySelectorAll('.lightbox-wrapper');
+                wrappers.forEach(wrapper => {
+                  wrapper.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const imgEl = wrapper.querySelector('.lightbox-image');
+                    if (imgEl) {
+                      const src = imgEl.getAttribute('data-src') || imgEl.src;
+                      const alt = imgEl.getAttribute('data-alt') || imgEl.alt;
+                      openLightbox(src, alt, imgEl);
+                    }
+                  });
+                });
+
+                if (window.addCleanup) {
+                  window.addCleanup(() => {
+                    if (modal.parentNode) modal.parentNode.removeChild(modal);
+                    document.body.classList.remove('lightbox-open');
+                  });
+                }
+              }
+
+              document.addEventListener('nav', initLightbox);
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initLightbox);
+              } else {
+                initLightbox();
+              }
+            </script><script src="../postscript.js" type="module"></script></html>

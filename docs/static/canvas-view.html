@@ -1,0 +1,468 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>Obsidian Style Canvas</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <style>
+        :root {
+            --canvas-bg: #121212;
+            --grid-color: rgba(255, 255, 255, 0.03);
+            --node-bg: rgba(30, 30, 30, 0.65);
+            --node-border: #333333;
+            --text-main: #eeeeee;
+            
+            /* Obsidian 官方颜色定义 */
+            --color-1: #e93147; --color-2: #ec7500; --color-3: #e0ac00;
+            --color-4: #08a339; --color-5: #00a3a3; --color-6: #2b65ec;
+        }
+
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            overflow: hidden; background: var(--canvas-bg); 
+            color: var(--text-main); font-family: ui-sans-serif, -apple-system, sans-serif;
+        }
+
+        #viewport { 
+            width: 100%; height: 100%; cursor: grab; 
+            background-image: radial-gradient(var(--grid-color) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+
+        #canvas-content { position: absolute; transform-origin: 0 0; will-change: transform; }
+
+        /* 节点通用样式 */
+        .node {
+            position: absolute; border-radius: 6px; 
+            background: var(--node-bg); border: 1.5px solid var(--node-border);
+            backdrop-filter: blur(4px); box-sizing: border-box;
+            display: flex; flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: box-shadow 0.3s ease, transform 0.2s ease;
+        }
+
+        .node:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* 组节点特殊处理 */
+        .node-group { background: transparent; z-index: -1; }
+
+        /* 节点左上角标签 */
+        .node-tag {
+            position: absolute; top: -28px;
+            padding: 2px 8px; border-radius: 4px;
+            font-size: 13px; font-weight: 600; color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            white-space: nowrap; z-index: 10;
+        }
+
+        /* 颜色类覆盖 */
+        .color-1 { border-color: var(--color-1); } .tag-1 { background-color: var(--color-1); }
+        .color-2 { border-color: var(--color-2); } .tag-2 { background-color: var(--color-2); }
+        .color-3 { border-color: var(--color-3); } .tag-3 { background-color: var(--color-3); }
+        .color-4 { border-color: var(--color-4); } .tag-4 { background-color: var(--color-4); }
+        .color-5 { border-color: var(--color-5); } .tag-5 { background-color: var(--color-5); }
+        .color-6 { border-color: var(--color-6) !important; } .tag-6 { background-color: var(--color-6); }
+
+        /* 颜色对应的内容区背景 */
+        .color-1 .node-content { background-color: rgba(233, 49, 71, 0.08); }
+        .color-2 .node-content { background-color: rgba(236, 117, 0, 0.08); }
+        .color-3 .node-content { background-color: rgba(224, 172, 0, 0.08); }
+        .color-4 .node-content { background-color: rgba(8, 163, 57, 0.08); }
+        .color-5 .node-content { background-color: rgba(0, 163, 163, 0.08); }
+        .color-6 .node-content { background-color: rgba(43, 101, 236, 0.08); }
+
+        /* 内容区与 Markdown */
+        .node-content {
+            padding: 10px; font-size: 13px; line-height: 1.4;
+            height: 100%; overflow-y: auto; scrollbar-width: thin;
+            padding-right: 12px;
+        }
+
+        /* Firefox 滚动条样式 */
+        .node-content {
+            scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+        }
+
+        /* 1. 滚动条整体 */
+        .node-content::-webkit-scrollbar {
+            width: 6px;  /* 稍微调窄一点更像 Obsidian */
+            height: 6px;
+            background-color: transparent; /* 强制整体背景透明 */
+        }
+
+        /* 2. 滚动条轨道 (底色) */
+        .node-content::-webkit-scrollbar-track {
+            background-color: transparent; /* 确保轨道没有任何颜色 */
+            margin: 4px; /* 让滑块两头留白，更精致 */
+        }
+
+        /* 3. 滚动滑块 (拖动条) */
+        .node-content::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            /* 使用 rgba 确保滑块是半透明的，叠加在内容上 */
+            background-color: rgba(255, 255, 255, 0.15); 
+            /* 移除之前的 border: 2px solid transparent; 避免某些浏览器渲染出边框阴影 */
+        }
+
+        .node-content::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* 4. 隐藏角落 (当纵横滚动条同时出现时的交叉点) */
+        .node-content::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        /* 连线 */
+        svg#svg-layer { 
+            position: absolute; top: 0; left: 0; width: 100000px; height: 100000px; 
+            pointer-events: none; overflow: visible;
+        }
+        path.edge { 
+            fill: none; stroke: #555555; stroke-width: 1.5; 
+            marker-end: url(#arrow); transition: stroke 0.3s ease;
+        }
+        path.edge:hover { stroke: #888888; stroke-width: 2; }
+        marker#arrow { fill: #555555; }
+
+        /* Markdown 代码块样式 */
+        .node-content code {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+        }
+
+        .node-content pre {
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 4px;
+            padding: 10px;
+            overflow-x: auto;
+            margin: 8px 0;
+        }
+
+        .node-content pre code {
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            color: #eeeeee;
+        }
+
+        /* 列表样式 */
+        .node-content ul, .node-content ol {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .node-content li {
+            margin: 4px 0;
+        }
+
+        /* 标题样式 */
+        .node-content h1, .node-content h2, .node-content h3, 
+        .node-content h4, .node-content h5, .node-content h6 {
+            margin: 12px 0 6px 0;
+            font-weight: 600;
+        }
+
+        .node-content h1 { font-size: 18px; }
+        .node-content h2 { font-size: 16px; }
+        .node-content h3 { font-size: 14px; }
+        .node-content h4, .node-content h5, .node-content h6 { font-size: 13px; }
+
+        /* 引用块样式 */
+        .node-content blockquote {
+            border-left: 3px solid rgba(255, 255, 255, 0.3);
+            margin: 8px 0;
+            padding-left: 10px;
+            color: rgba(238, 238, 238, 0.8);
+        }
+
+    </style>
+</head>
+<body>
+    <div id="viewport">
+        <div id="canvas-content">
+            <svg id="svg-layer">
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                        <path d="M 0 0 L 10 5 L 0 10 z" />
+                    </marker>
+                </defs>
+            </svg>
+            <div id="nodes-layer"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        const params = new URLSearchParams(window.location.search);
+        const dataUrl = params.get('data');
+        const content = document.getElementById('canvas-content');
+        const viewport = document.getElementById('viewport');
+        
+        let scale = 1, posX = 0, posY = 0;
+
+        // 配置 marked 使用 highlight.js 进行代码高亮
+        marked.setOptions({
+            highlight: (code, lang) => {
+                try {
+                    if (lang && hljs.getLanguage(lang)) {
+                        return hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
+                    }
+                    return hljs.highlightAuto(code).value;
+                } catch (err) {
+                    console.warn('Syntax highlight failed:', err);
+                    return code;
+                }
+            },
+            breaks: true,
+            gfm: true
+        });
+
+        // ===== 力导向图布局算法 =====
+        class ForceDirectedLayout {
+            constructor(nodes, edges) {
+                this.nodes = nodes;
+                this.edges = edges;
+                this.k = 100; // 弹簧常数
+                this.c = 0.1; // 阻尼系数
+                this.maxForce = 50;
+                this.iterations = 50;
+            }
+
+            layout() {
+                // 初始化速度
+                this.nodes.forEach(n => {
+                    n.vx = (Math.random() - 0.5) * 2;
+                    n.vy = (Math.random() - 0.5) * 2;
+                });
+
+                for (let iter = 0; iter < this.iterations; iter++) {
+                    const forces = new Map(this.nodes.map(n => [n.id, { fx: 0, fy: 0 }]));
+
+                    // 边引力
+                    this.edges.forEach(edge => {
+                        const from = this.nodes.find(n => n.id === edge.fromNode);
+                        const to = this.nodes.find(n => n.id === edge.toNode);
+                        if (!from || !to) return;
+
+                        const dx = to.x - from.x;
+                        const dy = to.y - from.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                        const targetDist = 150;
+                        const force = (dist - targetDist) * 0.1;
+
+                        const fx = (dx / dist) * force;
+                        const fy = (dy / dist) * force;
+
+                        forces.get(from.id).fx += fx;
+                        forces.get(from.id).fy += fy;
+                        forces.get(to.id).fx -= fx;
+                        forces.get(to.id).fy -= fy;
+                    });
+
+                    // 节点斥力
+                    for (let i = 0; i < this.nodes.length; i++) {
+                        for (let j = i + 1; j < this.nodes.length; j++) {
+                            const n1 = this.nodes[i];
+                            const n2 = this.nodes[j];
+                            const dx = n2.x - n1.x;
+                            const dy = n2.y - n1.y;
+                            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                            const minDist = 80 + (n1.width + n2.width) / 4;
+
+                            if (dist < minDist * 2) {
+                                const force = Math.min((minDist - dist) * 0.15, this.maxForce);
+                                const fx = (dx / dist) * force;
+                                const fy = (dy / dist) * force;
+
+                                forces.get(n1.id).fx -= fx;
+                                forces.get(n1.id).fy -= fy;
+                                forces.get(n2.id).fx += fx;
+                                forces.get(n2.id).fy += fy;
+                            }
+                        }
+                    }
+
+                    // 应用力并更新位置
+                    this.nodes.forEach(n => {
+                        const f = forces.get(n.id);
+                        n.vx = (n.vx + f.fx) * this.c;
+                        n.vy = (n.vy + f.fy) * this.c;
+
+                        n.x += n.vx;
+                        n.y += n.vy;
+
+                        // 边界约束（可选）
+                        // n.x = Math.max(0, Math.min(n.x, 3000));
+                        // n.y = Math.max(0, Math.min(n.y, 3000));
+                    });
+                }
+            }
+
+            needsLayout() {
+                // 判断节点是否需要布局（是否有手动设置的位置）
+                return this.nodes.some(n => !n.x || !n.y || (n.x === 0 && n.y === 0));
+            }
+        }
+
+        // 改进的贝塞尔曲线连线算法
+        function generateBezierPath(from, to, fromSide, toSide) {
+            const getPos = (n, side) => {
+                const offsets = {
+                    top: { x: n.x + n.width / 2, y: n.y },
+                    bottom: { x: n.x + n.width / 2, y: n.y + n.height },
+                    left: { x: n.x, y: n.y + n.height / 2 },
+                    right: { x: n.x + n.width, y: n.y + n.height / 2 }
+                };
+                return offsets[side] || { x: n.x + n.width / 2, y: n.y + n.height / 2 };
+            };
+
+            const start = getPos(from, fromSide);
+            const end = getPos(to, toSide);
+            const dx = end.x - start.x;
+            const dy = end.y - start.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            // 根据距离和方向动态调整控制点
+            let offsetDist = Math.min(Math.max(distance * 0.3, 40), 150);
+
+            const getCtrlPoint = (side) => {
+                const dirs = {
+                    top: { x: 0, y: -1 },
+                    bottom: { x: 0, y: 1 },
+                    left: { x: -1, y: 0 },
+                    right: { x: 1, y: 0 }
+                };
+                const dir = dirs[side] || { x: 0, y: 0 };
+                return {
+                    x: dir.x !== 0 ? offsetDist * dir.x : 0,
+                    y: dir.y !== 0 ? offsetDist * dir.y : 0
+                };
+            };
+
+            const cp1 = getCtrlPoint(fromSide);
+            const cp2 = getCtrlPoint(toSide);
+
+            return `M ${start.x} ${start.y} C ${start.x + cp1.x} ${start.y + cp1.y}, ${end.x + cp2.x} ${end.y + cp2.y}, ${end.x} ${end.y}`;
+        }
+
+        // 交互控制
+        viewport.onwheel = e => {
+            e.preventDefault();
+            const factor = Math.pow(1.15, -e.deltaY / 120);
+            const rect = viewport.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left, mouseY = e.clientY - rect.top;
+            const newScale = Math.min(Math.max(0.05, scale * factor), 4);
+            posX = mouseX - (mouseX - posX) * (newScale / scale);
+            posY = mouseY - (mouseY - posY) * (newScale / scale);
+            scale = newScale;
+            content.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+            viewport.style.backgroundPosition = `${posX}px ${posY}px`;
+        };
+
+        let isDragging = false, lastX, lastY;
+        viewport.onmousedown = e => { if(e.button === 0) { isDragging = true; lastX = e.clientX; lastY = e.clientY; viewport.style.cursor = 'grabbing'; } };
+        window.onmousemove = e => { if (!isDragging) return; posX += e.clientX - lastX; posY += e.clientY - lastY; lastX = e.clientX; lastY = e.clientY; content.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; viewport.style.backgroundPosition = `${posX}px ${posY}px`; };
+        window.onmouseup = () => { isDragging = false; viewport.style.cursor = 'grab'; };
+
+        async function init() {
+            if (!dataUrl) return;
+            const data = await (await fetch(dataUrl)).json();
+            const nodesLayer = document.getElementById('nodes-layer');
+            const svgLayer = document.getElementById('svg-layer');
+
+            // 判断是否需要布局：只有当所有节点都有坐标时才跳过布局
+            const allNodesPositioned = data.nodes.every(n => 
+                typeof n.x === 'number' && typeof n.y === 'number' && 
+                isFinite(n.x) && isFinite(n.y)
+            );
+
+            // 只有在节点未完全定位时才应用布局算法
+            if (!allNodesPositioned) {
+                const layout = new ForceDirectedLayout(data.nodes, data.edges);
+                
+                // 给未定位的节点随机初始位置
+                data.nodes.forEach((n, i) => {
+                    if (typeof n.x !== 'number' || typeof n.y !== 'number' || !isFinite(n.x) || !isFinite(n.y)) {
+                        const angle = (i / data.nodes.length) * Math.PI * 2;
+                        const radius = 200;
+                        n.x = Math.cos(angle) * radius;
+                        n.y = Math.sin(angle) * radius;
+                    }
+                });
+                layout.layout();
+            }
+
+            // 1. 渲染节点
+            data.nodes.forEach(node => {
+                const el = document.createElement('div');
+                const isGroup = node.type === 'group';
+                el.className = `node ${isGroup ? 'node-group' : ''} color-${node.color || ''}`;
+                el.style.cssText = `left:${node.x}px; top:${node.y}px; width:${node.width}px; height:${node.height}px;`;
+                
+                // 创建标签（仅限组节点）
+                if (isGroup && node.label) {
+                    const tag = document.createElement('div');
+                    tag.className = `node-tag tag-${node.color || ''}`;
+                    tag.textContent = node.label;
+                    el.appendChild(tag);
+                }
+                
+                // 创建内容区
+                const content = document.createElement('div');
+                content.className = 'node-content';
+                
+                if (node.text) {
+                    try {
+                        // 使用 marked 解析 markdown
+                        const parsed = marked.parse(node.text);
+                        content.innerHTML = parsed;
+                        // 对新生成的代码块进行高亮处理
+                        content.querySelectorAll('pre code').forEach((block) => {
+                            hljs.highlightElement(block);
+                        });
+                    } catch (e) {
+                        console.error('Failed to parse markdown for node', node.id, e);
+                        content.textContent = node.text;
+                    }
+                }
+                
+                el.appendChild(content);
+                nodesLayer.appendChild(el);
+            });
+
+            // 2. 渲染连线 (改进的贝塞尔曲线)
+            data.edges.forEach(edge => {
+                const from = data.nodes.find(n => n.id === edge.fromNode);
+                const to = data.nodes.find(n => n.id === edge.toNode);
+                if (!from || !to) return;
+
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute("class", "edge");
+                path.setAttribute("d", generateBezierPath(from, to, edge.fromSide, edge.toSide));
+                svgLayer.appendChild(path);
+            });
+
+            // 初始居中定位
+            const b = data.nodes.reduce((acc, n) => ({
+                minX: Math.min(acc.minX, n.x), minY: Math.min(acc.minY, n.y),
+                maxX: Math.max(acc.maxX, n.x + n.width), maxY: Math.max(acc.maxY, n.y + n.height)
+            }), {minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity});
+            
+            const vW = viewport.clientWidth, vH = viewport.clientHeight;
+            scale = Math.min(vW / (b.maxX - b.minX + 150), vH / (b.maxY - b.minY + 150), 1);
+            posX = (vW/2) - ((b.minX + b.maxX)/2 * scale);
+            posY = (vH/2) - ((b.minY + b.maxY)/2 * scale);
+            content.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+        }
+        init();
+    </script>
+</body>
+</html>
