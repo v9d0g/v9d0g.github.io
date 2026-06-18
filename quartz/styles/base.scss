@@ -15,8 +15,16 @@ body {
   margin: 0;
   box-sizing: border-box;
   background-color: var(--light);
+  background-image: url("static/light_pixel_art.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   font-family: var(--bodyFont);
   color: var(--darkgray);
+}
+
+.dark body {
+  background-image: url("static/dark_pixel_art.png");
 }
 
 .pxlkit-inline-icon {
@@ -217,6 +225,15 @@ a {
     }
     @media all and ($mobile) {
       margin: 0 auto;
+    }
+
+    & .sidebar,
+    & .center,
+    & .page-header,
+    & .page-footer,
+    & footer {
+      background-color: color-mix(in srgb, var(--light) 88%, transparent);
+      border-radius: 5px;
     }
 
     & .sidebar {
