@@ -202,13 +202,21 @@ button.desktop-explorer {
   margin-right: 5px;
   color: var(--secondary);
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: opacity 0.2s ease;
   backface-visibility: visible;
   flex-shrink: 0;
 }
 
-li:has(> .folder-outer:not(.open)) > .folder-container > .folder-icon {
-  transform: rotate(-90deg);
+li:has(> .folder-outer:not(.open)) > .folder-container > .folder-icon-open {
+  display: none;
+}
+
+li:has(> .folder-outer.open) > .folder-container > .folder-icon-closed {
+  display: none;
+}
+
+li:has(> .folder-outer.open) > .folder-container > .folder-icon-open {
+  display: inline-flex;
 }
 
 .folder-icon:hover {

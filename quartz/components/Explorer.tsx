@@ -1,5 +1,6 @@
 import { PxlKitInlineIcon } from "./PxlKitInlineIcon"
-import { Menu, ArrowRight, Package } from "@pxlkit/ui"
+import { Menu, ArrowRight } from "@pxlkit/ui"
+import { QuestMap, Scroll } from "@pxlkit/gamification"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import style from "./styles/explorer.scss"
 
@@ -106,7 +107,12 @@ export default ((userOpts?: Partial<Options>) => {
         <template id="template-folder">
           <li>
             <div className="folder-container">
-              <PxlKitInlineIcon icon={Package} size={12} className="folder-icon" />
+              <PxlKitInlineIcon
+                icon={QuestMap}
+                size={12}
+                className="folder-icon folder-icon-closed"
+              />
+              <PxlKitInlineIcon icon={Scroll} size={12} className="folder-icon folder-icon-open" />
               <div>
                 <button className="folder-button">
                   <span className="folder-title"></span>
