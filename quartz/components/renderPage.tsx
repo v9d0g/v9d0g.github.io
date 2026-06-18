@@ -10,7 +10,7 @@ import { Root, Element, ElementContent } from "hast"
 import { GlobalConfiguration } from "../cfg"
 import { i18n } from "../i18n"
 import { styleText } from "util"
-import { PxlKitSurfaceProvider } from "@pxlkit/ui-kit"
+import { PixelBox, PxlKitSurfaceProvider } from "@pxlkit/ui-kit"
 
 interface RenderComponents {
   head: QuartzComponent
@@ -243,19 +243,33 @@ export function renderPage(
   const Body = BodyConstructor()
 
   const LeftComponent = (
-    <div className="left sidebar">
+    <PixelBox
+      as="aside"
+      variant="outline"
+      border
+      tone="neutral"
+      padding="none"
+      className="left sidebar"
+    >
       {left.map((BodyComponent, idx) => (
         <BodyComponent key={`left-${idx}`} {...componentData} />
       ))}
-    </div>
+    </PixelBox>
   )
 
   const RightComponent = (
-    <div className="right sidebar">
+    <PixelBox
+      as="aside"
+      variant="outline"
+      border
+      tone="neutral"
+      padding="none"
+      className="right sidebar"
+    >
       {right.map((BodyComponent, idx) => (
         <BodyComponent key={`right-${idx}`} {...componentData} />
       ))}
-    </div>
+    </PixelBox>
   )
 
   const lang = componentData.fileData.frontmatter?.lang ?? cfg.locale?.split("-")[0] ?? "en"

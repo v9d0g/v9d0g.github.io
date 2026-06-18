@@ -14,7 +14,13 @@ export default ((opts?: Options) => {
     const links = opts?.links ?? []
 
     return (
-      <PixelBox as="footer" className={`${displayClass ?? ""}`}>
+      <PixelBox
+        as="footer"
+        variant="outline"
+        border
+        tone="neutral"
+        className={`${displayClass ?? ""}`}
+      >
         <div
           dangerouslySetInnerHTML={{
             __html:
