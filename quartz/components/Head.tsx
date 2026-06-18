@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import { i18n } from "../i18n"
 import { FullSlug, getFileExtension, joinSegments, pathToRoot } from "../util/path"
 import { CSSResourceToStyleElement, JSResourceToScriptElement } from "../util/resources"
@@ -90,11 +91,11 @@ export default (() => {
         {js
           .filter((resource) => resource.loadTime === "beforeDOMReady")
           .map((res) => JSResourceToScriptElement(res, true))}
-        {additionalHead.map((resource) => {
+        {additionalHead.map((resource, idx) => {
           if (typeof resource === "function") {
-            return resource(fileData)
+            return <Fragment key={idx}>{resource(fileData)}</Fragment>
           } else {
-            return resource
+            return <Fragment key={idx}>{resource}</Fragment>
           }
         })}
       </head>

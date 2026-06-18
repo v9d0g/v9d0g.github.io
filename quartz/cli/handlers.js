@@ -248,7 +248,7 @@ export async function handleBuild(argv) {
     platform: "node",
     format: "esm",
     jsx: "automatic",
-    jsxImportSource: "preact",
+    jsxImportSource: "react",
     packages: "external",
     metafile: true,
     sourcemap: true,

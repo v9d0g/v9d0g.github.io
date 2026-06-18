@@ -25,10 +25,14 @@ export default ((config: FlexConfig) => {
 
     return (
       <div
-        class={classNames(props.displayClass, "flex-component")}
-        style={`flex-direction: ${direction}; flex-wrap: ${wrap}; gap: ${gap};`}
+        className={classNames(props.displayClass, "flex-component")}
+        style={{
+          flexDirection: direction,
+          flexWrap: wrap,
+          gap,
+        }}
       >
-        {config.components.map((c) => {
+        {config.components.map((c, idx) => {
           const grow = c.grow ? 1 : 0
           const shrink = (c.shrink ?? true) ? 1 : 0
           const basis = c.basis ?? "auto"
@@ -38,7 +42,15 @@ export default ((config: FlexConfig) => {
 
           return (
             <div
-              style={`flex-grow: ${grow}; flex-shrink: ${shrink}; flex-basis: ${basis}; order: ${order}; align-self: ${align}; justify-self: ${justify};`}
+              key={idx}
+              style={{
+                flexGrow: grow,
+                flexShrink: shrink,
+                flexBasis: basis,
+                order,
+                alignSelf: align,
+                justifySelf: justify,
+              }}
             >
               <c.Component {...props} />
             </div>

@@ -36,7 +36,7 @@
   &.collapsed {
     flex: 0 1 1.2rem;
     & .fold {
-      transform: rotateZ(-90deg);
+      transform: rotateZ(0deg);
     }
   }
 
@@ -44,6 +44,7 @@
     margin-left: 0.5rem;
     transition: transform 0.3s ease;
     opacity: 0.8;
+    transform: rotateZ(90deg);
   }
 
   @media all and ($mobile) {
@@ -206,7 +207,7 @@ button.desktop-explorer {
   flex-shrink: 0;
 }
 
-li:has(> .folder-outer:not(.open)) > .folder-container > svg {
+li:has(> .folder-outer:not(.open)) > .folder-container > .folder-icon {
   transform: rotate(-90deg);
 }
 

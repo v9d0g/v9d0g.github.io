@@ -1,3 +1,5 @@
+import { PxlKitInlineIcon } from "./PxlKitInlineIcon"
+import { ArrowRight } from "@pxlkit/ui"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import legacyStyle from "./styles/legacyToc.scss"
 import modernStyle from "./styles/toc.scss"
@@ -32,35 +34,22 @@ export default ((opts?: Partial<Options>) => {
 
     const id = `toc-${numTocs++}`
     return (
-      <div class={classNames(displayClass, "toc")}>
+      <div className={classNames(displayClass, "toc")}>
         <button
           type="button"
-          class={fileData.collapseToc ? "collapsed toc-header" : "toc-header"}
+          className={fileData.collapseToc ? "collapsed toc-header" : "toc-header"}
           aria-controls={id}
           aria-expanded={!fileData.collapseToc}
         >
           <h3>{i18n(cfg.locale).components.tableOfContents.title}</h3>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="fold"
-          >
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
+          <PxlKitInlineIcon icon={ArrowRight} size={14} className="fold" />
         </button>
         <OverflowList
           id={id}
-          class={fileData.collapseToc ? "collapsed toc-content" : "toc-content"}
+          className={fileData.collapseToc ? "collapsed toc-content" : "toc-content"}
         >
           {fileData.toc.map((tocEntry) => (
-            <li key={tocEntry.slug} class={`depth-${tocEntry.depth}`}>
+            <li key={tocEntry.slug} className={`depth-${tocEntry.depth}`}>
               <a href={`#${tocEntry.slug}`} data-for={tocEntry.slug}>
                 {tocEntry.text}
               </a>
@@ -79,13 +68,13 @@ export default ((opts?: Partial<Options>) => {
       return null
     }
     return (
-      <details class="toc" open={!fileData.collapseToc}>
+      <details className="toc" open={!fileData.collapseToc}>
         <summary>
           <h3>{i18n(cfg.locale).components.tableOfContents.title}</h3>
         </summary>
         <ul>
           {fileData.toc.map((tocEntry) => (
-            <li key={tocEntry.slug} class={`depth-${tocEntry.depth}`}>
+            <li key={tocEntry.slug} className={`depth-${tocEntry.depth}`}>
               <a href={`#${tocEntry.slug}`} data-for={tocEntry.slug}>
                 {tocEntry.text}
               </a>

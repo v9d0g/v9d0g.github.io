@@ -1,13 +1,17 @@
-import { JSX } from "preact"
+import { HTMLAttributes } from "react"
 
 const OverflowList = ({
   children,
   ...props
-}: JSX.HTMLAttributes<HTMLUListElement> & { id: string }) => {
+}: HTMLAttributes<HTMLUListElement> & { id: string }) => {
   return (
-    <ul {...props} class={[props.class, "overflow"].filter(Boolean).join(" ")} id={props.id}>
+    <ul
+      {...props}
+      className={[props.className, "overflow"].filter(Boolean).join(" ")}
+      id={props.id}
+    >
       {children}
-      <li class="overflow-end" />
+      <li className="overflow-end" />
     </ul>
   )
 }
@@ -17,9 +21,7 @@ export default () => {
   const id = `list-${numLists++}`
 
   return {
-    OverflowList: (props: JSX.HTMLAttributes<HTMLUListElement>) => (
-      <OverflowList {...props} id={id} />
-    ),
+    OverflowList: (props: HTMLAttributes<HTMLUListElement>) => <OverflowList {...props} id={id} />,
     overflowListAfterDOMLoaded: `
 document.addEventListener("nav", (e) => {
   const observer = new IntersectionObserver((entries) => {

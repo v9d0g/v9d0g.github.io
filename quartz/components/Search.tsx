@@ -4,6 +4,8 @@ import style from "./styles/search.scss"
 import script from "./scripts/search.inline"
 import { classNames } from "../util/lang"
 import { i18n } from "../i18n"
+import { PxlKitInlineIcon } from "./PxlKitInlineIcon"
+import { Search as SearchIcon } from "@pxlkit/ui"
 
 export interface SearchOptions {
   enablePreview: boolean
@@ -18,28 +20,22 @@ export default ((userOpts?: Partial<SearchOptions>) => {
     const opts = { ...defaultOptions, ...userOpts }
     const searchPlaceholder = i18n(cfg.locale).components.search.searchBarPlaceholder
     return (
-      <div class={classNames(displayClass, "search")}>
-        <button class="search-button">
-          <svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7">
-            <title>Search</title>
-            <g class="search-path" fill="none">
-              <path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4" />
-              <circle cx="8" cy="8" r="7" />
-            </g>
-          </svg>
-          <p>{i18n(cfg.locale).components.search.title}</p>
+      <div className={classNames(displayClass, "search")}>
+        <button className="search-button">
+          <PxlKitInlineIcon icon={SearchIcon} size={18} className="search-icon" />
+          <span>{i18n(cfg.locale).components.search.title}</span>
         </button>
-        <div class="search-container">
-          <div class="search-space">
+        <div className="search-container">
+          <div className="search-space">
             <input
-              autocomplete="off"
-              class="search-bar"
+              autoComplete="off"
+              className="search-bar"
               name="search"
               type="text"
               aria-label={searchPlaceholder}
               placeholder={searchPlaceholder}
             />
-            <div class="search-layout" data-preview={opts.enablePreview}></div>
+            <div className="search-layout" data-preview={opts.enablePreview}></div>
           </div>
         </div>
       </div>

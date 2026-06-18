@@ -19,6 +19,17 @@ body {
   color: var(--darkgray);
 }
 
+.pxlkit-inline-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+
+  & svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
 .text-highlight {
   background-color: var(--textHighlight);
   padding: 0 0.1rem;
@@ -112,12 +123,10 @@ a {
   }
 
   &.external .external-icon {
+    display: inline-block;
+    vertical-align: middle;
     height: 1ex;
     margin: 0 0.15em;
-
-    > path {
-      fill: var(--dark);
-    }
   }
 }
 
@@ -370,12 +379,20 @@ h4,
 h5,
 h6 {
   &[id] > a[href^="#"] {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
     margin: 0 0.5rem;
     opacity: 0;
     transition: opacity 0.2s ease;
-    transform: translateY(-0.1rem);
     font-family: var(--codeFont);
     user-select: none;
+
+    & svg {
+      width: 1em;
+      height: 1em;
+      display: block;
+    }
   }
 
   &[id]:hover > a {

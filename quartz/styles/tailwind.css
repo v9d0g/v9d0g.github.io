@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+/* Dark mode via .dark class, synced with Quartz saved-theme attribute */
+@variant dark (&:where(.dark, .dark *));
+
+/* Source pxlkit components so Tailwind generates their utility classes */
+@source "../../node_modules/@pxlkit/ui-kit";
+@source "../../node_modules/@pxlkit/core";

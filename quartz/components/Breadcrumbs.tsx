@@ -1,3 +1,4 @@
+import { PixelTextLink } from "@pxlkit/ui-kit"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import breadcrumbsStyle from "./styles/breadcrumbs.scss"
 import { FullSlug, SimpleSlug, resolveRelative, simplifySlug } from "../util/path"
@@ -77,10 +78,16 @@ export default ((opts?: Partial<BreadcrumbOptions>) => {
     }
 
     return (
-      <nav class={classNames(displayClass, "breadcrumb-container")} aria-label="breadcrumbs">
+      <nav className={classNames(displayClass, "breadcrumb-container")} aria-label="breadcrumbs">
         {crumbs.map((crumb, index) => (
-          <div class="breadcrumb-element">
-            <a href={crumb.path}>{crumb.displayName}</a>
+          <div key={crumb.path} className="breadcrumb-element">
+            {crumb.path ? (
+              <PixelTextLink href={crumb.path} tone="cyan">
+                {crumb.displayName}
+              </PixelTextLink>
+            ) : (
+              <span>{crumb.displayName}</span>
+            )}
             {index !== crumbs.length - 1 && <p>{` ${options.spacerSymbol} `}</p>}
           </div>
         ))}

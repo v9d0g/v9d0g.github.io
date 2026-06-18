@@ -21,18 +21,18 @@ export const CanvasRenderer: QuartzTransformerPlugin = () => {
                 node.properties.dataUrl.endsWith(".canvas")
               ) {
                 const rawPath = node.properties.dataUrl
-                
+
                 // 获取当前 markdown 文件的目录路径（不含文件名）
                 // 例如 slug="随记/Quartz-搭建过程" -> dir="随记"
-                const dir = curSlug.includes("/") 
-                  ? curSlug.substring(0, curSlug.lastIndexOf("/")) 
+                const dir = curSlug.includes("/")
+                  ? curSlug.substring(0, curSlug.lastIndexOf("/"))
                   : ""
 
                 // 构造 canvas 文件的访问路径
                 // 如果 rawPath 已经是绝对路径（以/开头），直接用；否则拼接目录
                 // 例如: "test.canvas" -> "/随记/test.canvas"
-                const canvasPath = rawPath.startsWith("/") 
-                  ? rawPath 
+                const canvasPath = rawPath.startsWith("/")
+                  ? rawPath
                   : (dir ? `/${dir}/` : "/") + rawPath
 
                 const iframeNode: Element = {
@@ -42,12 +42,13 @@ export const CanvasRenderer: QuartzTransformerPlugin = () => {
                     // 直接传递可访问的 canvas 文件路径
                     src: `/static/canvas-view?data=${encodeURIComponent(canvasPath)}`,
                     className: ["quartz-canvas-iframe"],
-                    style: "width: 100%; height: 600px; border: 1px solid var(--lightgray); border-radius: 12px; background: #161618;",
+                    style:
+                      "width: 100%; height: 600px; border: 1px solid var(--lightgray); border-radius: 12px; background: #161618;",
                     frameBorder: "0",
                     allow: "fullscreen",
-                    loading: "lazy"
+                    loading: "lazy",
                   },
-                  children: []
+                  children: [],
                 }
 
                 if (parent && index !== undefined) {
@@ -58,6 +59,6 @@ export const CanvasRenderer: QuartzTransformerPlugin = () => {
           }
         },
       ]
-    }
+    },
   }
 }

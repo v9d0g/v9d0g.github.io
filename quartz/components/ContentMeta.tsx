@@ -3,7 +3,7 @@ import { QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import readingTime from "reading-time"
 import { classNames } from "../util/lang"
 import { i18n } from "../i18n"
-import { JSX } from "preact"
+import { JSX } from "react"
 import style from "./styles/contentMeta.scss"
 
 interface ContentMetaOptions {
@@ -30,7 +30,7 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
       const segments: (string | JSX.Element)[] = []
 
       if (fileData.dates) {
-        segments.push(<Date date={getDate(cfg, fileData)!} locale={cfg.locale} />)
+        segments.push(<Date key="date" date={getDate(cfg, fileData)!} locale={cfg.locale} />)
       }
 
       // Display reading time if enabled
@@ -39,11 +39,14 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
         const displayedTime = i18n(cfg.locale).components.contentMeta.readingTime({
           minutes: Math.ceil(minutes),
         })
-        segments.push(<span>{displayedTime}</span>)
+        segments.push(<span key="reading-time">{displayedTime}</span>)
       }
 
       return (
-        <p show-comma={options.showComma} class={classNames(displayClass, "content-meta")}>
+        <p
+          show-comma={options.showComma.toString()}
+          className={classNames(displayClass, "content-meta")}
+        >
           {segments}
         </p>
       )

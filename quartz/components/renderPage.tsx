@@ -1,4 +1,4 @@
-import { render } from "preact-render-to-string"
+import { renderToString } from "react-dom/server"
 import { QuartzComponent, QuartzComponentProps } from "./types"
 import HeaderConstructor from "./Header"
 import BodyConstructor from "./Body"
@@ -10,6 +10,7 @@ import { Root, Element, ElementContent } from "hast"
 import { GlobalConfiguration } from "../cfg"
 import { i18n } from "../i18n"
 import { styleText } from "util"
+import { PxlKitSurfaceProvider } from "@pxlkit/ui-kit"
 
 interface RenderComponents {
   head: QuartzComponent
@@ -242,17 +243,17 @@ export function renderPage(
   const Body = BodyConstructor()
 
   const LeftComponent = (
-    <div class="left sidebar">
-      {left.map((BodyComponent) => (
-        <BodyComponent {...componentData} />
+    <div className="left sidebar">
+      {left.map((BodyComponent, idx) => (
+        <BodyComponent key={`left-${idx}`} {...componentData} />
       ))}
     </div>
   )
 
   const RightComponent = (
-    <div class="right sidebar">
-      {right.map((BodyComponent) => (
-        <BodyComponent {...componentData} />
+    <div className="right sidebar">
+      {right.map((BodyComponent, idx) => (
+        <BodyComponent key={`right-${idx}`} {...componentData} />
       ))}
     </div>
   )
@@ -263,32 +264,34 @@ export function renderPage(
     <html lang={lang} dir={direction}>
       <Head {...componentData} />
       <body data-slug={slug}>
-        <div id="quartz-root" class="page">
+        <div id="quartz-root" className="page">
           <Body {...componentData}>
-            {LeftComponent}
-            <div class="center">
-              <div class="page-header">
-                <Header {...componentData}>
-                  {header.map((HeaderComponent) => (
-                    <HeaderComponent {...componentData} />
-                  ))}
-                </Header>
-                <div class="popover-hint">
-                  {beforeBody.map((BodyComponent) => (
-                    <BodyComponent {...componentData} />
+            <PxlKitSurfaceProvider surface="pixel">
+              {LeftComponent}
+              <div className="center">
+                <div className="page-header">
+                  <Header {...componentData}>
+                    {header.map((HeaderComponent, idx) => (
+                      <HeaderComponent key={`header-${idx}`} {...componentData} />
+                    ))}
+                  </Header>
+                  <div className="popover-hint">
+                    {beforeBody.map((BodyComponent, idx) => (
+                      <BodyComponent key={`before-${idx}`} {...componentData} />
+                    ))}
+                  </div>
+                </div>
+                <Content {...componentData} />
+                <hr />
+                <div className="page-footer">
+                  {afterBody.map((BodyComponent, idx) => (
+                    <BodyComponent key={`after-${idx}`} {...componentData} />
                   ))}
                 </div>
               </div>
-              <Content {...componentData} />
-              <hr />
-              <div class="page-footer">
-                {afterBody.map((BodyComponent) => (
-                  <BodyComponent {...componentData} />
-                ))}
-              </div>
-            </div>
-            {RightComponent}
-            <Footer {...componentData} />
+              {RightComponent}
+              <Footer {...componentData} />
+            </PxlKitSurfaceProvider>
           </Body>
         </div>
       </body>
@@ -298,5 +301,5 @@ export function renderPage(
     </html>
   )
 
-  return "<!DOCTYPE html>\n" + render(doc)
+  return "<!DOCTYPE html>\n" + renderToString(doc)
 }

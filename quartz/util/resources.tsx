@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto"
-import { JSX } from "preact/jsx-runtime"
+import { JSX } from "react"
 import { QuartzPluginData } from "../plugins/vfile"
 
 export type JSResource = {
@@ -26,9 +26,15 @@ export type CSSResource = {
 export function JSResourceToScriptElement(resource: JSResource, preserve?: boolean): JSX.Element {
   const scriptType = resource.moduleType ?? "application/javascript"
   const spaPreserve = preserve ?? resource.spaPreserve
+  const spaPreserveAttr = spaPreserve ? "true" : undefined
   if (resource.contentType === "external") {
     return (
-      <script key={resource.src} src={resource.src} type={scriptType} spa-preserve={spaPreserve} />
+      <script
+        key={resource.src}
+        src={resource.src}
+        type={scriptType}
+        spa-preserve={spaPreserveAttr}
+      />
     )
   } else {
     const content = resource.script
@@ -36,7 +42,7 @@ export function JSResourceToScriptElement(resource: JSResource, preserve?: boole
       <script
         key={randomUUID()}
         type={scriptType}
-        spa-preserve={spaPreserve}
+        spa-preserve={spaPreserveAttr}
         dangerouslySetInnerHTML={{ __html: content }}
       ></script>
     )
@@ -45,8 +51,9 @@ export function JSResourceToScriptElement(resource: JSResource, preserve?: boole
 
 export function CSSResourceToStyleElement(resource: CSSResource, preserve?: boolean): JSX.Element {
   const spaPreserve = preserve ?? resource.spaPreserve
+  const spaPreserveAttr = spaPreserve ? "true" : undefined
   if (resource.inline ?? false) {
-    return <style>{resource.content}</style>
+    return <style key={randomUUID()}>{resource.content}</style>
   } else {
     return (
       <link
@@ -54,7 +61,7 @@ export function CSSResourceToStyleElement(resource: CSSResource, preserve?: bool
         href={resource.content}
         rel="stylesheet"
         type="text/css"
-        spa-preserve={spaPreserve}
+        spa-preserve={spaPreserveAttr}
       />
     )
   }
