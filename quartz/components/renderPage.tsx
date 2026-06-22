@@ -282,34 +282,31 @@ export function renderPage(
           <Body {...componentData}>
             <PxlKitSurfaceProvider surface="pixel">
               {LeftComponent}
-              <div className="center">
-                <div className="page-header">
-                  <Header {...componentData}>
-                    {header.map((HeaderComponent, idx) => (
-                      <HeaderComponent key={`header-${idx}`} {...componentData} />
-                    ))}
-                  </Header>
-                  <PixelBox
-                    as="div"
-                    variant="outline"
-                    border
-                    tone="neutral"
-                    padding="md"
-                    className="popover-hint"
-                  >
-                    {beforeBody.map((BodyComponent, idx) => (
-                      <BodyComponent key={`before-${idx}`} {...componentData} />
-                    ))}
-                  </PixelBox>
+              <PixelBox
+                as="div"
+                variant="outline"
+                border
+                tone="neutral"
+                padding="none"
+                className="center"
+              >
+                <Header {...componentData}>
+                  {header.map((HeaderComponent, idx) => (
+                    <HeaderComponent key={`header-${idx}`} {...componentData} />
+                  ))}
+                </Header>
+                <div className="popover-hint">
+                  {beforeBody.map((BodyComponent, idx) => (
+                    <BodyComponent key={`before-${idx}`} {...componentData} />
+                  ))}
                 </div>
                 <Content {...componentData} />
-                <hr />
                 <div className="page-footer">
                   {afterBody.map((BodyComponent, idx) => (
                     <BodyComponent key={`after-${idx}`} {...componentData} />
                   ))}
                 </div>
-              </div>
+              </PixelBox>
               {RightComponent}
               <Footer {...componentData} />
             </PxlKitSurfaceProvider>
