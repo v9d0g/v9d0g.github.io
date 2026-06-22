@@ -1,5 +1,6 @@
 import { PxlKitInlineIcon } from "./PxlKitInlineIcon"
 import { Grid } from "@pxlkit/ui"
+import { PixelBox } from "@pxlkit/ui-kit"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 // @ts-ignore
 import script from "./scripts/graph.inline"
@@ -68,12 +69,14 @@ export default ((opts?: Partial<GraphOptions>) => {
     return (
       <div className={classNames(displayClass, "graph")}>
         <h3>{i18n(cfg.locale).components.graph.title}</h3>
-        <div className="graph-outer">
-          <div className="graph-container" data-cfg={JSON.stringify(localGraph)}></div>
-          <button className="global-graph-icon" aria-label="Global Graph">
-            <PxlKitInlineIcon icon={Grid} size={24} />
-          </button>
-        </div>
+        <PixelBox variant="outline" border padding="none">
+          <div className="graph-outer">
+            <div className="graph-container" data-cfg={JSON.stringify(localGraph)}></div>
+            <button className="global-graph-icon" aria-label="Global Graph">
+              <PxlKitInlineIcon icon={Grid} size={24} />
+            </button>
+          </div>
+        </PixelBox>
         <div className="global-graph-outer">
           <div className="global-graph-container" data-cfg={JSON.stringify(globalGraph)}></div>
         </div>

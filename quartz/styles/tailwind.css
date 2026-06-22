@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@pxlkit/ui-kit/styles.css";
 
 /* Dark mode via .dark class, synced with Quartz saved-theme attribute */
 @variant dark (&:where(.dark, .dark *));
