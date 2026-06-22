@@ -4,26 +4,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a **Quartz v4** fork — a static site generator that publishes Obsidian vaults and Markdown notes as websites. It is built on Node.js 22+ with TypeScript, Preact, and esbuild. Content lives in `content/public/` and the built site is emitted to `docs/` (GitHub Pages).
+This is a **Quartz v4** fork — a static site generator that publishes Obsidian vaults and Markdown notes as websites. It is built on Node.js 22+ with TypeScript, React, esbuild, and Tailwind CSS v4. Content lives in `content/public/` and the built site is emitted to `docs/` for GitHub Pages.
 
 Upstream: https://github.com/jackyzha0/quartz  
 Documentation: https://quartz.jzhao.xyz/
+
+This fork has been migrated from Preact to React and integrates **pxlkit** for pixel-art icons and UI components (`@pxlkit/core`, `@pxlkit/ui-kit`, `@pxlkit/ui`, `@pxlkit/weather`, `@pxlkit/gamification`).
 
 ## Common Commands
 
 All commands run through `npm` or `npx quartz` (the CLI entry point is `quartz/bootstrap-cli.mjs`).
 
-| Task | Command |
-|---|---|
-| Build site (production) | `npx quartz build --directory=content/public --output=docs` |
-| Build and serve locally with hot reload | `npx quartz build --serve` (or `npm run docs` which builds into `docs/`) |
-| Type check + Prettier check | `npm run check` |
-| Format code | `npm run format` |
-| Run tests | `npm test` (uses Node.js native test runner via `tsx --test`) |
-| Run single test file | `npx tsx --test quartz/util/path.test.ts` |
-| Update Quartz from upstream | `npx quartz update` |
-| Sync content to/from GitHub | `npx quartz sync` |
-| Windows deploy (clean → build → git push) | `update.bat` |
+| Task                                      | Command                                                       |
+| ----------------------------------------- | ------------------------------------------------------------- |
+| Build site (production)                   | `npx quartz build --directory=content/public --output=docs`   |
+| Build and serve locally with hot reload   | `npx quartz build --serve` (or `npm run docs`)                |
+| Type check + Prettier check               | `npm run check`                                               |
+| Format code                               | `npm run format`                                              |
+| Run tests                                 | `npm test` (uses Node.js native test runner via `tsx --test`) |
+| Run single test file                      | `npx tsx --test quartz/util/path.test.ts`                     |
+| Update Quartz from upstream               | `npx quartz update`                                           |
+| Sync content to/from GitHub               | `npx quartz sync`                                             |
+| Windows deploy (clean → build → git push) | `update.bat`                                                  |
 
 Development server defaults: HTTP on port `8080`, WebSocket hot-reload on port `3001`. The `--serve` flag implicitly enables `--watch`.
 
@@ -49,13 +51,15 @@ Plugins are defined in `quartz.config.ts` and divided into three types in `quart
 
 ### Component System
 
-UI components are Preact functional components in `quartz/components/`. The layout is configured in `quartz.layout.ts`:
+UI components are React functional components in `quartz/components/`. The layout is configured in `quartz.layout.ts`:
 
 - `sharedPageComponents` — Head, header, footer, afterBody (shared across all pages)
 - `defaultContentPageLayout` — Layout for individual note pages
 - `defaultListPageLayout` — Layout for index/list pages (tags, folders)
 
-Components declare their CSS/JS dependencies via `QuartzComponent` which returns `[Component, Resources]`. The `ComponentResources` emitter collects only the resources used by components present in the current layout.
+Components declare their CSS/JS dependencies via `QuartzComponent`. The `ComponentResources` emitter collects only the resources used by components present in the current layout.
+
+Components render icons through `PxlKitInlineIcon` (`quartz/components/PxlKitInlineIcon.tsx`), which converts pxlkit `PxlKitData` into inline SVG with `currentColor` or the original palette. Heading anchors and external link icons are injected at build time via `quartz/util/pxlkit.ts`.
 
 ### Content Resolution
 
@@ -66,18 +70,21 @@ Components declare their CSS/JS dependencies via `QuartzComponent` which returns
 
 ### Customizations in This Fork
 
-- **`CanvasRenderer`** plugin (`quartz/plugins/transformers/canvas.ts`) — Custom transformer for Obsidian `.canvas` files, referenced in `quartz.config.ts`
-- **`update.bat`** — Windows deployment script that cleans `docs/`, builds, commits with message `docs:更新文章`, and pushes to `origin v4`
+- **React migration** — JSX runtime and SSR rendering moved from Preact to React (`react`, `react-dom`, `@types/react`).
+- **Tailwind CSS v4** — Entry point at `quartz/styles/tailwind.css`, processed through PostCSS in `quartz/cli/handlers.js`.
+- **pxlkit icons** — All UI icons (search, theme toggle, reader mode, explorer, graph, TOC, headings, external links) use pxlkit pixel-art icons.
+- **CanvasRenderer** plugin (`quartz/plugins/transformers/canvas.ts`) — Custom transformer for Obsidian `.canvas` files, referenced in `quartz.config.ts`.
+- **`update.bat`** — Windows deployment script that cleans `docs/`, builds, commits with message `docs:更新文章`, and pushes to `origin v4`.
 - **Locale**: `zh-CN`
 - **Base URL**: `v9d0g.github.io`
 
 ## Key Configuration Files
 
-| File | Purpose |
-|---|---|
-| `quartz.config.ts` | Site config (title, theme, analytics, plugin pipeline) |
+| File               | Purpose                                                 |
+| ------------------ | ------------------------------------------------------- |
+| `quartz.config.ts` | Site config (title, theme, analytics, plugin pipeline)  |
 | `quartz.layout.ts` | Page layout composition (which components appear where) |
-| `quartz/cfg.ts` | TypeScript types for configuration |
+| `quartz/cfg.ts`    | TypeScript types for configuration                      |
 
 ## File Conventions
 
@@ -91,4 +98,5 @@ Components declare their CSS/JS dependencies via `QuartzComponent` which returns
 Tests use Node.js's native `node:test` runner. Test files follow the pattern `*.test.ts`. There is no test framework dependency beyond `tsx` for TypeScript execution.
 
 ## 必须遵守
+
 每次回答我之前都要以[尊敬的艾尔登之王]来称呼我

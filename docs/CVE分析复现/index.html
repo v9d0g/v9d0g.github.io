@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh" dir="ltr"><head><title>文件夹: CVE分析复现</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted Grotesk:wght@400;700&amp;family=Source Sans Pro:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="V9d0g"/><meta property="og:title" content="文件夹: CVE分析复现"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="文件夹: CVE分析复现"/><meta name="twitter:description" content="无描述"/><meta property="og:description" content="无描述"/><meta property="og:image:alt" content="无描述"/><meta property="twitter:domain" content="v9d0g.github.io"/><meta property="og:url" content="https://v9d0g.github.io/CVE分析复现/index"/><meta property="twitter:url" content="https://v9d0g.github.io/CVE分析复现/index"/><link rel="icon" href="../static/icon.png"/><meta name="description" content="无描述"/><meta name="generator" content="Quartz"/><link href="../index.css" rel="stylesheet" type="text/css" spa-preserve/><style>.expand-button {
+<html lang="zh" dir="ltr"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="preload" as="image" href="../static/icon_pixel_art.png"/><title>文件夹: CVE分析复现</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="og:site_name" content="V9d0g"/><meta property="og:title" content="文件夹: CVE分析复现"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="文件夹: CVE分析复现"/><meta name="twitter:description" content="无描述"/><meta property="og:description" content="无描述"/><meta property="og:image:alt" content="无描述"/><meta property="twitter:domain" content="v9d0g.github.io"/><meta property="og:url" content="https://v9d0g.github.io/CVE分析复现/index"/><meta property="twitter:url" content="https://v9d0g.github.io/CVE分析复现/index"/><link rel="icon" href="../static/icon.png"/><meta name="description" content="无描述"/><meta name="generator" content="Quartz"/><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://v9d0g.github.io/index.xml"/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta property="og:image" content="https://v9d0g.github.io/static/og-image.png"/><meta property="og:image:url" content="https://v9d0g.github.io/static/og-image.png"/><meta name="twitter:image" content="https://v9d0g.github.io/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted Grotesk:wght@400;700&amp;family=Source Sans Pro:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link href="../index.css" rel="stylesheet" type="text/css" spa-preserve="true"/><style>.expand-button {
   position: absolute;
   display: flex;
   float: right;
@@ -116,7 +116,7 @@ pre:hover > .expand-button {
   padding: 0 12px;
   font-size: 14px;
 }
-/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiVzpcXGJsb2dcXHY5ZDBnLmdpdGh1Yi5pb1xccXVhcnR6XFxjb21wb25lbnRzXFxzdHlsZXMiLCJzb3VyY2VzIjpbIm1lcm1haWQuaW5saW5lLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUdGO0VBQ0U7OztBQUtGO0VBQ0U7RUFDQTs7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTs7QUFHRjtFQUNFO0VBQ0E7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7O0FBSUY7RUFDRTtFQUNBO0VBQ0EiLCJzb3VyY2VzQ29udGVudCI6WyIuZXhwYW5kLWJ1dHRvbiB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBwYWRkaW5nOiAwLjRyZW07XG4gIG1hcmdpbjogMC4zcmVtO1xuICByaWdodDogMDsgLy8gTk9URTogcmlnaHQgd2lsbCBiZSBzZXQgaW4gbWVybWFpZC5pbmxpbmUudHNcbiAgY29sb3I6IHZhcigtLWdyYXkpO1xuICBib3JkZXItY29sb3I6IHZhcigtLWRhcmspO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gIGJvcmRlcjogMXB4IHNvbGlkO1xuICBib3JkZXItcmFkaXVzOiA1cHg7XG4gIG9wYWNpdHk6IDA7XG4gIHRyYW5zaXRpb246IDAuMnM7XG5cbiAgJiA+IHN2ZyB7XG4gICAgZmlsbDogdmFyKC0tbGlnaHQpO1xuICAgIGZpbHRlcjogY29udHJhc3QoMC4zKTtcbiAgfVxuXG4gICY6aG92ZXIge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBib3JkZXItY29sb3I6IHZhcigtLXNlY29uZGFyeSk7XG4gIH1cblxuICAmOmZvY3VzIHtcbiAgICBvdXRsaW5lOiAwO1xuICB9XG59XG5cbnByZSB7XG4gICY6aG92ZXIgPiAuZXhwYW5kLWJ1dHRvbiB7XG4gICAgb3BhY2l0eTogMTtcbiAgICB0cmFuc2l0aW9uOiAwLjJzO1xuICB9XG59XG5cbiNtZXJtYWlkLWNvbnRhaW5lciB7XG4gIHBvc2l0aW9uOiBmaXhlZDtcbiAgY29udGFpbjogbGF5b3V0O1xuICB6LWluZGV4OiA5OTk7XG4gIGxlZnQ6IDA7XG4gIHRvcDogMDtcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IDEwMHZoO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICBkaXNwbGF5OiBub25lO1xuICBiYWNrZHJvcC1maWx0ZXI6IGJsdXIoNHB4KTtcbiAgYmFja2dyb3VuZDogcmdiYSgwLCAwLCAwLCAwLjUpO1xuXG4gICYuYWN0aXZlIHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIH1cblxuICAmID4gI21lcm1haWQtc3BhY2Uge1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICAgIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgdG9wOiA1MCU7XG4gICAgbGVmdDogNTAlO1xuICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKC01MCUsIC01MCUpO1xuICAgIGhlaWdodDogODB2aDtcbiAgICB3aWR0aDogODB2dztcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuXG4gICAgJiA+IC5tZXJtYWlkLWNvbnRlbnQge1xuICAgICAgcGFkZGluZzogMnJlbTtcbiAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgIHRyYW5zZm9ybS1vcmlnaW46IDAgMDtcbiAgICAgIHRyYW5zaXRpb246IHRyYW5zZm9ybSAwLjFzIGVhc2U7XG4gICAgICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgICAgIG1pbi1oZWlnaHQ6IDIwMHB4O1xuICAgICAgbWluLXdpZHRoOiAyMDBweDtcblxuICAgICAgcHJlIHtcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBib3JkZXI6IG5vbmU7XG4gICAgICB9XG5cbiAgICAgIHN2ZyB7XG4gICAgICAgIG1heC13aWR0aDogbm9uZTtcbiAgICAgICAgaGVpZ2h0OiBhdXRvO1xuICAgICAgfVxuICAgIH1cblxuICAgICYgPiAubWVybWFpZC1jb250cm9scyB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICBib3R0b206IDIwcHg7XG4gICAgICByaWdodDogMjBweDtcbiAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICBnYXA6IDhweDtcbiAgICAgIHBhZGRpbmc6IDhweDtcbiAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICBib3JkZXItcmFkaXVzOiA2cHg7XG4gICAgICBib3gtc2hhZG93OiAwIDJweCA0cHggcmdiYSgwLCAwLCAwLCAwLjEpO1xuICAgICAgei1pbmRleDogMjtcblxuICAgICAgLm1lcm1haWQtY29udHJvbC1idXR0b24ge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgd2lkdGg6IDMycHg7XG4gICAgICAgIGhlaWdodDogMzJweDtcbiAgICAgICAgcGFkZGluZzogMDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHQpO1xuICAgICAgICBjb2xvcjogdmFyKC0tZGFyayk7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBmb250LXNpemU6IDE2cHg7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1ib2R5Rm9udCk7XG4gICAgICAgIHRyYW5zaXRpb246IGFsbCAwLjJzIGVhc2U7XG5cbiAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgfVxuXG4gICAgICAgICY6YWN0aXZlIHtcbiAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoMXB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgIC8vIFN0eWxlIHRoZSByZXNldCBidXR0b24gZGlmZmVyZW50bHlcbiAgICAgICAgJjpudGgtY2hpbGQoMikge1xuICAgICAgICAgIHdpZHRoOiBhdXRvO1xuICAgICAgICAgIHBhZGRpbmc6IDAgMTJweDtcbiAgICAgICAgICBmb250LXNpemU6IDE0cHg7XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdfQ== */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" spa-preserve/><style>
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiVzpcXGJsb2dcXHY5ZDBnLmdpdGh1Yi5pb1xccXVhcnR6XFxjb21wb25lbnRzXFxzdHlsZXMiLCJzb3VyY2VzIjpbIm1lcm1haWQuaW5saW5lLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUdGO0VBQ0U7OztBQUtGO0VBQ0U7RUFDQTs7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTs7QUFHRjtFQUNFO0VBQ0E7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7O0FBSUY7RUFDRTtFQUNBO0VBQ0EiLCJzb3VyY2VzQ29udGVudCI6WyIuZXhwYW5kLWJ1dHRvbiB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBwYWRkaW5nOiAwLjRyZW07XG4gIG1hcmdpbjogMC4zcmVtO1xuICByaWdodDogMDsgLy8gTk9URTogcmlnaHQgd2lsbCBiZSBzZXQgaW4gbWVybWFpZC5pbmxpbmUudHNcbiAgY29sb3I6IHZhcigtLWdyYXkpO1xuICBib3JkZXItY29sb3I6IHZhcigtLWRhcmspO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gIGJvcmRlcjogMXB4IHNvbGlkO1xuICBib3JkZXItcmFkaXVzOiA1cHg7XG4gIG9wYWNpdHk6IDA7XG4gIHRyYW5zaXRpb246IDAuMnM7XG5cbiAgJiA+IHN2ZyB7XG4gICAgZmlsbDogdmFyKC0tbGlnaHQpO1xuICAgIGZpbHRlcjogY29udHJhc3QoMC4zKTtcbiAgfVxuXG4gICY6aG92ZXIge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBib3JkZXItY29sb3I6IHZhcigtLXNlY29uZGFyeSk7XG4gIH1cblxuICAmOmZvY3VzIHtcbiAgICBvdXRsaW5lOiAwO1xuICB9XG59XG5cbnByZSB7XG4gICY6aG92ZXIgPiAuZXhwYW5kLWJ1dHRvbiB7XG4gICAgb3BhY2l0eTogMTtcbiAgICB0cmFuc2l0aW9uOiAwLjJzO1xuICB9XG59XG5cbiNtZXJtYWlkLWNvbnRhaW5lciB7XG4gIHBvc2l0aW9uOiBmaXhlZDtcbiAgY29udGFpbjogbGF5b3V0O1xuICB6LWluZGV4OiA5OTk7XG4gIGxlZnQ6IDA7XG4gIHRvcDogMDtcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IDEwMHZoO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICBkaXNwbGF5OiBub25lO1xuICBiYWNrZHJvcC1maWx0ZXI6IGJsdXIoNHB4KTtcbiAgYmFja2dyb3VuZDogcmdiYSgwLCAwLCAwLCAwLjUpO1xuXG4gICYuYWN0aXZlIHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIH1cblxuICAmID4gI21lcm1haWQtc3BhY2Uge1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICAgIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgdG9wOiA1MCU7XG4gICAgbGVmdDogNTAlO1xuICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKC01MCUsIC01MCUpO1xuICAgIGhlaWdodDogODB2aDtcbiAgICB3aWR0aDogODB2dztcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuXG4gICAgJiA+IC5tZXJtYWlkLWNvbnRlbnQge1xuICAgICAgcGFkZGluZzogMnJlbTtcbiAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgIHRyYW5zZm9ybS1vcmlnaW46IDAgMDtcbiAgICAgIHRyYW5zaXRpb246IHRyYW5zZm9ybSAwLjFzIGVhc2U7XG4gICAgICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgICAgIG1pbi1oZWlnaHQ6IDIwMHB4O1xuICAgICAgbWluLXdpZHRoOiAyMDBweDtcblxuICAgICAgcHJlIHtcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBib3JkZXI6IG5vbmU7XG4gICAgICB9XG5cbiAgICAgIHN2ZyB7XG4gICAgICAgIG1heC13aWR0aDogbm9uZTtcbiAgICAgICAgaGVpZ2h0OiBhdXRvO1xuICAgICAgfVxuICAgIH1cblxuICAgICYgPiAubWVybWFpZC1jb250cm9scyB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICBib3R0b206IDIwcHg7XG4gICAgICByaWdodDogMjBweDtcbiAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICBnYXA6IDhweDtcbiAgICAgIHBhZGRpbmc6IDhweDtcbiAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICBib3JkZXItcmFkaXVzOiA2cHg7XG4gICAgICBib3gtc2hhZG93OiAwIDJweCA0cHggcmdiYSgwLCAwLCAwLCAwLjEpO1xuICAgICAgei1pbmRleDogMjtcblxuICAgICAgLm1lcm1haWQtY29udHJvbC1idXR0b24ge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgd2lkdGg6IDMycHg7XG4gICAgICAgIGhlaWdodDogMzJweDtcbiAgICAgICAgcGFkZGluZzogMDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHQpO1xuICAgICAgICBjb2xvcjogdmFyKC0tZGFyayk7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBmb250LXNpemU6IDE2cHg7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1ib2R5Rm9udCk7XG4gICAgICAgIHRyYW5zaXRpb246IGFsbCAwLjJzIGVhc2U7XG5cbiAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgfVxuXG4gICAgICAgICY6YWN0aXZlIHtcbiAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoMXB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgIC8vIFN0eWxlIHRoZSByZXNldCBidXR0b24gZGlmZmVyZW50bHlcbiAgICAgICAgJjpudGgtY2hpbGQoMikge1xuICAgICAgICAgIHdpZHRoOiBhdXRvO1xuICAgICAgICAgIHBhZGRpbmc6IDAgMTJweDtcbiAgICAgICAgICBmb250LXNpemU6IDE0cHg7XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdfQ== */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" spa-preserve="true"/><style>
 /* Lightbox Image Styles */
 .lightbox-wrapper {
   display: block;
@@ -223,7 +223,229 @@ body.lightbox-open {
     height: 35px;
   }
 }
-            </style><script src="../prescript.js" type="application/javascript" spa-preserve></script><script type="application/javascript" spa-preserve>const fetchData = fetch("../static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://v9d0g.github.io/index.xml"/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta property="og:image" content="https://v9d0g.github.io/static/og-image.png"/><meta property="og:image:url" content="https://v9d0g.github.io/static/og-image.png"/><meta name="twitter:image" content="https://v9d0g.github.io/static/og-image.png"/><meta property="og:image:type" content="image/.png"/></head><body data-slug="CVE分析复现/index"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href="..">V9d0g</a></h2><div class="spacer mobile-only"></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>搜索</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="搜索些什么" placeholder="搜索些什么"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="暗色模式"><title>暗色模式</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="亮色模式"><title>亮色模式</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div></div><div class="explorer" data-behavior="link" data-collapsed="collapsed" data-savestate="true" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a,b)=>!a.isFolder&amp;&amp;!b.isFolder||a.isFolder&amp;&amp;b.isFolder?a.displayName.localeCompare(b.displayName,void 0,{numeric:!0,sensitivity:\&quot;base\&quot;}):!a.isFolder&amp;&amp;b.isFolder?1:-1&quot;,&quot;filterFn&quot;:&quot;node=>node.slugSegment!==\&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;node=>node&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>探索</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div id="explorer-5" class="explorer-content" aria-expanded="false" role="group"><ul class="explorer-ul overflow" id="list-3"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#"></a></li></template><template id="template-folder"><li><div class="folder-container"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>CVE分析复现</a></div></nav><h1 class="article-title">文件夹: CVE分析复现</h1></div></div><div class="popover-hint"><article class></article><div class="page-listing"><p>此文件夹下有2条笔记。</p><div><ul class="section-ul"><li class="section-li"><div class="section"><p class="meta"><time datetime="2025-11-25T16:00:00.000Z">2025年11月26日</time></p><div class="desc"><h3><a href="../CVE分析复现/CVE-2025-41243" class="internal">CVE-2025-41243</a></h3></div><ul class="tags"><li><a class="internal tag-link" href="../tags/漏洞复现">漏洞复现</a></li></ul></div></li><li class="section-li"><div class="section"><p class="meta"><time datetime="2024-08-12T16:00:00.000Z">2024年8月13日</time></p><div class="desc"><h3><a href="../CVE分析复现/CVE-2024-43044" class="internal">CVE-2024-43044</a></h3></div><ul class="tags"><li><a class="internal tag-link" href="../tags/漏洞复现">漏洞复现</a></li></ul></div></li></ul></div></div></div><hr/><div class="page-footer"></div></div><div class="right sidebar"></div><footer class><script src="https://utteranc.es/client.js" repo="v9d0g/v9d0g.github.io" issue-term="og:title" theme="github-light" crossorigin="anonymous" async></script><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.2</a> © 2026</p><ul><li><a href="https://github.com/v9d0g">GitHub</a></li></ul></footer></div></div></body><script type="application/javascript">
+            </style><script src="../prescript.js" type="application/javascript" spa-preserve="true"></script><script type="application/javascript" spa-preserve="true">const fetchData = fetch("../static/contentIndex.json").then(data => data.json())</script></head><body data-slug="CVE分析复现/index"><div id="quartz-root" class="page"><div id="quartz-body"><aside class="p-0 pxl-corner-md border-2 border-retro-border left sidebar"><h2 class="page-title"><img src="../static/icon_pixel_art.png" alt="" class="page-title-icon" width="32" height="32"/><a href=".." class="underline underline-offset-2 decoration-current/40 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-retro-bg focus-visible:ring-retro-cyan/40 font-mono text-retro-cyan hover:text-retro-green">V9d0g</a></h2><div class="spacer mobile-only"></div><div class="flex-component" style="flex-direction:row;flex-wrap:nowrap;gap:1rem"><div style="flex-grow:1;flex-shrink:1;flex-basis:auto;order:0;align-self:center;justify-self:center"><div class="search"><button class="search-button"><span class="pxlkit-inline-icon search-icon" style="width:18px;height:18px;vertical-align:middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="none">
+  <rect x="4" y="1" width="5" height="1" fill="#334455"/>
+  <rect x="3" y="2" width="1" height="1" fill="#334455"/>
+  <rect x="4" y="2" width="1" height="1" fill="#8BBBD4"/>
+  <rect x="5" y="2" width="4" height="1" fill="#B0D4EE"/>
+  <rect x="9" y="2" width="1" height="1" fill="#334455"/>
+  <rect x="2" y="3" width="1" height="1" fill="#334455"/>
+  <rect x="3" y="3" width="1" height="1" fill="#8BBBD4"/>
+  <rect x="4" y="3" width="7" height="1" fill="#B0D4EE"/>
+  <rect x="11" y="3" width="1" height="1" fill="#556677"/>
+  <rect x="2" y="4" width="1" height="1" fill="#334455"/>
+  <rect x="3" y="4" width="8" height="1" fill="#B0D4EE"/>
+  <rect x="11" y="4" width="1" height="1" fill="#334455"/>
+  <rect x="2" y="5" width="1" height="1" fill="#334455"/>
+  <rect x="3" y="5" width="8" height="1" fill="#B0D4EE"/>
+  <rect x="11" y="5" width="1" height="1" fill="#334455"/>
+  <rect x="2" y="6" width="1" height="1" fill="#334455"/>
+  <rect x="3" y="6" width="1" height="1" fill="#8BBBD4"/>
+  <rect x="4" y="6" width="7" height="1" fill="#B0D4EE"/>
+  <rect x="11" y="6" width="1" height="1" fill="#556677"/>
+  <rect x="3" y="7" width="7" height="1" fill="#334455"/>
+  <rect x="4" y="8" width="5" height="1" fill="#334455"/>
+  <rect x="10" y="8" width="1" height="1" fill="#556677"/>
+  <rect x="9" y="9" width="2" height="1" fill="#556677"/>
+  <rect x="10" y="10" width="2" height="1" fill="#556677"/>
+  <rect x="11" y="11" width="2" height="1" fill="#556677"/>
+  <rect x="12" y="12" width="2" height="1" fill="#556677"/>
+  <rect x="13" y="13" width="1" height="1" fill="#556677"/>
+</svg></span><span>搜索</span></button><div class="search-container"><div class="search-space"><input autoComplete="off" class="search-bar" type="text" aria-label="搜索些什么" placeholder="搜索些什么" name="search"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow:0;flex-shrink:1;flex-basis:auto;order:0;align-self:center;justify-self:center"><button class="darkmode" aria-label="暗色模式"><span class="pxlkit-inline-icon dayIcon" aria-label="暗色模式" style="width:20px;height:20px;vertical-align:middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="none">
+  <rect x="8" y="1" width="1" height="1" fill="#F59E0B"/>
+  <rect x="8" y="2" width="1" height="1" fill="#F59E0B"/>
+  <rect x="3" y="3" width="1" height="1" fill="#F59E0B"/>
+  <rect x="12" y="3" width="1" height="1" fill="#F59E0B"/>
+  <rect x="4" y="4" width="1" height="1" fill="#F59E0B"/>
+  <rect x="6" y="4" width="4" height="1" fill="#F59E0B"/>
+  <rect x="11" y="4" width="1" height="1" fill="#F59E0B"/>
+  <rect x="5" y="5" width="1" height="1" fill="#F59E0B"/>
+  <rect x="6" y="5" width="4" height="1" fill="#FBBF24"/>
+  <rect x="10" y="5" width="1" height="1" fill="#F59E0B"/>
+  <rect x="4" y="6" width="1" height="1" fill="#F59E0B"/>
+  <rect x="5" y="6" width="1" height="1" fill="#FBBF24"/>
+  <rect x="6" y="6" width="2" height="1" fill="#FEF3C7"/>
+  <rect x="8" y="6" width="3" height="1" fill="#FBBF24"/>
+  <rect x="11" y="6" width="1" height="1" fill="#F59E0B"/>
+  <rect x="4" y="7" width="1" height="1" fill="#F59E0B"/>
+  <rect x="5" y="7" width="6" height="1" fill="#FBBF24"/>
+  <rect x="11" y="7" width="1" height="1" fill="#F59E0B"/>
+  <rect x="1" y="8" width="2" height="1" fill="#F59E0B"/>
+  <rect x="4" y="8" width="1" height="1" fill="#F59E0B"/>
+  <rect x="5" y="8" width="6" height="1" fill="#FBBF24"/>
+  <rect x="11" y="8" width="1" height="1" fill="#F59E0B"/>
+  <rect x="13" y="8" width="2" height="1" fill="#F59E0B"/>
+  <rect x="4" y="9" width="1" height="1" fill="#F59E0B"/>
+  <rect x="5" y="9" width="6" height="1" fill="#FBBF24"/>
+  <rect x="11" y="9" width="1" height="1" fill="#F59E0B"/>
+  <rect x="5" y="10" width="1" height="1" fill="#F59E0B"/>
+  <rect x="6" y="10" width="4" height="1" fill="#FBBF24"/>
+  <rect x="10" y="10" width="1" height="1" fill="#F59E0B"/>
+  <rect x="4" y="11" width="1" height="1" fill="#F59E0B"/>
+  <rect x="6" y="11" width="4" height="1" fill="#F59E0B"/>
+  <rect x="11" y="11" width="1" height="1" fill="#F59E0B"/>
+  <rect x="3" y="12" width="1" height="1" fill="#F59E0B"/>
+  <rect x="12" y="12" width="1" height="1" fill="#F59E0B"/>
+  <rect x="8" y="13" width="1" height="1" fill="#F59E0B"/>
+  <rect x="8" y="14" width="1" height="1" fill="#F59E0B"/>
+</svg></span><span class="pxlkit-inline-icon nightIcon" aria-label="亮色模式" style="width:20px;height:20px;vertical-align:middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="none">
+  <rect x="5" y="3" width="2" height="1" fill="#CBD5E1"/>
+  <rect x="4" y="4" width="2" height="1" fill="#CBD5E1"/>
+  <rect x="12" y="4" width="1" height="1" fill="#FEF9C3"/>
+  <rect x="3" y="5" width="3" height="1" fill="#CBD5E1"/>
+  <rect x="2" y="6" width="3" height="1" fill="#CBD5E1"/>
+  <rect x="5" y="6" width="1" height="1" fill="#94A3B8"/>
+  <rect x="2" y="7" width="4" height="1" fill="#CBD5E1"/>
+  <rect x="2" y="8" width="4" height="1" fill="#CBD5E1"/>
+  <rect x="13" y="8" width="1" height="1" fill="#FEF9C3"/>
+  <rect x="2" y="9" width="4" height="1" fill="#CBD5E1"/>
+  <rect x="6" y="9" width="1" height="1" fill="#94A3B8"/>
+  <rect x="2" y="10" width="2" height="1" fill="#CBD5E1"/>
+  <rect x="4" y="10" width="1" height="1" fill="#94A3B8"/>
+  <rect x="5" y="10" width="3" height="1" fill="#CBD5E1"/>
+  <rect x="3" y="11" width="8" height="1" fill="#CBD5E1"/>
+  <rect x="11" y="11" width="1" height="1" fill="#FEF9C3"/>
+  <rect x="4" y="12" width="7" height="1" fill="#CBD5E1"/>
+  <rect x="5" y="13" width="5" height="1" fill="#CBD5E1"/>
+</svg></span></button></div></div><div class="explorer" data-behavior="link" data-collapsed="collapsed" data-savestate="true" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a,b)=&gt;!a.isFolder&amp;&amp;!b.isFolder||a.isFolder&amp;&amp;b.isFolder?a.displayName.localeCompare(b.displayName,void 0,{numeric:!0,sensitivity:\&quot;base\&quot;}):!a.isFolder&amp;&amp;b.isFolder?1:-1&quot;,&quot;filterFn&quot;:&quot;node=&gt;node.slugSegment!==\&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;node=&gt;node&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-5"><span class="pxlkit-inline-icon" style="width:24px;height:24px;vertical-align:middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="none">
+  <rect x="1" y="2" width="14" height="1" fill="#334455"/>
+  <rect x="1" y="3" width="1" height="1" fill="#334455"/>
+  <rect x="2" y="3" width="12" height="1" fill="#5B9BD5"/>
+  <rect x="14" y="3" width="1" height="1" fill="#334455"/>
+  <rect x="1" y="4" width="1" height="1" fill="#334455"/>
+  <rect x="2" y="4" width="12" height="1" fill="#5B9BD5"/>
+  <rect x="14" y="4" width="1" height="1" fill="#334455"/>
+  <rect x="1" y="5" width="14" height="1" fill="#334455"/>
+  <rect x="1" y="7" width="14" height="1" fill="#334455"/>
+  <rect x="1" y="8" width="1" height="1" fill="#334455"/>
+  <rect x="2" y="8" width="12" height="1" fill="#5B9BD5"/>
+  <rect x="14" y="8" width="1" height="1" fill="#334455"/>
+  <rect x="1" y="9" width="1" height="1" fill="#334455"/>
+  <rect x="2" y="9" width="12" height="1" fill="#5B9BD5"/>
+  <rect x="14" y="9" width="1" height="1" fill="#334455"/>
+  <rect x="1" y="10" width="14" height="1" fill="#334455"/>
+  <rect x="1" y="12" width="14" height="1" fill="#334455"/>
+  <rect x="1" y="13" width="1" height="1" fill="#334455"/>
+  <rect x="2" y="13" width="12" height="1" fill="#5B9BD5"/>
+  <rect x="14" y="13" width="1" height="1" fill="#334455"/>
+  <rect x="1" y="14" width="1" height="1" fill="#334455"/>
+  <rect x="2" y="14" width="12" height="1" fill="#5B9BD5"/>
+  <rect x="14" y="14" width="1" height="1" fill="#334455"/>
+  <rect x="1" y="15" width="14" height="1" fill="#334455"/>
+</svg></span></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>探索</h2><span class="pxlkit-inline-icon fold" style="width:14px;height:14px;vertical-align:middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="none">
+  <rect x="9" y="3" width="2" height="1" fill="#AAAAAA"/>
+  <rect x="10" y="4" width="2" height="1" fill="#AAAAAA"/>
+  <rect x="11" y="5" width="2" height="1" fill="#AAAAAA"/>
+  <rect x="1" y="6" width="13" height="1" fill="#AAAAAA"/>
+  <rect x="1" y="7" width="14" height="1" fill="#AAAAAA"/>
+  <rect x="1" y="8" width="13" height="1" fill="#AAAAAA"/>
+  <rect x="11" y="9" width="2" height="1" fill="#AAAAAA"/>
+  <rect x="10" y="10" width="2" height="1" fill="#AAAAAA"/>
+  <rect x="9" y="11" width="2" height="1" fill="#AAAAAA"/>
+</svg></span></button><div id="explorer-5" class="explorer-content" aria-expanded="false" role="group"><ul class="explorer-ul overflow" id="list-3"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#"></a></li></template><template id="template-folder"><li><div class="folder-container"><span class="pxlkit-inline-icon folder-icon folder-icon-closed" style="width:12px;height:12px;vertical-align:middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="none">
+  <rect x="3" y="0" width="9" height="1" fill="#8B5E3C"/>
+  <rect x="2" y="1" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="3" y="1" width="9" height="1" fill="#F5DEB3"/>
+  <rect x="12" y="1" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="2" y="2" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="3" y="2" width="9" height="1" fill="#F5DEB3"/>
+  <rect x="12" y="2" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="2" y="3" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="3" y="3" width="2" height="1" fill="#F5DEB3"/>
+  <rect x="5" y="3" width="1" height="1" fill="#CC2020"/>
+  <rect x="6" y="3" width="6" height="1" fill="#F5DEB3"/>
+  <rect x="12" y="3" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="2" y="4" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="3" y="4" width="2" height="1" fill="#F5DEB3"/>
+  <rect x="5" y="4" width="1" height="1" fill="#C8A060"/>
+  <rect x="6" y="4" width="6" height="1" fill="#F5DEB3"/>
+  <rect x="12" y="4" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="2" y="5" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="3" y="5" width="3" height="1" fill="#F5DEB3"/>
+  <rect x="6" y="5" width="1" height="1" fill="#C8A060"/>
+  <rect x="7" y="5" width="5" height="1" fill="#F5DEB3"/>
+  <rect x="12" y="5" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="2" y="6" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="3" y="6" width="4" height="1" fill="#F5DEB3"/>
+  <rect x="7" y="6" width="1" height="1" fill="#C8A060"/>
+  <rect x="8" y="6" width="4" height="1" fill="#F5DEB3"/>
+  <rect x="12" y="6" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="2" y="7" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="3" y="7" width="4" height="1" fill="#F5DEB3"/>
+  <rect x="7" y="7" width="1" height="1" fill="#CC2020"/>
+  <rect x="8" y="7" width="3" height="1" fill="#F5DEB3"/>
+  <rect x="11" y="7" width="2" height="1" fill="#8B5E3C"/>
+  <rect x="2" y="8" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="3" y="8" width="9" height="1" fill="#F5DEB3"/>
+  <rect x="12" y="8" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="2" y="9" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="3" y="9" width="1" height="1" fill="#F5DEB3"/>
+  <rect x="4" y="9" width="6" height="1" fill="#5C3A1E"/>
+  <rect x="10" y="9" width="1" height="1" fill="#F5DEB3"/>
+  <rect x="11" y="9" width="1" height="1" fill="#5C3A1E"/>
+  <rect x="12" y="9" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="2" y="10" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="3" y="10" width="9" height="1" fill="#F5DEB3"/>
+  <rect x="12" y="10" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="2" y="11" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="3" y="11" width="9" height="1" fill="#F5DEB3"/>
+  <rect x="12" y="11" width="1" height="1" fill="#8B5E3C"/>
+  <rect x="3" y="12" width="9" height="1" fill="#8B5E3C"/>
+</svg></span><span class="pxlkit-inline-icon folder-icon folder-icon-open" style="width:12px;height:12px;vertical-align:middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="none">
+  <rect x="3" y="1" width="8" height="1" fill="#8B4513"/>
+  <rect x="2" y="2" width="1" height="1" fill="#8B4513"/>
+  <rect x="3" y="2" width="8" height="1" fill="#F5DEB3"/>
+  <rect x="11" y="2" width="1" height="1" fill="#8B4513"/>
+  <rect x="2" y="3" width="1" height="1" fill="#8B4513"/>
+  <rect x="3" y="3" width="7" height="1" fill="#FFF8DC"/>
+  <rect x="10" y="3" width="1" height="1" fill="#F5DEB3"/>
+  <rect x="11" y="3" width="1" height="1" fill="#8B4513"/>
+  <rect x="2" y="4" width="1" height="1" fill="#8B4513"/>
+  <rect x="3" y="4" width="1" height="1" fill="#FFF8DC"/>
+  <rect x="4" y="4" width="5" height="1" fill="#8B7355"/>
+  <rect x="9" y="4" width="1" height="1" fill="#FFF8DC"/>
+  <rect x="10" y="4" width="1" height="1" fill="#F5DEB3"/>
+  <rect x="11" y="4" width="1" height="1" fill="#8B4513"/>
+  <rect x="2" y="5" width="1" height="1" fill="#8B4513"/>
+  <rect x="3" y="5" width="7" height="1" fill="#FFF8DC"/>
+  <rect x="10" y="5" width="1" height="1" fill="#F5DEB3"/>
+  <rect x="11" y="5" width="1" height="1" fill="#8B4513"/>
+  <rect x="2" y="6" width="1" height="1" fill="#8B4513"/>
+  <rect x="3" y="6" width="1" height="1" fill="#FFF8DC"/>
+  <rect x="4" y="6" width="3" height="1" fill="#8B7355"/>
+  <rect x="7" y="6" width="3" height="1" fill="#FFF8DC"/>
+  <rect x="10" y="6" width="1" height="1" fill="#F5DEB3"/>
+  <rect x="11" y="6" width="1" height="1" fill="#8B4513"/>
+  <rect x="2" y="7" width="1" height="1" fill="#8B4513"/>
+  <rect x="3" y="7" width="7" height="1" fill="#FFF8DC"/>
+  <rect x="10" y="7" width="1" height="1" fill="#F5DEB3"/>
+  <rect x="11" y="7" width="1" height="1" fill="#8B4513"/>
+  <rect x="2" y="8" width="1" height="1" fill="#8B4513"/>
+  <rect x="3" y="8" width="1" height="1" fill="#FFF8DC"/>
+  <rect x="4" y="8" width="5" height="1" fill="#8B7355"/>
+  <rect x="9" y="8" width="1" height="1" fill="#FFF8DC"/>
+  <rect x="10" y="8" width="1" height="1" fill="#F5DEB3"/>
+  <rect x="11" y="8" width="1" height="1" fill="#8B4513"/>
+  <rect x="2" y="9" width="1" height="1" fill="#8B4513"/>
+  <rect x="3" y="9" width="7" height="1" fill="#FFF8DC"/>
+  <rect x="10" y="9" width="1" height="1" fill="#F5DEB3"/>
+  <rect x="11" y="9" width="1" height="1" fill="#8B4513"/>
+  <rect x="2" y="10" width="1" height="1" fill="#8B4513"/>
+  <rect x="3" y="10" width="1" height="1" fill="#FFF8DC"/>
+  <rect x="4" y="10" width="3" height="1" fill="#8B7355"/>
+  <rect x="7" y="10" width="3" height="1" fill="#FFF8DC"/>
+  <rect x="10" y="10" width="1" height="1" fill="#F5DEB3"/>
+  <rect x="11" y="10" width="1" height="1" fill="#8B4513"/>
+  <rect x="2" y="11" width="1" height="1" fill="#8B4513"/>
+  <rect x="3" y="11" width="7" height="1" fill="#FFF8DC"/>
+  <rect x="10" y="11" width="1" height="1" fill="#F5DEB3"/>
+  <rect x="11" y="11" width="1" height="1" fill="#8B4513"/>
+  <rect x="2" y="12" width="1" height="1" fill="#8B4513"/>
+  <rect x="3" y="12" width="7" height="1" fill="#F5DEB3"/>
+  <rect x="10" y="12" width="1" height="1" fill="#D2B48C"/>
+  <rect x="11" y="12" width="1" height="1" fill="#8B4513"/>
+  <rect x="3" y="13" width="8" height="1" fill="#8B4513"/>
+</svg></span><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div></aside><div class="p-0 pxl-corner-md border-2 border-retro-border center"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../" class="underline underline-offset-2 decoration-current/40 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-retro-bg focus-visible:ring-retro-cyan/40 font-mono text-retro-cyan hover:text-retro-green">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><span>CVE分析复现</span></div></nav><div class="px-3 py-2 pxl-corner-md article-title"><h1>文件夹: CVE分析复现</h1></div></div><div class="popover-hint"><article class=""></article><div class="page-listing"><p>此文件夹下有2条笔记。</p><div><ul class="section-ul"><li class="section-li"><div class="section"><p class="meta"><time dateTime="2025-11-25T16:00:00.000Z">2025年11月26日</time></p><div class="desc"><h3><a href="../CVE分析复现/CVE-2025-41243" class="internal">CVE-2025-41243</a></h3></div><ul class="tags"><li><a class="internal tag-link" href="../tags/漏洞复现">漏洞复现</a></li></ul></div></li><li class="section-li"><div class="section"><p class="meta"><time dateTime="2024-08-12T16:00:00.000Z">2024年8月13日</time></p><div class="desc"><h3><a href="../CVE分析复现/CVE-2024-43044" class="internal">CVE-2024-43044</a></h3></div><ul class="tags"><li><a class="internal tag-link" href="../tags/漏洞复现">漏洞复现</a></li></ul></div></li></ul></div></div></div><div class="page-footer"></div></div><aside class="p-0 pxl-corner-md border-2 border-retro-border right sidebar"></aside><footer class="px-4 py-3 pxl-corner-md border-2 border-retro-border"><div class="utterances"><script src="https://utteranc.es/client.js" repo="v9d0g/v9d0g.github.io" issue-term="og:title" theme="github-light" crossorigin="anonymous" async></script></div><div class="footer-row"><p>Created with<!-- --> <a href="https://quartz.jzhao.xyz/">Quartz v<!-- -->4.5.2</a> © <!-- -->2026</p><ul><li><a href="https://github.com/v9d0g">GitHub</a></li></ul></div></footer></div></div><script type="application/javascript">
 (function() {
   const STYLE_ID = 'code-styler-dynamic-css'
   const css = `
@@ -454,8 +676,4 @@ pre.no-line-numbers > code > [data-line]::before {
               } else {
                 initLightbox();
               }
-            </script><script type="application/javascript">
-        const socket = new WebSocket('ws://localhost:3001')
-        // reload(true) ensures resources like images and scripts are fetched again in firefox
-        socket.addEventListener('message', () => document.location.reload(true))
-      </script><script src="../postscript.js" type="module"></script></html>
+            </script><script src="../postscript.js" type="module"></script></body></html>

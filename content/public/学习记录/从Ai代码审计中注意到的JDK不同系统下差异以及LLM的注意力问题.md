@@ -252,7 +252,6 @@ GPT直接返回说没有问题（不排除Web Chat端的一些system prompt有�
 ![[Pasted image 20260604180942.png]]
 
 有意思的是 这个有效的特定前提可运行POC也是GPT（Web Chat端）给我的
-## 纠正Ai判断
 
 这一块我是想完全发挥ai自己的总结能力和学习能力来解决这个问题的 于是我把关键代码提取
 ```java fold title:"TestApp"
@@ -331,21 +330,21 @@ public class TestApp {
 第二次是因为我拿一些模型测试了下 并没有得到我想要的结果
 ![[Pasted image 20260605162826.png]]
 
-### Web Chat
+## Web Chat
 随后针对以下这些模型进行了单独的测试
 （因为经费有限，没办法直接使用api测试，这里难免会受到web chat的system prompts和其内置的agent功能影响）
 ![[Pasted image 20260605162937.png]]
 
-#### **Claude Sonnet 4.6 low**
+### **Claude Sonnet 4.6 low**
 ![[Pasted image 20260605163058.png]]
 失败
 
-#### **Claude Opus 4.6 high**
+### **Claude Opus 4.6 high**
 借用了一下别人的key
 ![[Pasted image 20260605170931.png]]
 满分答案 但这个消耗就有点伤不起了
 
-#### **ChatGPT 思考模式**
+### **ChatGPT 思考模式**
 ![[Pasted image 20260605163254.png]]
 对吗？不全对，错了吗？也不全错
 ```sh
@@ -360,15 +359,15 @@ getCanonicalFile后:/test
 不过也很令人满意了
 但再次新会话 同样的内容 结果就不一样了
 
-#### **DeepSeek 深度思考 专家模式**
+### **DeepSeek 深度思考 专家模式**
 ![[Pasted image 20260605163925.png]]
 经典的错误标准的0分
 
-#### **GLM 5**
+### **GLM 5**
 ![[Pasted image 20260605164205.png]]
 依旧0分
 
-#### **Qwen3.7-Max**
+### **Qwen3.7-Max**
 ![[Pasted image 20260605164254.png]]
 意料之外几乎满分答案 甚至把这里的系统JDK差异也解释了，但是忽略了其实在linux上漏洞不成立
 
@@ -377,10 +376,22 @@ getCanonicalFile后:/test
 但遗憾的是第三次的回答并没有如同预期一样
 
 光靠模型**看**代码来挖掘漏洞 看来还是具有很多局限性
-#### **Kimi 2.6 思考模式**
+### **Kimi 2.6 思考模式**
 ![[Pasted image 20260605164411.png]]
 自己把自己给想宕机了
+## 优化
+通过引入一套渐进式披露的prompt，上述的可复现概率就大了不少
+![[Pasted image 20260622164144.png]]
 
+针对`DeepSeek V4 flash`
+![[Pasted image 20260622164510.png]]
+第二次分析
+![[Pasted image 20260622164556.png]]
 
+然而渐进式加载的prompt中 仅有
+![[Pasted image 20260622164720.png]]
+提到了这一句话
+
+但是可以让例如ds这种模型能够识别出来，我认为已经达到了最基础的效果了，说明这条路是可行的
 
 **上面的探索并没有踩拉任何一个模型，只是探索LLM代码审计的边界**

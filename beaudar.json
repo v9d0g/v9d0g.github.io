@@ -1,3 +1,9 @@
 ﻿{
-  "origins": ["https://v9d0g.github.io","http://v9d0g.github.io","http://localhost:3000","http://localhost:7890","http://localhost:8080"]
+  "origins": [
+    "https://v9d0g.github.io",
+    "http://v9d0g.github.io",
+    "http://localhost:3000",
+    "http://localhost:7890",
+    "http://localhost:8080"
+  ]
 }
