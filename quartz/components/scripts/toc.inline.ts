@@ -1,16 +1,20 @@
+let pendingTocUpdate = false
 const observer = new IntersectionObserver((entries) => {
-  for (const entry of entries) {
-    const slug = entry.target.id
-    const tocEntryElements = document.querySelectorAll(`a[data-for="${slug}"]`)
-    const windowHeight = entry.rootBounds?.height
-    if (windowHeight && tocEntryElements.length > 0) {
-      if (entry.boundingClientRect.y < windowHeight) {
-        tocEntryElements.forEach((tocEntryElement) => tocEntryElement.classList.add("in-view"))
-      } else {
-        tocEntryElements.forEach((tocEntryElement) => tocEntryElement.classList.remove("in-view"))
+  if (pendingTocUpdate) return
+  pendingTocUpdate = true
+
+  requestAnimationFrame(() => {
+    pendingTocUpdate = false
+    for (const entry of entries) {
+      const slug = entry.target.id
+      const tocEntryElements = document.querySelectorAll(`a[data-for="${slug}"]`)
+      const windowHeight = entry.rootBounds?.height
+      if (windowHeight && tocEntryElements.length > 0) {
+        const method = entry.boundingClientRect.y < windowHeight ? "add" : "remove"
+        tocEntryElements.forEach((tocEntryElement) => tocEntryElement.classList[method]("in-view"))
       }
     }
-  }
+  })
 })
 
 function toggleToc(this: HTMLElement) {

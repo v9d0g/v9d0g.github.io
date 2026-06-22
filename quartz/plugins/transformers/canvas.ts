@@ -35,24 +35,45 @@ export const CanvasRenderer: QuartzTransformerPlugin = () => {
                   ? rawPath
                   : (dir ? `/${dir}/` : "/") + rawPath
 
-                const iframeNode: Element = {
+                const canvasSrc = `/static/canvas-view?data=${encodeURIComponent(canvasPath)}`
+
+                // 默认显示占位卡片，点击后在全屏浮层中打开 canvas，避免 iframe 嵌入导致页面闪屏/截断
+                const placeholderNode: Element = {
                   type: "element",
-                  tagName: "iframe",
+                  tagName: "div",
                   properties: {
-                    // 直接传递可访问的 canvas 文件路径
-                    src: `/static/canvas-view?data=${encodeURIComponent(canvasPath)}`,
-                    className: ["quartz-canvas-iframe"],
+                    className: ["quartz-canvas-placeholder"],
+                    "data-canvas-src": canvasSrc,
                     style:
-                      "width: 100%; height: 600px; border: 1px solid var(--lightgray); border-radius: 12px; background: #161618;",
-                    frameBorder: "0",
-                    allow: "fullscreen",
-                    loading: "lazy",
+                      "width: 100%; height: 600px; border: 1px solid var(--lightgray); border-radius: 12px; background: #161618; display: flex; align-items: center; justify-content: center; cursor: pointer; box-sizing: border-box;",
                   },
-                  children: [],
+                  children: [
+                    {
+                      type: "element",
+                      tagName: "span",
+                      properties: {
+                        className: ["quartz-canvas-placeholder-text"],
+                      },
+                      children: [{ type: "text", value: "点击打开 Canvas" }],
+                    },
+                  ],
+                }
+
+                const scriptNode: Element = {
+                  type: "element",
+                  tagName: "script",
+                  properties: {},
+                  children: [
+                    {
+                      type: "text",
+                      value: `(function(){document.querySelectorAll('.quartz-canvas-placeholder').forEach(function(el){if(el.dataset.canvasReady)return;el.dataset.canvasReady='1';el.addEventListener('click',function(){var s=this.dataset.canvasSrc,m=document.createElement('div');m.className='quartz-canvas-modal';m.innerHTML='<div class="quartz-canvas-modal-backdrop"></div><div class="quartz-canvas-modal-content"><button class="quartz-canvas-modal-close" aria-label="关闭">&times;</button><iframe src="'+s+'" class="quartz-canvas-iframe" frameBorder="0" allow="fullscreen" title="Obsidian Canvas"></iframe></div>';document.body.appendChild(m);m.querySelector('.quartz-canvas-modal-close').addEventListener('click',function(){m.remove();});m.querySelector('.quartz-canvas-modal-backdrop').addEventListener('click',function(){m.remove();});});});})();`,
+                    },
+                  ],
                 }
 
                 if (parent && index !== undefined) {
-                  parent.children[index] = iframeNode
+                  parent.children[index] = placeholderNode
+                  parent.children.splice(index + 1, 0, scriptNode)
                 }
               }
             })

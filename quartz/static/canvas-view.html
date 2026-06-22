@@ -45,6 +45,7 @@
         width: 100%;
         height: 100%;
         cursor: grab;
+        overflow: hidden;
         background-image: radial-gradient(var(--grid-color) 1px, transparent 0);
         background-size: 24px 24px;
       }
@@ -52,7 +53,6 @@
       #canvas-content {
         position: absolute;
         transform-origin: 0 0;
-        will-change: transform;
       }
 
       /* 节点通用样式 */
@@ -61,7 +61,6 @@
         border-radius: 6px;
         background: var(--node-bg);
         border: 1.5px solid var(--node-border);
-        backdrop-filter: blur(4px);
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
@@ -474,6 +473,11 @@
 
       // 交互控制
       viewport.onwheel = (e) => {
+        // 让节点内部滚动条正常滚动，不拦截
+        if (e.target.closest && e.target.closest(".node-content")) return
+        // 仅当按住 Ctrl/Cmd 时才缩放画布，普通滚轮交给外层页面滚动
+        if (!e.ctrlKey && !e.metaKey) return
+
         e.preventDefault()
         const factor = Math.pow(1.15, -e.deltaY / 120)
         const rect = viewport.getBoundingClientRect()
@@ -484,7 +488,6 @@
         posY = mouseY - (mouseY - posY) * (newScale / scale)
         scale = newScale
         content.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`
-        viewport.style.backgroundPosition = `${posX}px ${posY}px`
       }
 
       let isDragging = false,
@@ -505,7 +508,6 @@
         lastX = e.clientX
         lastY = e.clientY
         content.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`
-        viewport.style.backgroundPosition = `${posX}px ${posY}px`
       }
       window.onmouseup = () => {
         isDragging = false
@@ -605,6 +607,20 @@
           }),
           { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity },
         )
+
+        // 根据内容边界动态调整 SVG 画布大小，避免使用 100000px 巨型 SVG 导致滚动时重绘闪屏
+        const padding = 500
+        const svgW = Math.max(1, b.maxX - b.minX + padding * 2)
+        const svgH = Math.max(1, b.maxY - b.minY + padding * 2)
+        const svgLeft = b.minX - padding
+        const svgTop = b.minY - padding
+        svgLayer.style.left = `${svgLeft}px`
+        svgLayer.style.top = `${svgTop}px`
+        svgLayer.style.width = `${svgW}px`
+        svgLayer.style.height = `${svgH}px`
+        svgLayer.setAttribute("width", svgW)
+        svgLayer.setAttribute("height", svgH)
+        svgLayer.setAttribute("viewBox", `${svgLeft} ${svgTop} ${svgW} ${svgH}`)
 
         const vW = viewport.clientWidth,
           vH = viewport.clientHeight
