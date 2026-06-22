@@ -289,11 +289,18 @@ export function renderPage(
                       <HeaderComponent key={`header-${idx}`} {...componentData} />
                     ))}
                   </Header>
-                  <div className="popover-hint">
+                  <PixelBox
+                    as="div"
+                    variant="outline"
+                    border
+                    tone="neutral"
+                    padding="md"
+                    className="popover-hint"
+                  >
                     {beforeBody.map((BodyComponent, idx) => (
                       <BodyComponent key={`before-${idx}`} {...componentData} />
                     ))}
-                  </div>
+                  </PixelBox>
                 </div>
                 <Content {...componentData} />
                 <hr />
