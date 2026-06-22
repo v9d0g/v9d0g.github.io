@@ -229,6 +229,7 @@ a {
 
     & .sidebar,
     & .center,
+    & .page-header,
     & .page-footer,
     & footer {
       background-color: color-mix(in srgb, var(--light) 88%, transparent);
@@ -668,33 +669,4 @@ iframe.pdf {
   background: var(--secondary);
   transition: width 0.2s ease;
   z-index: 9999;
-}
-
-.popover-hint {
-  background-color: color-mix(in srgb, var(--light) 88%, transparent);
-  border: 2px solid color-mix(in srgb, var(--lightgray) 80%, transparent);
-  clip-path: polygon(
-    4px 0,
-    calc(100% - 4px) 0,
-    calc(100% - 4px) 2px,
-    calc(100% - 2px) 2px,
-    calc(100% - 2px) 4px,
-    100% 4px,
-    100% calc(100% - 4px),
-    calc(100% - 2px) calc(100% - 4px),
-    calc(100% - 2px) calc(100% - 2px),
-    calc(100% - 4px) calc(100% - 2px),
-    calc(100% - 4px) 100%,
-    4px 100%,
-    4px calc(100% - 2px),
-    2px calc(100% - 2px),
-    2px calc(100% - 4px),
-    0 calc(100% - 4px),
-    0 4px,
-    2px 4px,
-    2px 2px,
-    4px 2px
-  );
-  filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.25));
-  padding: 1rem;
 }
