@@ -23,6 +23,15 @@ $boldWeight: 700;
 $semiBoldWeight: 600;
 $normalWeight: 400;
 
+@mixin hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 $mobileGrid: (
   templateRows: "auto auto auto auto auto",
   templateColumns: "auto",

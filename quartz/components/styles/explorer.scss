@@ -114,6 +114,7 @@ button.desktop-explorer {
   overflow: hidden;
   overflow-y: auto;
   margin-top: 0.5rem;
+  @include hide-scrollbar;
 
   & ul {
     list-style: none;

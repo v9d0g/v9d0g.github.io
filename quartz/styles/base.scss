@@ -477,6 +477,7 @@ pre {
   overflow-x: auto;
   border: 1px solid var(--lightgray);
   position: relative;
+  @include hide-scrollbar;
 
   &:has(> code.mermaid) {
     border: none;
@@ -491,6 +492,7 @@ pre {
     display: grid;
     padding: 0.5rem 0;
     overflow-x: auto;
+    @include hide-scrollbar;
 
     & [data-highlighted-chars] {
       background-color: var(--highlight);
@@ -545,6 +547,7 @@ p {
 
 .table-container {
   overflow-x: auto;
+  @include hide-scrollbar;
 
   & > table {
     margin: 1rem;
@@ -620,6 +623,7 @@ ol.overflow {
   overflow-y: auto;
   width: 100%;
   margin-bottom: 0;
+  @include hide-scrollbar;
 
   // clearfix
   content: "";
@@ -645,6 +649,7 @@ ol.overflow {
   display: initial;
   overflow-x: auto;
   overflow-y: hidden;
+  @include hide-scrollbar;
 }
 
 .external-embed.youtube,
