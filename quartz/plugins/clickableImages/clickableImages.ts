@@ -15,7 +15,9 @@ export const ClickableImages: QuartzTransformerPlugin = () => {
                 const originalAlt = node.properties?.alt || ""
                 if (!originalSrc) return
 
-                node.properties.className = (node.properties.className || []).concat(["lightbox-image"])
+                node.properties.className = (node.properties.className || []).concat([
+                  "lightbox-image",
+                ])
                 node.properties["data-src"] = originalSrc
                 node.properties["data-alt"] = originalAlt
                 node.properties.loading = "lazy"
@@ -25,9 +27,9 @@ export const ClickableImages: QuartzTransformerPlugin = () => {
                   tagName: "div",
                   properties: {
                     className: ["lightbox-wrapper"],
-                    "data-lightbox": "true"
+                    "data-lightbox": "true",
                   },
-                  children: [node]
+                  children: [node],
                 }
 
                 parent.children[index] = wrapper

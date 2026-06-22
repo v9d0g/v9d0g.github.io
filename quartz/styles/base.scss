@@ -5,10 +5,10 @@
 @use "./callouts.scss";
 
 html {
-  scroll-behavior: smooth;
   text-size-adjust: none;
   overflow-x: hidden;
   width: 100vw;
+  @include hide-scrollbar;
 }
 
 body {
@@ -17,6 +17,109 @@ body {
   background-color: var(--light);
   font-family: var(--bodyFont);
   color: var(--darkgray);
+
+  // 使用固定伪元素承载背景图，避免 background-attachment: fixed 在滚动时重绘闪屏
+  &::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image: url("static/light_pixel_art.png");
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    // 提升到独立合成层并保持独立，避免滚动时与内容反复重绘
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+}
+
+.dark body::before {
+  background-image: url("static/dark_pixel_art.png");
+}
+
+.quartz-canvas-placeholder {
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    opacity: 0.85;
+    border-color: var(--darkgray);
+  }
+
+  &-text {
+    color: var(--darkgray);
+    font-size: 14px;
+    user-select: none;
+  }
+}
+
+.quartz-canvas-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
+  }
+
+  &-content {
+    position: relative;
+    width: 90vw;
+    height: 90vh;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #161618;
+    border: 1px solid var(--lightgray);
+  }
+
+  &-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: none;
+    background: rgba(30, 30, 30, 0.8);
+    color: var(--darkgray);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: rgba(60, 60, 60, 0.9);
+      color: var(--light);
+    }
+  }
+
+  .quartz-canvas-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+}
+
+.pxlkit-inline-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+
+  & svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 }
 
 .text-highlight {
@@ -112,12 +215,10 @@ a {
   }
 
   &.external .external-icon {
+    display: inline-block;
+    vertical-align: middle;
     height: 1ex;
     margin: 0 0.15em;
-
-    > path {
-      fill: var(--dark);
-    }
   }
 }
 
@@ -208,6 +309,15 @@ a {
     }
     @media all and ($mobile) {
       margin: 0 auto;
+    }
+
+    & .sidebar,
+    & .center,
+    & .page-header,
+    & .page-footer,
+    & footer {
+      background-color: color-mix(in srgb, var(--light) 88%, transparent);
+      border-radius: 5px;
     }
 
     & .sidebar {
@@ -370,12 +480,20 @@ h4,
 h5,
 h6 {
   &[id] > a[href^="#"] {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
     margin: 0 0.5rem;
     opacity: 0;
     transition: opacity 0.2s ease;
-    transform: translateY(-0.1rem);
     font-family: var(--codeFont);
     user-select: none;
+
+    & svg {
+      width: 1em;
+      height: 1em;
+      display: block;
+    }
   }
 
   &[id]:hover > a {
@@ -443,6 +561,7 @@ pre {
   overflow-x: auto;
   border: 1px solid var(--lightgray);
   position: relative;
+  @include hide-scrollbar;
 
   &:has(> code.mermaid) {
     border: none;
@@ -457,6 +576,7 @@ pre {
     display: grid;
     padding: 0.5rem 0;
     overflow-x: auto;
+    @include hide-scrollbar;
 
     & [data-highlighted-chars] {
       background-color: var(--highlight);
@@ -511,6 +631,7 @@ p {
 
 .table-container {
   overflow-x: auto;
+  @include hide-scrollbar;
 
   & > table {
     margin: 1rem;
@@ -549,7 +670,6 @@ img {
   max-width: 100%;
   border-radius: 5px;
   margin: 1rem 0;
-  content-visibility: auto;
 }
 
 p > img + em {
@@ -586,6 +706,7 @@ ol.overflow {
   overflow-y: auto;
   width: 100%;
   margin-bottom: 0;
+  @include hide-scrollbar;
 
   // clearfix
   content: "";
@@ -611,6 +732,7 @@ ol.overflow {
   display: initial;
   overflow-x: auto;
   overflow-y: hidden;
+  @include hide-scrollbar;
 }
 
 .external-embed.youtube,

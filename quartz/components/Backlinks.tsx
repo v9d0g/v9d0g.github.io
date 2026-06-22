@@ -1,3 +1,4 @@
+import { PixelCard } from "@pxlkit/ui-kit"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import style from "./styles/backlinks.scss"
 import { resolveRelative, simplifySlug } from "../util/path"
@@ -29,13 +30,16 @@ export default ((opts?: Partial<BacklinksOptions>) => {
       return null
     }
     return (
-      <div class={classNames(displayClass, "backlinks")}>
-        <h3>{i18n(cfg.locale).components.backlinks.title}</h3>
+      <PixelCard
+        tone="neutral"
+        className={classNames(displayClass, "backlinks")}
+        title={i18n(cfg.locale).components.backlinks.title}
+      >
         <OverflowList>
           {backlinkFiles.length > 0 ? (
             backlinkFiles.map((f) => (
-              <li>
-                <a href={resolveRelative(fileData.slug!, f.slug!)} class="internal">
+              <li key={f.slug}>
+                <a href={resolveRelative(fileData.slug!, f.slug!)} className="internal">
                   {f.frontmatter?.title}
                 </a>
               </li>
@@ -44,7 +48,7 @@ export default ((opts?: Partial<BacklinksOptions>) => {
             <li>{i18n(cfg.locale).components.backlinks.noBacklinksFound}</li>
           )}
         </OverflowList>
-      </div>
+      </PixelCard>
     )
   }
 

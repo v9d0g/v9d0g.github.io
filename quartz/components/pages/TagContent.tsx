@@ -6,7 +6,7 @@ import { QuartzPluginData } from "../../plugins/vfile"
 import { Root } from "hast"
 import { htmlToJsx } from "../../util/jsx"
 import { i18n } from "../../i18n"
-import { ComponentChildren } from "preact"
+import { ReactNode } from "react"
 import { concatenateResources } from "../../util/resources"
 
 interface TagContentOptions {
@@ -39,7 +39,7 @@ export default ((opts?: Partial<TagContentOptions>) => {
       (tree as Root).children.length === 0
         ? fileData.description
         : htmlToJsx(fileData.filePath!, tree)
-    ) as ComponentChildren
+    ) as ReactNode
     const cssClasses: string[] = fileData.frontmatter?.cssclasses ?? []
     const classes = cssClasses.join(" ")
     if (tag === "/") {
@@ -53,8 +53,8 @@ export default ((opts?: Partial<TagContentOptions>) => {
         tagItemMap.set(tag, allPagesWithTag(tag))
       }
       return (
-        <div class="popover-hint">
-          <article class={classes}>
+        <div className="popover-hint">
+          <article className={classes}>
             <p>{content}</p>
           </article>
           <p>{i18n(cfg.locale).pages.tagContent.totalTags({ count: tags.length })}</p>
@@ -78,14 +78,14 @@ export default ((opts?: Partial<TagContentOptions>) => {
               const href = resolveRelative(fileData.slug!, tagListingPage)
 
               return (
-                <div>
+                <div key={tag}>
                   <h2>
-                    <a class="internal tag-link" href={href}>
+                    <a className="internal tag-link" href={href}>
                       {tag}
                     </a>
                   </h2>
                   {content && <p>{content}</p>}
-                  <div class="page-listing">
+                  <div className="page-listing">
                     <p>
                       {i18n(cfg.locale).pages.tagContent.itemsUnderTag({ count: pages.length })}
                       {pages.length > options.numPages && (
@@ -115,9 +115,9 @@ export default ((opts?: Partial<TagContentOptions>) => {
       }
 
       return (
-        <div class="popover-hint">
-          <article class={classes}>{content}</article>
-          <div class="page-listing">
+        <div className="popover-hint">
+          <article className={classes}>{content}</article>
+          <div className="page-listing">
             <p>{i18n(cfg.locale).pages.tagContent.itemsUnderTag({ count: pages.length })}</p>
             <div>
               <PageList {...listProps} sort={options?.sort} />

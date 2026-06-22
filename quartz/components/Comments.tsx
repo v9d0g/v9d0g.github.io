@@ -37,7 +37,7 @@ export default ((opts: Options) => {
 
     return (
       <div
-        class={classNames(displayClass, "giscus")}
+        className={classNames(displayClass, "giscus")}
         data-repo={opts.options.repo}
         data-repo-id={opts.options.repoId}
         data-category={opts.options.category}

@@ -36,7 +36,7 @@
   &.collapsed {
     flex: 0 1 1.2rem;
     & .fold {
-      transform: rotateZ(-90deg);
+      transform: rotateZ(0deg);
     }
   }
 
@@ -44,6 +44,7 @@
     margin-left: 0.5rem;
     transition: transform 0.3s ease;
     opacity: 0.8;
+    transform: rotateZ(90deg);
   }
 
   @media all and ($mobile) {
@@ -113,6 +114,7 @@ button.desktop-explorer {
   overflow: hidden;
   overflow-y: auto;
   margin-top: 0.5rem;
+  @include hide-scrollbar;
 
   & ul {
     list-style: none;
@@ -201,13 +203,21 @@ button.desktop-explorer {
   margin-right: 5px;
   color: var(--secondary);
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: opacity 0.2s ease;
   backface-visibility: visible;
   flex-shrink: 0;
 }
 
-li:has(> .folder-outer:not(.open)) > .folder-container > svg {
-  transform: rotate(-90deg);
+li:has(> .folder-outer:not(.open)) > .folder-container > .folder-icon-open {
+  display: none;
+}
+
+li:has(> .folder-outer.open) > .folder-container > .folder-icon-closed {
+  display: none;
+}
+
+li:has(> .folder-outer.open) > .folder-container > .folder-icon-open {
+  display: inline-flex;
 }
 
 .folder-icon:hover {

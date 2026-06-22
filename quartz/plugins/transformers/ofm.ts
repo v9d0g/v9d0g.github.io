@@ -633,7 +633,7 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
                   node.properties = {
                     class: "external-embed youtube",
                     allow: "fullscreen",
-                    frameborder: 0,
+                    frameBorder: 0,
                     width: "600px",
                     src: playlistId
                       ? `https://www.youtube.com/embed/${videoId}?list=${playlistId}`
@@ -645,7 +645,7 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
                   node.properties = {
                     class: "external-embed youtube",
                     allow: "fullscreen",
-                    frameborder: 0,
+                    frameBorder: 0,
                     width: "600px",
                     src: `https://www.youtube.com/embed/videoseries?list=${playlistId}`,
                   }

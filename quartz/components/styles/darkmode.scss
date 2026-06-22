@@ -10,13 +10,21 @@
   text-align: inherit;
   flex-shrink: 0;
 
-  & svg {
+  & > .dayIcon,
+  & > .nightIcon {
     position: absolute;
     width: 20px;
     height: 20px;
     top: calc(50% - 10px);
-    fill: var(--darkgray);
+    left: calc(50% - 10px);
+    color: var(--darkgray);
     transition: opacity 0.1s ease;
+
+    & svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
   }
 }
 
@@ -33,13 +41,13 @@
     display: none;
   }
   & > .nightIcon {
-    display: inline;
+    display: inline-flex;
   }
 }
 
 :root .darkmode {
   & > .dayIcon {
-    display: inline;
+    display: inline-flex;
   }
   & > .nightIcon {
     display: none;

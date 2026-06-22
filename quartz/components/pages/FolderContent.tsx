@@ -6,7 +6,7 @@ import { Root } from "hast"
 import { htmlToJsx } from "../../util/jsx"
 import { i18n } from "../../i18n"
 import { QuartzPluginData } from "../../plugins/vfile"
-import { ComponentChildren } from "preact"
+import { ReactNode } from "react"
 import { concatenateResources } from "../../util/resources"
 import { trieFromAllFiles } from "../../util/ctx"
 
@@ -100,12 +100,12 @@ export default ((opts?: Partial<FolderContentOptions>) => {
       (tree as Root).children.length === 0
         ? fileData.description
         : htmlToJsx(fileData.filePath!, tree)
-    ) as ComponentChildren
+    ) as ReactNode
 
     return (
-      <div class="popover-hint">
-        <article class={classes}>{content}</article>
-        <div class="page-listing">
+      <div className="popover-hint">
+        <article className={classes}>{content}</article>
+        <div className="page-listing">
           {options.showFolderCount && (
             <p>
               {i18n(cfg.locale).pages.folderContent.itemsUnderFolder({

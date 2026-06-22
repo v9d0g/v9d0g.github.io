@@ -18,6 +18,11 @@ import {
 import { Features, transform } from "lightningcss"
 import { transform as transpile } from "esbuild"
 import { write } from "./helpers"
+import postcss from "postcss"
+// @ts-ignore
+import tailwindcss from "@tailwindcss/postcss"
+import { readFileSync } from "fs"
+import { resolve } from "path"
 
 type ComponentResources = {
   css: string[]
@@ -265,6 +270,13 @@ function addGlobalPageResources(ctx: BuildCtx, componentResources: ComponentReso
   }
 }
 
+async function compileTailwind(): Promise<string> {
+  const tailwindPath = resolve(process.cwd(), "quartz/styles/tailwind.css")
+  const css = readFileSync(tailwindPath, "utf-8")
+  const result = await postcss([tailwindcss()]).process(css, { from: tailwindPath })
+  return result.css
+}
+
 // This emitter should not update the `resources` parameter. If it does, partial
 // rebuilds may not work as expected.
 export const ComponentResources: QuartzEmitterPlugin = () => {
@@ -323,9 +335,12 @@ export const ComponentResources: QuartzEmitterPlugin = () => {
       // that everyone else had the chance to register a listener for it
       addGlobalPageResources(ctx, componentResources)
 
+      const tailwindStylesheet = await compileTailwind()
+
       const stylesheet = joinStyles(
         ctx.cfg.configuration.theme,
         googleFontsStyleSheet,
+        tailwindStylesheet,
         ...componentResources.css,
         styles,
       )

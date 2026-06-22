@@ -85,7 +85,7 @@ function transformSpecialEmbed(node: Paragraph, opts: Options): Html | null {
             width="600px"
             height="350px"
             src="https://www.youtube.com/embed/${videoId}${playlistId ? `?list=${playlistId}` : ""}"
-            frameborder="0"
+            frameBorder="0"
             allow="fullscreen"
           ></iframe>`,
         }

@@ -6,6 +6,8 @@
   overflow-y: hidden;
   min-height: 1.4rem;
   flex: 0 0.5 auto;
+  // 将目录高亮的重绘限制在目录内部，避免影响整页
+  contain: paint;
   &:has(button.toc-header.collapsed) {
     flex: 0 1 1.4rem;
   }
@@ -31,10 +33,11 @@ button.toc-header {
     margin-left: 0.5rem;
     transition: transform 0.3s ease;
     opacity: 0.8;
+    transform: rotateZ(90deg);
   }
 
   &.collapsed .fold {
-    transform: rotateZ(-90deg);
+    transform: rotateZ(0deg);
   }
 }
 
@@ -50,9 +53,7 @@ ul.toc-content.overflow {
   & > li > a {
     color: var(--dark);
     opacity: 0.35;
-    transition:
-      0.5s ease opacity,
-      0.3s ease color;
+    // 滚动时避免透明度动画造成重绘闪烁
     &.in-view {
       opacity: 0.75;
     }

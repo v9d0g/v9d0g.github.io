@@ -1,3 +1,4 @@
+import { PixelBadge } from "@pxlkit/ui-kit"
 import { FullSlug, resolveRelative } from "../util/path"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { classNames } from "../util/lang"
@@ -6,13 +7,15 @@ const TagList: QuartzComponent = ({ fileData, displayClass }: QuartzComponentPro
   const tags = fileData.frontmatter?.tags
   if (tags && tags.length > 0) {
     return (
-      <ul class={classNames(displayClass, "tags")}>
+      <ul className={classNames(displayClass, "tags")}>
         {tags.map((tag) => {
           const linkDest = resolveRelative(fileData.slug!, `tags/${tag}` as FullSlug)
           return (
-            <li>
-              <a href={linkDest} class="internal tag-link">
-                {tag}
+            <li key={tag}>
+              <a href={linkDest} className="internal tag-link">
+                <PixelBadge variant="soft" tone="cyan" size="sm">
+                  {tag}
+                </PixelBadge>
               </a>
             </li>
           )
@@ -37,7 +40,7 @@ TagList.css = `
 .section-li > .section > .tags {
   justify-content: flex-end;
 }
-  
+
 .tags > li {
   display: inline-block;
   white-space: nowrap;
@@ -46,10 +49,7 @@ TagList.css = `
 }
 
 a.internal.tag-link {
-  border-radius: 8px;
-  background-color: var(--highlight);
-  padding: 0.2rem 0.4rem;
-  margin: 0 0.1rem;
+  text-decoration: none;
 }
 `
 

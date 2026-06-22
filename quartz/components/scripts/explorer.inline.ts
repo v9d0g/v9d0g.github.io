@@ -42,17 +42,7 @@ function toggleFolder(evt: MouseEvent) {
   const target = evt.target as MaybeHTMLElement
   if (!target) return
 
-  // Check if target was svg icon or button
-  const isSvg = target.nodeName === "svg"
-
-  // corresponding <ul> element relative to clicked button/folder
-  const folderContainer = (
-    isSvg
-      ? // svg -> div.folder-container
-        target.parentElement
-      : // button.folder-button -> div -> div.folder-container
-        target.parentElement?.parentElement
-  ) as MaybeHTMLElement
+  const folderContainer = target.closest(".folder-container") as MaybeHTMLElement
   if (!folderContainer) return
   const childFolderContainer = folderContainer.nextElementSibling as MaybeHTMLElement
   if (!childFolderContainer) return
