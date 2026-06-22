@@ -595,15 +595,35 @@ document.addEventListener("nav", async (e: CustomEventMap["nav"]) => {
     document.removeEventListener("themechange", handleThemeChange)
   })
 
-  const containers = [...document.getElementsByClassName("global-graph-outer")] as HTMLElement[]
+  // The global graph overlay is nested inside the right sidebar, which now has a
+  // pixel-art clip-path from pxlkit. A fixed-position descendant is still clipped
+  // by that ancestor clip-path, so it only renders inside the sidebar. Move a
+  // single overlay to <body> so it can cover the whole viewport.
+  const allGlobalContainers = [
+    ...document.getElementsByClassName("global-graph-outer"),
+  ] as HTMLElement[]
+  let globalGraphContainer = allGlobalContainers.find((c) => c.parentElement === document.body)
+  if (!globalGraphContainer) {
+    globalGraphContainer = allGlobalContainers[0]
+    if (globalGraphContainer) {
+      document.body.appendChild(globalGraphContainer)
+    }
+  }
+  // Remove any duplicate overlays that are still trapped inside clipped ancestors.
+  for (const c of allGlobalContainers) {
+    if (c !== globalGraphContainer) {
+      c.remove()
+    }
+  }
+  const containers = globalGraphContainer ? [globalGraphContainer] : ([] as HTMLElement[])
+
   async function renderGlobalGraph() {
     const slug = getFullSlug(window)
     for (const container of containers) {
-      container.classList.add("active")
-      const sidebar = container.closest(".sidebar") as HTMLElement
-      if (sidebar) {
-        sidebar.style.zIndex = "1"
+      if (container.parentElement !== document.body) {
+        document.body.appendChild(container)
       }
+      container.classList.add("active")
 
       const graphContainer = container.querySelector(".global-graph-container") as HTMLElement
       registerEscapeHandler(container, hideGlobalGraph)
@@ -617,10 +637,6 @@ document.addEventListener("nav", async (e: CustomEventMap["nav"]) => {
     cleanupGlobalGraphs()
     for (const container of containers) {
       container.classList.remove("active")
-      const sidebar = container.closest(".sidebar") as HTMLElement
-      if (sidebar) {
-        sidebar.style.zIndex = ""
-      }
     }
   }
 
@@ -644,6 +660,6 @@ document.addEventListener("nav", async (e: CustomEventMap["nav"]) => {
   window.addCleanup(() => {
     document.removeEventListener("keydown", shortcutHandler)
     cleanupLocalGraphs()
-    cleanupGlobalGraphs()
+    hideGlobalGraph()
   })
 })
