@@ -12,11 +12,11 @@ const TagList: QuartzComponent = ({ fileData, displayClass }: QuartzComponentPro
           const linkDest = resolveRelative(fileData.slug!, `tags/${tag}` as FullSlug)
           return (
             <li key={tag}>
-              <a href={linkDest} className="internal tag-link">
-                <PixelBadge variant="soft" tone="cyan" size="sm">
+              <PixelBadge variant="soft" tone="cyan" size="sm">
+                <a href={linkDest} className="internal tag-link">
                   {tag}
-                </PixelBadge>
-              </a>
+                </a>
+              </PixelBadge>
             </li>
           )
         })}

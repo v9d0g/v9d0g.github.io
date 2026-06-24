@@ -472,23 +472,28 @@
       }
 
       // 交互控制
-      viewport.onwheel = (e) => {
-        // 让节点内部滚动条正常滚动，不拦截
-        if (e.target.closest && e.target.closest(".node-content")) return
-        // 仅当按住 Ctrl/Cmd 时才缩放画布，普通滚轮交给外层页面滚动
-        if (!e.ctrlKey && !e.metaKey) return
+      viewport.addEventListener(
+        "wheel",
+        (e) => {
+          // 让节点内部滚动条正常滚动，不拦截
+          if (e.target.closest && e.target.closest(".node-content")) return
 
-        e.preventDefault()
-        const factor = Math.pow(1.15, -e.deltaY / 120)
-        const rect = viewport.getBoundingClientRect()
-        const mouseX = e.clientX - rect.left,
-          mouseY = e.clientY - rect.top
-        const newScale = Math.min(Math.max(0.05, scale * factor), 4)
-        posX = mouseX - (mouseX - posX) * (newScale / scale)
-        posY = mouseY - (mouseY - posY) * (newScale / scale)
-        scale = newScale
-        content.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`
-      }
+          e.preventDefault()
+          // 统一不同浏览器/输入设备的滚轮单位（pixel/line/page）
+          const deltaY =
+            e.deltaMode === 1 ? e.deltaY * 40 : e.deltaMode === 2 ? e.deltaY * viewport.clientHeight : e.deltaY
+          const factor = Math.pow(1.15, -deltaY / 120)
+          const rect = viewport.getBoundingClientRect()
+          const mouseX = e.clientX - rect.left,
+            mouseY = e.clientY - rect.top
+          const newScale = Math.min(Math.max(0.05, scale * factor), 4)
+          posX = mouseX - (mouseX - posX) * (newScale / scale)
+          posY = mouseY - (mouseY - posY) * (newScale / scale)
+          scale = newScale
+          content.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`
+        },
+        { passive: false },
+      )
 
       let isDragging = false,
         lastX,

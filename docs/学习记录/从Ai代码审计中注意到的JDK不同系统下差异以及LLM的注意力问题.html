@@ -515,7 +515,7 @@ body.lightbox-open {
   <rect x="10" y="12" width="1" height="1" fill="#D2B48C"/>
   <rect x="11" y="12" width="1" height="1" fill="#8B4513"/>
   <rect x="3" y="13" width="8" height="1" fill="#8B4513"/>
-</svg></span><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div></aside><div class="p-0 pxl-corner-md border-2 border-retro-border center"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../" class="underline underline-offset-2 decoration-current/40 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-retro-bg focus-visible:ring-retro-cyan/40 font-mono text-retro-cyan hover:text-retro-green">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../学习记录/" class="underline underline-offset-2 decoration-current/40 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-retro-bg focus-visible:ring-retro-cyan/40 font-mono text-retro-cyan hover:text-retro-green">学习记录</a><p> ❯ </p></div><div class="breadcrumb-element"><span>从Ai代码审计中注意到的JDK不同系统下差异以及LLM的注意力问题</span></div></nav><div class="px-3 py-2 pxl-corner-md article-title"><h1>从Ai代码审计中注意到的JDK不同系统下差异以及LLM的注意力问题</h1></div><p show-comma="true" class="content-meta"><time dateTime="2026-06-03T16:00:00.000Z">2026年6月04日</time><span>15分钟阅读</span></p><ul class="tags"><li><a href="../tags/LLM" class="internal tag-link"><span class="inline-flex items-center leading-none border-2 pxl-corner-sm font-mono px-2 py-0.5 text-[11px] gap-1 tracking-wide bg-retro-cyan/8 border-retro-cyan/40 text-retro-cyan">LLM</span></a></li><li><a href="../tags/代码审计" class="internal tag-link"><span class="inline-flex items-center leading-none border-2 pxl-corner-sm font-mono px-2 py-0.5 text-[11px] gap-1 tracking-wide bg-retro-cyan/8 border-retro-cyan/40 text-retro-cyan">代码审计</span></a></li></ul></div><article class="popover-hint"><h1 id="简述">简述<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#简述" class="internal"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="none" width="18" height="18" role="img" aria-hidden="true">
+</svg></span><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div></aside><div class="p-0 pxl-corner-md border-2 border-retro-border center"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../" class="underline underline-offset-2 decoration-current/40 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-retro-bg focus-visible:ring-retro-cyan/40 font-mono text-retro-cyan hover:text-retro-green">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../学习记录/" class="underline underline-offset-2 decoration-current/40 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-retro-bg focus-visible:ring-retro-cyan/40 font-mono text-retro-cyan hover:text-retro-green">学习记录</a><p> ❯ </p></div><div class="breadcrumb-element"><span>从Ai代码审计中注意到的JDK不同系统下差异以及LLM的注意力问题</span></div></nav><div class="px-3 py-2 pxl-corner-md article-title"><h1>从Ai代码审计中注意到的JDK不同系统下差异以及LLM的注意力问题</h1></div><p show-comma="true" class="content-meta"><time dateTime="2026-06-03T16:00:00.000Z">2026年6月04日</time><span>18分钟阅读</span></p><ul class="tags"><li><span class="inline-flex items-center leading-none border-2 pxl-corner-sm font-mono px-2 py-0.5 text-[11px] gap-1 tracking-wide bg-retro-cyan/8 border-retro-cyan/40 text-retro-cyan"><a href="../tags/LLM" class="internal tag-link">LLM</a></span></li><li><span class="inline-flex items-center leading-none border-2 pxl-corner-sm font-mono px-2 py-0.5 text-[11px] gap-1 tracking-wide bg-retro-cyan/8 border-retro-cyan/40 text-retro-cyan"><a href="../tags/代码审计" class="internal tag-link">代码审计</a></span></li></ul></div><article class="popover-hint"><h1 id="简述">简述<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#简述" class="internal"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="none" width="18" height="18" role="img" aria-hidden="true">
   <rect x="3" y="1" width="4" height="1" fill="#5B9BD5"></rect>
   <rect x="2" y="2" width="1" height="1" fill="#5B9BD5"></rect>
   <rect x="3" y="2" width="4" height="1" fill="#2E6DA4"></rect>
@@ -1960,7 +1960,23 @@ body.lightbox-open {
   <rect x="7" y="12" width="1" height="1" fill="#5B9BD5"></rect>
   <rect x="3" y="13" width="4" height="1" fill="#5B9BD5"></rect>
 </svg></a></h2>
-<p>通过引入一套渐进式披露的prompt，上述的可复现概率就大了不少
+<p>为了能够稳定的实现让ai能够挖掘类似的漏洞，如何把能力落地固化，让其具有可迁移的能力，是目前需要解决的问题</p>
+<p>模型本质需要的还是prompt、有效的提示词来让模型注意力集中到代码和漏洞本身</p>
+<p>这里的有效我认为是几个方面</p>
+<ul>
+<li>1.有效的代码，纯代码，作为事实依据</li>
+<li>2.有效的代码逻辑解释，真实的分支处理，条件判断前提、经过、结果</li>
+<li>3.有效的相关漏洞知识，真实漏洞是什么，遇到某种场景之后的绕过方法有哪些</li>
+</ul>
+<p>针对常规的系统漏洞（RCE、SQL注入等非权限、业务的逻辑漏洞）source<span>→</span>sink这条链是肯定存在的</p>
+<p>有一个触发的点和一个具体问题存在的点，这两个点之间肯定也会存在某种直接或者间接的调用关系</p>
+<p>所以针对<code>1.</code>我们是能通过各种静态代码分析的手段获取全部的代码信息，由于这里有静态工具从代码本身层面来分析，那么这个代码是具有强关联的事实依据</p>
+<p>相当于这里是给模型提供了分析的清单，让模型关注某些特定的调用链，有点类似于人工代码审计的时候从sink反推是否有可达source</p>
+<p>当然如果成本没有限制的情况下，遍历所有可达的路径（web系统中每个接口、组件框架中每个api或者可被开发者或者用户接触到的端点）也可以</p>
+<p>而针对<code>2.</code>，我认为是需要让模型显式的回答他理解出来的逻辑，并且这个回答要一定程度上在整个对话的上下文中</p>
+<p>能记录，可追溯，可反思；当然这里需要一定程度上的引导模型来思考和回答这类问题，我觉得使用Skill或者硬性的work flow可以实现</p>
+<p>而<code>3.</code>依赖多个因素，模型本身的安全能力以及渐进式加载的小技巧prompt</p>
+<p>针对上面的那个具体的漏洞，通过引入一套渐进式披露的prompt和每个分析阶段记录的显式回答，可复现概率就大了不少
 <div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260622164144.png" width="auto" height="auto" alt="" class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260622164144.png" data-alt="" loading="lazy"/></div></p>
 <p>针对<code>DeepSeek V4 flash</code>
 <div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260622164510.png" width="auto" height="auto" alt="" class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260622164510.png" data-alt="" loading="lazy"/></div>
@@ -1970,6 +1986,10 @@ body.lightbox-open {
 <div class="lightbox-wrapper" data-lightbox="true"><img src="../学习记录/images/Pasted-image-20260622164720.png" width="auto" height="auto" alt="" class="lightbox-image" data-src="../学习记录/images/Pasted-image-20260622164720.png" data-alt="" loading="lazy"/></div>
 提到了这一句话</p>
 <p>但是可以让例如ds这种模型能够识别出来，我认为已经达到了最基础的效果了，说明这条路是可行的</p>
+<p>但这种也<strong>不是每次测试都能稳定复现</strong>，使用ai进行代码审计还是存在一定的随机性，没有完全能够硬性约束的合理方式</p>
+<p>过度约束会影响模型自身能力，例如想到一些人工会忽略的点</p>
+<p>而过少约束会导致模型天马行空的操作，从而造成大量误报</p>
+<p>而且在模型一周一个样，一个月一个大变的现在，做的这些很有可能只是整个大模型发展的中间态，不过考虑到各种因素（例如成本），适当的脚手架对较差的模型是具有提升的效果的</p>
 <p><strong>上面的探索并没有踩拉任何一个模型，只是探索LLM代码审计的边界</strong></p></article><div class="page-footer"></div></div><aside class="p-0 pxl-corner-md border-2 border-retro-border right sidebar"><div class="graph"><h3>关系图谱</h3><div class="p-0 pxl-corner-md border-2 border-retro-border"><div class="graph-outer"><div class="graph-container" data-cfg="{&quot;drag&quot;:true,&quot;zoom&quot;:true,&quot;depth&quot;:1,&quot;scale&quot;:1.1,&quot;repelForce&quot;:0.5,&quot;centerForce&quot;:0.3,&quot;linkDistance&quot;:30,&quot;fontSize&quot;:0.6,&quot;opacityScale&quot;:1,&quot;showTags&quot;:true,&quot;removeTags&quot;:[],&quot;focusOnHover&quot;:false,&quot;enableRadial&quot;:false}"></div><button class="global-graph-icon" aria-label="Global Graph"><span class="pxlkit-inline-icon" style="width:24px;height:24px;vertical-align:middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="none">
   <rect x="2" y="2" width="11" height="1" fill="#334455"/>
   <rect x="2" y="3" width="1" height="1" fill="#334455"/>

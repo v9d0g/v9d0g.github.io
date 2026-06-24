@@ -217,6 +217,12 @@ obsidian官方有一个插件——[json-canvas](https://github.com/obsidianmd/j
 
 后续有时间应该会优化
 
+---
+
+- 时间：260622
+
+发现更改页面的风格后，这个canvas由于各种原因会导致页面撕裂，闪屏，经过一系列排查后发现不了具体原因，直接更改为类似于图片放大的弹出页面来查看，避免页面撕裂的情况
+
 ## QUE.5 代码框的行号、关键字高亮
 - 时间：260605
 想实现一个代码框的具体行号高亮的功能 而obsidian有一个[插件](https://github.com/mayurankv/Obsidian-Code-Styler)提供了类似功能
