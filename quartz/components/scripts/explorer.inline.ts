@@ -245,6 +245,78 @@ async function setupExplorer(currentSlug: FullSlug) {
       icon.addEventListener("click", toggleFolder)
       window.addCleanup(() => icon.removeEventListener("click", toggleFolder))
     }
+
+    // Set up custom scrollbar (replaces native scrollbar)
+    const scrollbar = explorer.querySelector(".custom-scrollbar") as HTMLElement | null
+    const thumb = explorer.querySelector(".custom-scrollbar-thumb") as HTMLElement | null
+    const explorerList = explorerUl as HTMLElement
+    if (scrollbar && thumb) {
+      const updateThumb = () => {
+        // force a layout flush so scrollHeight reflects the latest folder open/close state
+        void explorerList.offsetHeight
+        const trackHeight = explorerList.clientHeight
+        const contentHeight = explorerList.scrollHeight
+        const viewportHeight = explorerList.clientHeight
+        if (contentHeight <= viewportHeight || trackHeight <= 0) {
+          scrollbar.style.display = "none"
+          return
+        }
+        scrollbar.style.display = ""
+        const thumbHeight = thumb.clientHeight
+        const maxScroll = contentHeight - viewportHeight
+        const maxThumbTop = trackHeight - thumbHeight
+        const thumbTop = maxScroll > 0 ? (explorerList.scrollTop / maxScroll) * maxThumbTop : 0
+        thumb.style.transform = `translateY(${thumbTop}px)`
+      }
+
+      updateThumb()
+      explorerList.addEventListener("scroll", updateThumb)
+      window.addCleanup(() => explorerList.removeEventListener("scroll", updateThumb))
+
+      let isDragging = false
+      let startY = 0
+      let startScrollTop = 0
+      const onPointerMove = (e: PointerEvent) => {
+        if (!isDragging) return
+        e.preventDefault()
+        const deltaY = e.clientY - startY
+        const trackHeight = explorerList.clientHeight
+        const thumbHeight = thumb.clientHeight
+        const maxThumbTop = trackHeight - thumbHeight
+        const maxScroll = explorerList.scrollHeight - explorerList.clientHeight
+        const scrollRatio = maxThumbTop > 0 ? deltaY / maxThumbTop : 0
+        explorerList.scrollTop = Math.max(
+          0,
+          Math.min(maxScroll, startScrollTop + scrollRatio * maxScroll),
+        )
+      }
+      const onPointerUp = () => {
+        isDragging = false
+        window.removeEventListener("pointermove", onPointerMove)
+        window.removeEventListener("pointerup", onPointerUp)
+      }
+      thumb.addEventListener("pointerdown", (e) => {
+        e.preventDefault()
+        isDragging = true
+        startY = e.clientY
+        startScrollTop = explorerList.scrollTop
+        window.addEventListener("pointermove", onPointerMove)
+        window.addEventListener("pointerup", onPointerUp)
+      })
+
+      const resizeObserver = new ResizeObserver(updateThumb)
+      resizeObserver.observe(explorerList)
+      for (const folder of explorerList.querySelectorAll(".folder-outer")) {
+        resizeObserver.observe(folder)
+      }
+      window.addCleanup(() => resizeObserver.disconnect())
+
+      explorer.addEventListener("click", () => setTimeout(updateThumb, 350))
+      explorerList.addEventListener("transitionend", () => requestAnimationFrame(updateThumb))
+      window.addCleanup(() =>
+        explorerList.removeEventListener("transitionend", () => requestAnimationFrame(updateThumb)),
+      )
+    }
   }
 }
 

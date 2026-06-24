@@ -1,6 +1,7 @@
 import { PxlKitInlineIcon } from "./PxlKitInlineIcon"
 import { Menu, ArrowRight } from "@pxlkit/ui"
-import { QuestMap, Scroll } from "@pxlkit/gamification"
+import { QuestMap, Scroll, Shield } from "@pxlkit/gamification"
+import { PixelIconButton } from "@pxlkit/ui-kit"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import style from "./styles/explorer.scss"
 
@@ -98,6 +99,18 @@ export default ((userOpts?: Partial<Options>) => {
         </button>
         <div id={id} className="explorer-content" aria-expanded={false} role="group">
           <OverflowList className="explorer-ul" />
+          <div className="custom-scrollbar" aria-hidden="true">
+            <div className="custom-scrollbar-track">
+              <PixelIconButton
+                label="Scroll"
+                icon={
+                  <PxlKitInlineIcon icon={Shield} size={24} aria-label="" />
+                }
+                tone="gold"
+                className="custom-scrollbar-thumb"
+              />
+            </div>
+          </div>
         </div>
         <template id="template-file">
           <li>
