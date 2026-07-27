@@ -6,6 +6,18 @@
       <description>最近的10条笔记 on V9d0g</description>
       <generator>Quartz -- quartz.jzhao.xyz</generator>
       <item>
+    <title>2021-第五空间智能安全大赛</title>
+    <link>https://v9d0g.github.io/CTF-WP/2021-%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4%E6%99%BA%E8%83%BD%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B</link>
+    <guid>https://v9d0g.github.io/CTF-WP/2021-%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4%E6%99%BA%E8%83%BD%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B</guid>
+    <description><![CDATA[ 2021-第五空间智能安全大赛 easycleanup? 题型:RCE 漏洞原因:include $_GET[‘file’]; &lt;?php if(!isset($_GET[&#039;mode&#039;])){ highlight_file(__file__); }else if($_GET[&#039;mode&#039;] == &quot;eval&quot;){ $shell = $_GET[&#039;shell&#039;] ?? &#039;phpinfo();&#039;; if(strlen($shell) &gt; 15 | filter($shell) | che... ]]></description>
+    <pubDate>Wed, 24 Jun 2026 10:12:31 GMT</pubDate>
+  </item><item>
+    <title>2023-NewstarCTF-WEB</title>
+    <link>https://v9d0g.github.io/CTF-WP/2023-NewstarCTF-WEB</link>
+    <guid>https://v9d0g.github.io/CTF-WP/2023-NewstarCTF-WEB</guid>
+    <description><![CDATA[ 2023-NewstarCTF WEB WEEK1-泄露的秘密 题型:信息泄露 漏洞原因:www.zip、robots.txt文件 首先访问/robots.txt 可以得到一半的flag 但是这时候可以尝试去访问网站备份 .bak .svn .swp 都不行 再想想是否可能下载得了备份文件 访问/www.zip下载到网站源码 查看即可 WEEK1-ErrorFlask 题型:Flask报错页面信息泄露 漏洞原因:Flask报错页面信息泄露 题目提示：输入number1 number2 尝试使用GET方式传值 url/?number1=1&amp;number2=1 可以看到页面回显 不是SST... ]]></description>
+    <pubDate>Wed, 24 Jun 2026 10:12:31 GMT</pubDate>
+  </item><item>
     <title>2020-第五空间智能安全大赛</title>
     <link>https://v9d0g.github.io/CTF-WP/2020-%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4%E6%99%BA%E8%83%BD%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B</link>
     <guid>https://v9d0g.github.io/CTF-WP/2020-%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4%E6%99%BA%E8%83%BD%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B</guid>
@@ -24,12 +36,6 @@
     <description><![CDATA[ 2021-第五届世界智能大会 hate-php 题型:RCE 漏洞原因:eval($code); &lt;?php error_reporting(0); if(!isset($_GET[&#039;code&#039;])){ highlight_file(__FILE__); }else{ $code = $_GET[&#039;code&#039;]; if(preg_match(&quot;/[A-Za-z0-9_$@]+/&quot;,$code)){ die(&#039;fighting!&#039;); } eval($code); } 过滤了大小写字母、数字、下划线、$、@ 数... ]]></description>
     <pubDate>Tue, 09 Jun 2026 00:42:33 GMT</pubDate>
   </item><item>
-    <title>2021-第五空间智能安全大赛</title>
-    <link>https://v9d0g.github.io/CTF-WP/2021-%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4%E6%99%BA%E8%83%BD%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B</link>
-    <guid>https://v9d0g.github.io/CTF-WP/2021-%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B4%E6%99%BA%E8%83%BD%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B</guid>
-    <description><![CDATA[ 2021-第五空间智能安全大赛 easycleanup? 题型:RCE 漏洞原因:include $_GET[‘file’]; &lt;?php if(!isset($_GET[&#039;mode&#039;])){ highlight_file(__file__); }else if($_GET[&#039;mode&#039;] == &quot;eval&quot;){ $shell = $_GET[&#039;shell&#039;] ?? &#039;phpinfo();&#039;; if(strlen($shell) &gt; 15 | filter($shell) | che... ]]></description>
-    <pubDate>Tue, 09 Jun 2026 00:42:33 GMT</pubDate>
-  </item><item>
     <title>2021-第四届红帽杯</title>
     <link>https://v9d0g.github.io/CTF-WP/2021-%E7%AC%AC%E5%9B%9B%E5%B1%8A%E7%BA%A2%E5%B8%BD%E6%9D%AF</link>
     <guid>https://v9d0g.github.io/CTF-WP/2021-%E7%AC%AC%E5%9B%9B%E5%B1%8A%E7%BA%A2%E5%B8%BD%E6%9D%AF</guid>
@@ -40,12 +46,6 @@
     <link>https://v9d0g.github.io/CTF-WP/2022-LineCtf</link>
     <guid>https://v9d0g.github.io/CTF-WP/2022-LineCtf</guid>
     <description><![CDATA[ 2022-LineCtf gotm 题型:SSTI注入 漏洞原因:GO语言 new_acc := Account{uid, upw, false, secret_key}，get_account(id) 源代码: package main import ( &quot;encoding/json&quot; &quot;fmt&quot; &quot;log&quot; &quot;net/http&quot; &quot;os&quot; &quot;text/template&quot; &quot;github.com/golang-jwt/jwt&quot; ) type Accoun... ]]></description>
-    <pubDate>Tue, 09 Jun 2026 00:42:33 GMT</pubDate>
-  </item><item>
-    <title>2023-NewstarCTF-WEB</title>
-    <link>https://v9d0g.github.io/CTF-WP/2023-NewstarCTF-WEB</link>
-    <guid>https://v9d0g.github.io/CTF-WP/2023-NewstarCTF-WEB</guid>
-    <description><![CDATA[ 2023-NewstarCTF WEB WEEK1-泄露的秘密 题型:信息泄露 漏洞原因:www.zip、robots.txt文件 首先访问/robots.txt 可以得到一半的flag 但是这时候可以尝试去访问网站备份 .bak .svn .swp 都不行 再想想是否可能下载得了备份文件 访问/www.zip下载到网站源码 查看即可 WEEK1-ErrorFlask 题型:Flask报错页面信息泄露 漏洞原因:Flask报错页面信息泄露 题目提示：输入number1 number2 尝试使用GET方式传值 url/?number1=1&amp;number2=1 可以看到页面回显 不是SST... ]]></description>
     <pubDate>Tue, 09 Jun 2026 00:42:33 GMT</pubDate>
   </item><item>
     <title>2023-古剑杯</title>

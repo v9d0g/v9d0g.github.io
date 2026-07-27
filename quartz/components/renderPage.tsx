@@ -287,7 +287,7 @@ export function renderPage(
                 variant="outline"
                 border
                 tone="neutral"
-                padding="none"
+                padding="lg"
                 className="center"
               >
                 <Header {...componentData}>
