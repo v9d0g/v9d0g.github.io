@@ -1,6 +1,7 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 import { CanvasRenderer } from "./quartz/plugins/transformers/canvas" // 路径按实际调整
+import { HtmlEmbed } from "./quartz/plugins/transformers/htmlEmbed" // local-html-embed 移植
 /**
  * Quartz 4 Configuration
  *
@@ -72,6 +73,7 @@ const config: QuartzConfig = {
       Plugin.TableOfContents(),
       Plugin.CrawlLinks({ markdownLinkResolution: "shortest" }),
       CanvasRenderer(), // TODO: json canvas
+      HtmlEmbed(), // 移植自 Obsidian local-html-embed：```html-embed 代码块嵌入笔记目录 html/ 下的本地 HTML
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
       Plugin.ClickableImages(),
