@@ -265,3 +265,20 @@ print("hello world")
 
 
 计划将该仓库清理一下 毕竟现在相对于原版 已经添了不少自己的内容
+
+## QUE.6 markdown内嵌 html+js 实现交互式动画效果
+因为本人比较喜欢中世纪像素风，所以将博客风格进行了一次切换
+
+同时，在编写博客的时候，有些内容光是通过文字显得晦涩难懂，如果能引入html+js实现交互式动画效果
+
+理解和回顾起来效率将会得到不小的提升
+
+交互式动画
+```html-embed
+public/随记/html/bfs-test.html
+```
+
+多个嵌入
+```html-embed
+public/随记/html/china-tax.html
+```

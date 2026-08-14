@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BFS 交互式学习实验室</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #667085;
+      --line: #d9deea;
+      --primary: #2563eb;
+      --primary-soft: #dbeafe;
+      --queue: #f59e0b;
+      --queue-soft: #fef3c7;
+      --visited: #10b981;
+      --visited-soft: #d1fae5;
+      --current: #8b5cf6;
+      --current-soft: #ede9fe;
+      --danger: #ef4444;
+      --shadow: 0 10px 30px rgba(30, 41, 59, .08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    header {
+      background: linear-gradient(135deg, #172554, #2563eb);
+      color: white;
+      padding: 28px 24px;
+    }
+
+    header .hero {
+      max-width: 1400px;
+      margin: auto;
+    }
+
+    h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 42px); }
+    header p { margin: 0; opacity: .9; max-width: 850px; line-height: 1.7; }
+
+    .layout {
+      max-width: 1400px;
+      margin: 22px auto;
+      padding: 0 18px 40px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(320px, .9fr);
+      gap: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .visual-panel { padding: 18px; min-height: 650px; }
+    .side-panel { padding: 18px; }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .section-title h2, .side-panel h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    button, select, input {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--text);
+      padding: 9px 13px;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: .15s ease;
+    }
+    button:hover { transform: translateY(-1px); border-color: #aab4c8; }
+    button.primary { background: var(--primary); color: white; border-color: var(--primary); }
+    button.danger { color: var(--danger); }
+    button:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+    .control-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    select, input[type="number"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px;
+      background: white;
+    }
+
+    .graph-wrap {
+      position: relative;
+      height: 530px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(37, 99, 235, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37, 99, 235, .035) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    #graph {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .node {
+      cursor: pointer;
+      transition: filter .2s ease;
+    }
+    .node:hover { filter: brightness(.97); }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+    .legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .dot {
+      width: 12px; height: 12px; border-radius: 50%; display: inline-block;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+
+    .queue {
+      min-height: 58px;
+      border: 1px dashed #c9ceda;
+      border-radius: 10px;
+      padding: 9px;
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      flex-wrap: wrap;
+      background: #fafbfe;
+      margin-bottom: 16px;
+    }
+
+    .queue-item {
+      min-width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: var(--queue-soft);
+      border: 1px solid #f3d47a;
+      color: #92400e;
+      font-weight: 700;
+    }
+
+    .queue-empty { color: var(--muted); font-size: 13px; }
+
+    .status {
+      padding: 12px;
+      background: #f8fafc;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      line-height: 1.65;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .concept {
+      padding: 12px 14px;
+      border-left: 4px solid var(--primary);
+      background: #eff6ff;
+      border-radius: 8px;
+      line-height: 1.7;
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+
+    .concept strong { color: #1d4ed8; }
+
+    .code {
+      background: #111827;
+      color: #e5e7eb;
+      border-radius: 10px;
+      padding: 14px;
+      font: 13px/1.65 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow: auto;
+      white-space: pre;
+    }
+    .code .keyword { color: #93c5fd; }
+    .code .comment { color: #94a3b8; }
+
+    .step-log {
+      max-height: 205px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    .log-item {
+      padding: 9px 11px;
+      border-bottom: 1px solid #edf0f5;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .log-item:last-child { border-bottom: 0; }
+    .log-item b { color: var(--primary); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .stat {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+    .stat strong { display: block; font-size: 20px; }
+    .stat span { color: var(--muted); font-size: 12px; }
+
+    .quiz {
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+      margin-top: 16px;
+    }
+    .quiz-question { font-weight: 700; line-height: 1.5; margin-bottom: 9px; }
+    .quiz-options { display: grid; gap: 7px; }
+    .quiz-result { margin-top: 9px; font-size: 13px; line-height: 1.5; }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: 1fr; }
+      .graph-wrap { height: 500px; }
+    }
+    @media (max-width: 600px) {
+      .control-row { grid-template-columns: 1fr; }
+      .graph-wrap { height: 430px; }
+      .visual-panel, .side-panel { padding: 13px; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="hero">
+    <h1>BFS 交互式学习实验室</h1>
+    <p>
+      通过“队列 → 取出节点 → 扫描邻居 → 入队”的逐步动画，理解广度优先搜索
+      （Breadth-First Search）的核心机制。你可以暂停、单步执行、修改起点，并观察每个节点的状态变化。
+    </p>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="panel visual-panel">
+    <div class="section-title">
+      <h2>① 观察 BFS 的运行过程</h2>
+      <span id="runState" style="font-size:13px;color:#667085;">未开始</span>
+    </div>
+
+    <div class="toolbar">
+      <button id="startBtn" class="primary">开始 / 继续</button>
+      <button id="stepBtn">单步执行</button>
+      <button id="pauseBtn">暂停</button>
+      <button id="resetBtn">重置</button>
+      <button id="randomBtn">随机图</button>
+    </div>
+
+    <div class="control-row">
+      <div>
+        <label for="startNode">起始节点</label>
+        <select id="startNode"></select>
+      </div>
+      <div>
+        <label for="speed">动画速度</label>
+        <select id="speed">
+          <option value="1200">慢速：1200ms</option>
+          <option value="700" selected>中速：700ms</option>
+          <option value="300">快速：300ms</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="graph-wrap">
+      <svg id="graph" viewBox="0 0 900 520" aria-label="BFS 图可视化"></svg>
+    </div>
+
+    <div class="legend">
+      <span><i class="dot" style="background:#fff;border:3px solid #9ca3af;"></i>未访问</span>
+      <span><i class="dot" style="background:#fef3c7;"></i>已入队</span>
+      <span><i class="dot" style="background:#ede9fe;"></i>当前处理</span>
+      <span><i class="dot" style="background:#d1fae5;"></i>已访问</span>
+      <span><i class="dot" style="background:#dbeafe;"></i>最短路径树</span>
+    </div>
+  </section>
+
+  <aside class="panel side-panel">
+    <h2>② 队列 Queue</h2>
+    <div class="queue" id="queue">
+      <span class="queue-empty">队列为空</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><strong id="visitedCount">0</strong><span>已访问</span></div>
+      <div class="stat"><strong id="distanceCount">—</strong><span>当前距离</span></div>
+      <div class="stat"><strong id="stepCount">0</strong><span>执行步骤</span></div>
+    </div>
+
+    <div class="status" id="status">
+      <strong>现在做什么？</strong><br />
+      选择一个起点，然后点击“单步执行”。重点观察：BFS 为什么总是先处理距离起点更近的节点？
+    </div>
+
+    <div class="concept">
+      <strong>核心思想：</strong> BFS 使用 <strong>FIFO 队列</strong>。
+      节点第一次入队时就确定了它的最短无权距离；因此从同一个起点出发时，
+      BFS 会按距离 0、1、2、3…… 的层次扩展。
+    </div>
+
+    <h2>③ 伪代码</h2>
+    <div class="code"><span class="keyword">BFS</span>(start):
+  queue ← empty queue
+  visited[start] ← true
+  distance[start] ← 0
+  enqueue(start)
+
+  <span class="keyword">while</span> queue is not empty:
+    u ← dequeue()
+
+    <span class="keyword">for</span> each neighbor v of u:
+      <span class="keyword">if</span> v is not visited:
+        visited[v] ← true
+        distance[v] ← distance[u] + 1
+        parent[v] ← u
+        enqueue(v)</div>
+
+    <h2 style="margin-top:16px;">④ 执行日志</h2>
+    <div class="step-log" id="log"></div>
+
+    <div class="quiz">
+      <h2>⑤ 小测验</h2>
+      <div class="quiz-question">为什么 BFS 能找到无权图中的最短路径？</div>
+      <div class="quiz-options">
+        <button data-answer="a">A. 因为它总是选择编号最小的节点</button>
+        <button data-answer="b">B. 因为队列保证按距离层次扩展</button>
+        <button data-answer="c">C. 因为它会反复修改所有节点</button>
+      </div>
+      <div class="quiz-result" id="quizResult"></div>
+    </div>
+
+    <div class="hint">
+      提示：点击图中的节点也可以直接把它设置为起点。
+    </div>
+  </aside>
+</main>
+
+<script src="bfs.js"></script>
+</body>
+</html>

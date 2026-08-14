@@ -9,7 +9,7 @@ This is a **Quartz v4** fork — a static site generator that publishes Obsidian
 Upstream: https://github.com/jackyzha0/quartz  
 Documentation: https://quartz.jzhao.xyz/
 
-This fork has been migrated from Preact to React and integrates **pxlkit** for pixel-art icons and UI components (`@pxlkit/core`, `@pxlkit/ui-kit`, `@pxlkit/ui`, `@pxlkit/weather`, `@pxlkit/gamification`).
+This fork has been migrated from Preact to React and integrates **pxlkit** for pixel-art icons and UI components (`@pxlkit/core`, `@pxlkit/ui-kit`, `@pxlkit/weather`, `@pxlkit/gamification`).
 
 ## Common Commands
 
@@ -74,7 +74,7 @@ Components render icons through `PxlKitInlineIcon` (`quartz/components/PxlKitInl
 - **Tailwind CSS v4** — Entry point at `quartz/styles/tailwind.css`, processed through PostCSS in `quartz/cli/handlers.js`.
 - **pxlkit icons** — All UI icons (search, theme toggle, reader mode, explorer, graph, TOC, headings, external links) use pxlkit pixel-art icons.
 - **CanvasRenderer** plugin (`quartz/plugins/transformers/canvas.ts`) — Custom transformer for Obsidian `.canvas` files, referenced in `quartz.config.ts`.
-- **`update.bat`** — Windows deployment script that cleans `docs/`, builds, commits with message `docs:更新文章`, and pushes to `origin v4`.
+- **`update.bat`** — Windows deployment script that cleans `docs/`, builds, commits with message `docs:更新文章`, and pushes to `origin master`.
 - **Locale**: `zh-CN`
 - **Base URL**: `v9d0g.github.io`
 

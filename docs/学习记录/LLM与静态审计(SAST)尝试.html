@@ -2138,6 +2138,191 @@ pre.no-line-numbers > code > [data-line]::before {
 })()
 </script><script type="application/javascript">function n(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.getElementsByClassName("callout-content")[0];if(!e)return;let l=t.classList.contains("is-collapsed");e.style.gridTemplateRows=l?"0fr":"1fr"}function c(){let t=document.getElementsByClassName("callout is-collapsible");for(let e of t){let l=e.getElementsByClassName("callout-title")[0],s=e.getElementsByClassName("callout-content")[0];if(!l||!s)continue;l.addEventListener("click",n),window.addCleanup(()=>l.removeEventListener("click",n));let o=e.classList.contains("is-collapsed");s.style.gridTemplateRows=o?"0fr":"1fr"}}document.addEventListener("nav",c);
 </script><script type="module">function f(i,e){if(!i)return;function r(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function t(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}i?.addEventListener("click",r),window.addCleanup(()=>i?.removeEventListener("click",r)),document.addEventListener("keydown",t),window.addCleanup(()=>document.removeEventListener("keydown",t))}function y(i){for(;i.firstChild;)i.removeChild(i.firstChild)}var h=class{constructor(e,r){this.container=e;this.content=r;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),r=this.onMouseMove.bind(this),t=this.onMouseUp.bind(this),o=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",r),document.addEventListener("mouseup",t),window.addEventListener("resize",o),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",r),()=>document.removeEventListener("mouseup",t),()=>window.removeEventListener("resize",o))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let r=this.createButton("+",()=>this.zoom(.1)),t=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(t),e.appendChild(o),e.appendChild(r),this.container.appendChild(e)}createButton(e,r){let t=document.createElement("button");return t.textContent=e,t.className="mermaid-control-button",t.addEventListener("click",r),window.addCleanup(()=>t.removeEventListener("click",r)),t}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}zoom(e){let r=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),t=this.content.getBoundingClientRect(),o=t.width/2,n=t.height/2,c=r-this.scale;this.currentPan.x-=o*c,this.currentPan.y-=n*c,this.scale=r,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){this.scale=1;let e=this.content.querySelector("svg");this.currentPan={x:e.getBoundingClientRect().width/2,y:e.getBoundingClientRect().height/2},this.updateTransform()}},C=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],E;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;E||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let r=E.default,t=new WeakMap;for(let n of e)t.set(n,n.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let a=t.get(s);a&&(s.innerHTML=a)}let n=C.reduce((s,a)=>(s[a]=window.getComputedStyle(document.documentElement).getPropertyValue(a),s),{}),c=document.documentElement.getAttribute("saved-theme")==="dark";r.initialize({startOnLoad:!1,securityLevel:"loose",theme:c?"dark":"base",themeVariables:{fontFamily:n["--codeFont"],primaryColor:n["--light"],primaryTextColor:n["--darkgray"],primaryBorderColor:n["--tertiary"],lineColor:n["--darkgray"],secondaryColor:n["--secondary"],tertiaryColor:n["--tertiary"],clusterBkg:n["--light"],edgeLabelBackground:n["--highlight"]}}),await r.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let n=0;n<e.length;n++){let v=function(){let g=l.querySelector("#mermaid-space"),m=l.querySelector(".mermaid-content");if(!m)return;y(m);let w=c.querySelector("svg").cloneNode(!0);m.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new h(g,m)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},c=e[n],s=c.parentElement,a=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(a),L=a.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),f(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script type="application/javascript">(function () {
+  var EMBED_CSS = `
+/* 嵌入块占满正文列宽（自适应各种屏幕），并以视口为中心适度加宽、不溢出屏幕 */
+.local-html-embed-wrapper{
+  width:100%;
+  max-width:100%;
+  margin:12px 0 20px;
+  border:1px solid var(--lightgray);
+  border-radius:14px;
+  overflow:hidden;
+  background:var(--light);
+  box-shadow:0 4px 18px rgba(0,0,0,0.06);
+  box-sizing:border-box;
+}
+/* 宽屏桌面：在左右侧栏之间利用空白适度加宽，相对正文列水平居中、永不溢出视口 */
+@media (min-width:1200px){
+  .local-html-embed-wrapper{
+    width:calc(100vw - 320px * 2 - 4rem); /* 视口减去左右侧栏与留白 */
+    max-width:1400px;
+    margin-left:50%;
+    transform:translateX(-50%);
+  }
+}
+/* 可折叠容器 */
+.local-html-embed-details{display:block;}
+/* 突出的标题栏：可点击折叠/展开，带圆点图标 + 右侧折叠箭头 */
+.local-html-embed-meta{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 16px;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:0.01em;
+  color:var(--secondary);
+  background:var(--highlight);
+  cursor:pointer;
+  user-select:none;
+  list-style:none;
+}
+.local-html-embed-meta::-webkit-details-marker{display:none;}
+.local-html-embed-details[open] > .local-html-embed-meta{border-bottom:1px solid var(--lightgray);}
+.local-html-embed-meta:hover{color:var(--dark);}
+.local-html-embed-meta::before{
+  content:"";
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--secondary);
+  flex:none;
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--secondary) 25%, transparent);
+}
+.local-html-embed-meta-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.local-html-embed-chevron{
+  flex:none;
+  font-size:12px;
+  color:var(--gray);
+  transition:transform 0.2s ease;
+}
+.local-html-embed-details[open] > .local-html-embed-meta > .local-html-embed-chevron{transform:rotate(180deg);}
+.local-html-embed-iframe{width:100%;border:0;display:block;background:var(--light);}
+.local-html-embed-message{margin:8px 0 16px;padding:12px 14px;border-radius:12px;border:1px solid var(--lightgray);background:var(--lightgray);}
+.local-html-embed-message.is-error{border-color:#b91c1c55;}
+.local-html-embed-message-title{font-weight:600;margin-bottom:6px;}
+.local-html-embed-message-detail{font-size:12px;color:var(--gray);white-space:pre-wrap;}
+`;
+  // 不依赖闭包缓存：每次扫描都确认 <style> 真实存在于 <head>，避免 SPA/水合时序导致漏注
+  function ensureCss() {
+    if (document.getElementById("local-html-embed-style")) return;
+    var s = document.createElement("style");
+    s.id = "local-html-embed-style";
+    s.textContent = EMBED_CSS;
+    document.head.appendChild(s);
+  }
+
+  function resize(iframe) {
+    if (iframe.getAttribute("data-auto-height") !== "true") return;
+    var doc = iframe.contentDocument;
+    if (!doc) return;
+    try {
+      var panels = Array.prototype.slice.call(doc.querySelectorAll(".panel"));
+      var target = 0;
+      if (panels.length) {
+        var tabs = doc.querySelector(".tabs");
+        var tabsH = tabs ? tabs.getBoundingClientRect().height : 0;
+        var actives = panels.map(function (p) { return p.classList.contains("active"); });
+        var maxP = 0;
+        panels.forEach(function (p) {
+          p.classList.add("active");
+          maxP = Math.max(maxP, p.scrollHeight, p.getBoundingClientRect().height);
+          p.classList.remove("active");
+        });
+        panels.forEach(function (p, i) { p.classList.toggle("active", actives[i]); });
+        target = tabsH + maxP;
+      } else {
+        target = Math.max(
+          doc.body ? doc.body.scrollHeight : 0,
+          doc.documentElement ? doc.documentElement.scrollHeight : 0,
+          doc.body ? doc.body.offsetHeight : 0
+        );
+      }
+      var bs = doc.defaultView ? doc.defaultView.getComputedStyle(doc.body) : null;
+      var pad = bs ? parseFloat(bs.paddingTop) + parseFloat(bs.paddingBottom) : 0;
+      var next = Math.ceil(target + pad + 16);
+      // 只增不减的抖动太大；这里直接设置，但配合下面的稳定重测避免首次偏窄
+      if (next > 0) iframe.style.height = next + "px";
+    } catch (e) {}
+  }
+
+  // 等 iframe 内容真正稳定后再测量：字体加载完成 + 下一帧重绘 + 持续跟踪尺寸变化。
+  // 解决首次访问时因 CSS/字体/图片未就绪导致测出的高度偏小（刷新有缓存所以正常）的问题。
+  function stabilizeHeight(iframe) {
+    var doc = iframe.contentDocument;
+    if (!doc) return;
+    var win = doc.defaultView;
+    var doResize = function () { resize(iframe); };
+
+    // 立即测一次（兜底）
+    doResize();
+
+    // 字体就绪后重测（字体加载会改变内容高度）
+    try {
+      if (doc.fonts && doc.fonts.ready) { doc.fonts.ready.then(doResize).catch(function () {}); }
+    } catch (e) {}
+
+    // 等几帧再测一次，确保首帧渲染完成
+    if (win && win.requestAnimationFrame) {
+      win.requestAnimationFrame(function () { win.requestAnimationFrame(doResize); });
+    }
+
+    // 持续跟踪内容尺寸变化（图片/脚本异步撑开内容时自动跟随）
+    try {
+      if (win && win.ResizeObserver) {
+        var ro = new win.ResizeObserver(doResize);
+        if (doc.body) ro.observe(doc.body);
+        if (doc.documentElement) ro.observe(doc.documentElement);
+      }
+    } catch (e) {}
+  }
+
+  function setup(iframe) {
+    if (iframe.getAttribute("data-embed-init") === "1") return;
+    iframe.setAttribute("data-embed-init", "1");
+    var applySrc = function () {
+      if (iframe.getAttribute("data-loaded") === "1") return;
+      var src = iframe.getAttribute("data-src");
+      if (!src) return;
+      iframe.setAttribute("data-loaded", "1");
+      iframe.src = src;
+    };
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { applySrc(); io.disconnect(); }
+        });
+      }, { rootMargin: "200px" });
+      io.observe(iframe);
+    } else {
+      applySrc();
+    }
+    iframe.addEventListener("load", function () {
+      stabilizeHeight(iframe);
+      var doc = iframe.contentDocument;
+      if (doc && iframe.getAttribute("data-auto-height") === "true") {
+        Array.prototype.forEach.call(doc.querySelectorAll("details"), function (d) {
+          d.addEventListener("toggle", function () { resize(iframe); });
+        });
+        Array.prototype.forEach.call(doc.querySelectorAll(".tab"), function (t) {
+          t.addEventListener("click", function () { resize(iframe); });
+        });
+      }
+    });
+  }
+
+  function scan() {
+    ensureCss();
+    Array.prototype.forEach.call(
+      document.querySelectorAll("iframe.local-html-embed-iframe"),
+      setup
+    );
+  }
+
+  document.addEventListener("nav", scan);
+  scan();
+})();
 </script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript"></script><script type="application/javascript">
               function initLightbox() {
                 const existingModal = document.querySelector('.lightbox-modal');
