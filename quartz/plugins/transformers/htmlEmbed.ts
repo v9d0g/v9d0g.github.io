@@ -1,7 +1,6 @@
 import { QuartzTransformerPlugin } from "../types"
 import { Root, Element } from "hast"
 import { visit } from "unist-util-visit"
-import { slugifyFilePath, FilePath } from "../../util/path"
 import path from "path"
 import fs from "fs"
 
@@ -30,8 +29,24 @@ const htmlEmbedScript = `(function () {
     transform:translateX(-50%);
   }
 }
-/* 可折叠容器 */
+/* 可折叠容器 + 折叠/展开过渡动画（grid 行高 0fr→1fr 技巧） */
 .local-html-embed-details{display:block;}
+.local-html-embed-body{
+  display:grid;
+  grid-template-rows:0fr;
+  opacity:0;
+  transition:grid-template-rows 0.35s ease, opacity 0.3s ease;
+}
+.local-html-embed-details[open] > .local-html-embed-body{
+  grid-template-rows:1fr;
+  opacity:1;
+}
+/* 收起过渡中：open 仍在，用 .closing 把行高拉回 0fr */
+.local-html-embed-details.closing > .local-html-embed-body{
+  grid-template-rows:0fr;
+  opacity:0;
+}
+.local-html-embed-body-inner{overflow:hidden;min-height:0;}
 /* 突出的标题栏：可点击折叠/展开，带圆点图标 + 右侧折叠箭头 */
 .local-html-embed-meta{
   display:flex;
@@ -181,11 +196,53 @@ const htmlEmbedScript = `(function () {
     });
   }
 
+  // 折叠动画：拦截 summary 点击，收起时先播放 0.35s 过渡到 0，结束后再真正移除 open 属性。
+  // 展开则直接加 open（浏览器触发 0fr→1fr 过渡）。原生 <details> 自身显隐是瞬时的，无法纯 CSS 过渡。
+  function bindToggle(details) {
+    if (details.getAttribute("data-toggle-init") === "1") return;
+    details.setAttribute("data-toggle-init", "1");
+    var summary = details.querySelector("summary.local-html-embed-meta");
+    var body = details.querySelector(".local-html-embed-body");
+    if (!summary || !body) return;
+
+    summary.addEventListener("click", function (ev) {
+      ev.preventDefault();
+      if (details.hasAttribute("data-animating")) return;
+
+      if (details.open) {
+        // 收起：保持 open，加 .closing 触发 1fr→0fr 过渡，结束后移除 open
+        details.setAttribute("data-animating", "1");
+        details.classList.add("closing");
+        var done = function () {
+          details.classList.remove("closing");
+          details.removeAttribute("open");
+          details.removeAttribute("data-animating");
+          body.removeEventListener("transitionend", onEnd);
+        };
+        var onEnd = function (e) {
+          if (e.propertyName === "grid-template-rows") done();
+        };
+        body.addEventListener("transitionend", onEnd);
+        // 兜底：某些情况 transitionend 不触发
+        setTimeout(done, 450);
+      } else {
+        // 展开：加 open，CSS 中 [open] 触发 0fr→1fr 过渡
+        details.setAttribute("data-animating", "1");
+        details.setAttribute("open", "");
+        setTimeout(function () { details.removeAttribute("data-animating"); }, 400);
+      }
+    });
+  }
+
   function scan() {
     ensureCss();
     Array.prototype.forEach.call(
       document.querySelectorAll("iframe.local-html-embed-iframe"),
       setup
+    );
+    Array.prototype.forEach.call(
+      document.querySelectorAll("details.local-html-embed-details"),
+      bindToggle
     );
   }
 
@@ -365,10 +422,18 @@ export const HtmlEmbed: QuartzTransformerPlugin = (opts) => {
               // 校验文件是否存在（不存在则提示，避免线上 404）
               const exists = onDisk !== "" && fs.existsSync(onDisk)
 
-              // 输出 URL：与 Assets emitter 完全一致的 slugify 规则（剥离 .html 扩展名）。
-              // 站点以「无扩展名」提供 HTML：dev server 对 *.html 会 301 到无扩展名形式，
-              // GitHub Pages 同样将无扩展名 HTML 以 text/html 提供，与全站其它页面一致。
-              const fileSlug = slugifyFilePath(relFromContent as FilePath)
+              // 输出 URL：段级 slug（与 Quartz 一致的空格→- 规则），但保留 .html 后缀，
+              // 与 HtmlEmbedAssets emitter 的拷贝路径一致。
+              // 原因：GitHub Pages 对 Assets 拷贝的无扩展名文件返回 application/octet-stream（按下载处理），
+              // iframe 无法渲染；保留 .html 后缀时 GH Pages 才返回 text/html。
+              const segSlug = (s: string) =>
+                s
+                  .replace(/\s/g, "-")
+                  .replace(/&/g, "-and-")
+                  .replace(/%/g, "-percent")
+                  .replace(/\?/g, "")
+                  .replace(/#/g, "")
+              const fileSlug = relFromContent.split("/").map(segSlug).join("/")
               const url = `/${fileSlug}`
 
               const displayName = relFromContent.split("/").pop() ?? relFromContent
@@ -420,9 +485,23 @@ export const HtmlEmbed: QuartzTransformerPlugin = (opts) => {
                       },
                       {
                         type: "element",
-                        tagName: "iframe",
-                        properties: iframeProps,
-                        children: [],
+                        tagName: "div",
+                        properties: { className: ["local-html-embed-body"] },
+                        children: [
+                          {
+                            type: "element",
+                            tagName: "div",
+                            properties: { className: ["local-html-embed-body-inner"] },
+                            children: [
+                              {
+                                type: "element",
+                                tagName: "iframe",
+                                properties: iframeProps,
+                                children: [],
+                              },
+                            ],
+                          },
+                        ],
                       },
                     ],
                   },

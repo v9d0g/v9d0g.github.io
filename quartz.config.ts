@@ -90,6 +90,7 @@ const config: QuartzConfig = {
         enableRSS: true,
       }),
       Plugin.Assets(),
+      Plugin.HtmlEmbedAssets(), // 保留 .html 后缀拷贝 html/ 下的嵌入页，使 GH Pages 以 text/html 提供
       Plugin.Static(),
       Plugin.Favicon(),
       Plugin.NotFoundPage(),

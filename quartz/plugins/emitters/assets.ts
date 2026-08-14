@@ -8,7 +8,13 @@ import { QuartzConfig } from "../../cfg"
 
 const filesToCopy = async (argv: Argv, cfg: QuartzConfig) => {
   // glob all non MD files in content folder and copy it over
-  return await glob("**", argv.directory, ["**/*.md", ...cfg.configuration.ignorePatterns])
+  // 注意：html/ 目录下的 .html 由 HtmlEmbedAssets 以「保留后缀」方式独占拷贝，
+  // 这里排除掉，避免同一文件被拷两份（且无扩展名副本在 GitHub Pages 上会变成 octet-stream 无法渲染）。
+  return await glob("**", argv.directory, [
+    "**/*.md",
+    "**/html/**/*.html",
+    ...cfg.configuration.ignorePatterns,
+  ])
 }
 
 const copyFile = async (argv: Argv, fp: FilePath) => {
@@ -38,6 +44,8 @@ export const Assets: QuartzEmitterPlugin = () => {
       for (const changeEvent of changeEvents) {
         const ext = path.extname(changeEvent.path)
         if (ext === ".md") continue
+        // html/ 下的 .html 交由 HtmlEmbedAssets 处理，这里跳过避免重复拷贝
+        if (ext === ".html" && changeEvent.path.split("/").includes("html")) continue
 
         if (changeEvent.type === "add" || changeEvent.type === "change") {
           yield copyFile(ctx.argv, changeEvent.path)

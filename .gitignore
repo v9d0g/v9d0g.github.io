@@ -1,0 +1,13 @@
+.DS_Store
+.codegraph
+.claude
+node_modules
+#public
+prof
+tsconfig.tsbuildinfo
+.obsidian
+.quartz-cache
+private/
+temp/
+.replit
+replit.nix

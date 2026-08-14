@@ -2004,9 +2004,9 @@ body.lightbox-open {
 <p>同时，在编写博客的时候，有些内容光是通过文字显得晦涩难懂，如果能引入html+js实现交互式动画效果</p>
 <p>理解和回顾起来效率将会得到不小的提升</p>
 <p>交互式动画</p>
-<div class="local-html-embed-wrapper"><details class="local-html-embed-details" open=""><summary class="local-html-embed-meta"><span class="local-html-embed-meta-text">HTML Embed · bfs-test.html · 高度自动</span><span class="local-html-embed-chevron">▾</span></summary><iframe class="local-html-embed-iframe" data-src="/随记/html/bfs-test" title="bfs-test.html" loading="lazy" referrerPolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" data-auto-height="true" style="height:120px"></iframe></details></div>
+<div class="local-html-embed-wrapper"><details class="local-html-embed-details" open=""><summary class="local-html-embed-meta"><span class="local-html-embed-meta-text">HTML Embed · bfs-test.html · 高度自动</span><span class="local-html-embed-chevron">▾</span></summary><div class="local-html-embed-body"><div class="local-html-embed-body-inner"><iframe class="local-html-embed-iframe" data-src="/随记/html/bfs-test.html" title="bfs-test.html" loading="lazy" referrerPolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" data-auto-height="true" style="height:120px"></iframe></div></div></details></div>
 <p>多个嵌入</p>
-<div class="local-html-embed-wrapper"><details class="local-html-embed-details" open=""><summary class="local-html-embed-meta"><span class="local-html-embed-meta-text">HTML Embed · china-tax.html · 高度自动</span><span class="local-html-embed-chevron">▾</span></summary><iframe class="local-html-embed-iframe" data-src="/随记/html/china-tax" title="china-tax.html" loading="lazy" referrerPolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" data-auto-height="true" style="height:120px"></iframe></details></div></article><div class="page-footer"></div></div><aside class="p-0 pxl-corner-md border-2 border-retro-border right sidebar"><div class="graph"><h3>关系图谱</h3><div class="p-0 pxl-corner-md border-2 border-retro-border"><div class="graph-outer"><div class="graph-container" data-cfg="{&quot;drag&quot;:true,&quot;zoom&quot;:true,&quot;depth&quot;:1,&quot;scale&quot;:1.1,&quot;repelForce&quot;:0.5,&quot;centerForce&quot;:0.3,&quot;linkDistance&quot;:30,&quot;fontSize&quot;:0.6,&quot;opacityScale&quot;:1,&quot;showTags&quot;:true,&quot;removeTags&quot;:[],&quot;focusOnHover&quot;:false,&quot;enableRadial&quot;:false}"></div><button class="global-graph-icon" aria-label="Global Graph"><span class="pxlkit-inline-icon" style="width:24px;height:24px;vertical-align:middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="none">
+<div class="local-html-embed-wrapper"><details class="local-html-embed-details" open=""><summary class="local-html-embed-meta"><span class="local-html-embed-meta-text">HTML Embed · china-tax.html · 高度自动</span><span class="local-html-embed-chevron">▾</span></summary><div class="local-html-embed-body"><div class="local-html-embed-body-inner"><iframe class="local-html-embed-iframe" data-src="/随记/html/china-tax.html" title="china-tax.html" loading="lazy" referrerPolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" data-auto-height="true" style="height:120px"></iframe></div></div></details></div></article><div class="page-footer"></div></div><aside class="p-0 pxl-corner-md border-2 border-retro-border right sidebar"><div class="graph"><h3>关系图谱</h3><div class="p-0 pxl-corner-md border-2 border-retro-border"><div class="graph-outer"><div class="graph-container" data-cfg="{&quot;drag&quot;:true,&quot;zoom&quot;:true,&quot;depth&quot;:1,&quot;scale&quot;:1.1,&quot;repelForce&quot;:0.5,&quot;centerForce&quot;:0.3,&quot;linkDistance&quot;:30,&quot;fontSize&quot;:0.6,&quot;opacityScale&quot;:1,&quot;showTags&quot;:true,&quot;removeTags&quot;:[],&quot;focusOnHover&quot;:false,&quot;enableRadial&quot;:false}"></div><button class="global-graph-icon" aria-label="Global Graph"><span class="pxlkit-inline-icon" style="width:24px;height:24px;vertical-align:middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="none">
   <rect x="2" y="2" width="11" height="1" fill="#334455"/>
   <rect x="2" y="3" width="1" height="1" fill="#334455"/>
   <rect x="3" y="3" width="2" height="1" fill="#5B9BD5"/>
@@ -2185,8 +2185,24 @@ pre.no-line-numbers > code > [data-line]::before {
     transform:translateX(-50%);
   }
 }
-/* 可折叠容器 */
+/* 可折叠容器 + 折叠/展开过渡动画（grid 行高 0fr→1fr 技巧） */
 .local-html-embed-details{display:block;}
+.local-html-embed-body{
+  display:grid;
+  grid-template-rows:0fr;
+  opacity:0;
+  transition:grid-template-rows 0.35s ease, opacity 0.3s ease;
+}
+.local-html-embed-details[open] > .local-html-embed-body{
+  grid-template-rows:1fr;
+  opacity:1;
+}
+/* 收起过渡中：open 仍在，用 .closing 把行高拉回 0fr */
+.local-html-embed-details.closing > .local-html-embed-body{
+  grid-template-rows:0fr;
+  opacity:0;
+}
+.local-html-embed-body-inner{overflow:hidden;min-height:0;}
 /* 突出的标题栏：可点击折叠/展开，带圆点图标 + 右侧折叠箭头 */
 .local-html-embed-meta{
   display:flex;
@@ -2336,11 +2352,53 @@ pre.no-line-numbers > code > [data-line]::before {
     });
   }
 
+  // 折叠动画：拦截 summary 点击，收起时先播放 0.35s 过渡到 0，结束后再真正移除 open 属性。
+  // 展开则直接加 open（浏览器触发 0fr→1fr 过渡）。原生 <details> 自身显隐是瞬时的，无法纯 CSS 过渡。
+  function bindToggle(details) {
+    if (details.getAttribute("data-toggle-init") === "1") return;
+    details.setAttribute("data-toggle-init", "1");
+    var summary = details.querySelector("summary.local-html-embed-meta");
+    var body = details.querySelector(".local-html-embed-body");
+    if (!summary || !body) return;
+
+    summary.addEventListener("click", function (ev) {
+      ev.preventDefault();
+      if (details.hasAttribute("data-animating")) return;
+
+      if (details.open) {
+        // 收起：保持 open，加 .closing 触发 1fr→0fr 过渡，结束后移除 open
+        details.setAttribute("data-animating", "1");
+        details.classList.add("closing");
+        var done = function () {
+          details.classList.remove("closing");
+          details.removeAttribute("open");
+          details.removeAttribute("data-animating");
+          body.removeEventListener("transitionend", onEnd);
+        };
+        var onEnd = function (e) {
+          if (e.propertyName === "grid-template-rows") done();
+        };
+        body.addEventListener("transitionend", onEnd);
+        // 兜底：某些情况 transitionend 不触发
+        setTimeout(done, 450);
+      } else {
+        // 展开：加 open，CSS 中 [open] 触发 0fr→1fr 过渡
+        details.setAttribute("data-animating", "1");
+        details.setAttribute("open", "");
+        setTimeout(function () { details.removeAttribute("data-animating"); }, 400);
+      }
+    });
+  }
+
   function scan() {
     ensureCss();
     Array.prototype.forEach.call(
       document.querySelectorAll("iframe.local-html-embed-iframe"),
       setup
+    );
+    Array.prototype.forEach.call(
+      document.querySelectorAll("details.local-html-embed-details"),
+      bindToggle
     );
   }
 
