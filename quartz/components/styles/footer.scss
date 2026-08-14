@@ -5,14 +5,22 @@ footer {
   padding: 0.75rem 1rem;
   text-align: left;
   margin-bottom: 4rem;
-  opacity: 0.7;
 
+  // utterances 评论区不被蒙版/半透明影响：用不透明背景盖住背后的像素背景图，保持清晰可读。
+  & .utterances {
+    background-color: var(--light);
+    border-radius: 5px;
+    padding: 0.5rem;
+  }
+
+  // 仅让底部版权/链接行半透明，utterances 不受影响（opacity 无法被子元素抵消）
   & .footer-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+    opacity: 0.7;
   }
 
   & ul {

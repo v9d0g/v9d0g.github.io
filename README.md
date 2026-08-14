@@ -2,6 +2,12 @@
 
 本仓库代码源于下述项目，继承相关license。
 
+```
+npx quartz build --directory=<指定目录下的markdown> --output=<静态文件输出目录> --serve
+```
+
+`quartz\util\glob.ts`:修改是否npx构建时继承`.gitignore`文件中的筛选
+
 ## Quartz v4
 
 > “[One] who works with the door open gets all kinds of interruptions, but [they] also occasionally gets clues as to what the world is and what might be important.” — Richard Hamming
