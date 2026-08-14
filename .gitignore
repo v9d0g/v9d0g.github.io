@@ -11,3 +11,4 @@ private/
 temp/
 .replit
 replit.nix
+/content/*
